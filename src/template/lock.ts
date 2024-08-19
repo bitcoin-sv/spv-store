@@ -5,7 +5,7 @@ import {
   Script,
   type Transaction,
   TransactionSignature,
-  UnlockingScript,
+  type UnlockingScript,
   Utils,
 } from "@bsv/sdk";
 

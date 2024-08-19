@@ -66,7 +66,7 @@ export class CaseModSPV extends EventEmitter {
     const isSynced = await this.stores.txos!.storage.getState("isSynced");
     if (!isSynced) {
       for (const indexer of this.stores.txos!.indexers) {
-        await indexer.sync(this);
+        await indexer.sync(this.stores.txos!);
       }
       await this.stores.txos!.storage.setState(
         "isSynced",

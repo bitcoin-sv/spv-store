@@ -1,15 +1,14 @@
-import { Network } from "yours-wallet-provider";
+import type { TxoStore } from "../stores";
 import type { IndexContext } from "./index-context";
 import { IndexData } from "./index-data";
 import { TxoStatus } from "./txo";
-import { TxoStore } from "../txo-store";
 
 export abstract class Indexer {
   tag = "";
 
   constructor(
     public owners = new Set<string>(),
-    public network = Network.Mainnet,
+    public network = 'mainnet',
     public syncMode = TxoStatus.TRUSTED,
   ) {}
 
