@@ -39,7 +39,7 @@ export class OneSatProvider
       },
       body: Uint8Array.from(tx.toBinary()),
     });
-    const body = await resp.json() as string | { message: string };
+    const body = (await resp.json()) as string | { message: string };
     if (resp.status !== 200) {
       return {
         status: "error",

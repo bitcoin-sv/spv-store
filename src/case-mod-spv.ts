@@ -91,7 +91,10 @@ export class CaseModSPV {
     return this.stores.txos!.storage.get(outpoint);
   }
 
-  async getTx(txid: string, fromRemote = false): Promise<Transaction | undefined> {
+  async getTx(
+    txid: string,
+    fromRemote = false,
+  ): Promise<Transaction | undefined> {
     return this.stores.txns!.loadTx(txid, fromRemote);
   }
 

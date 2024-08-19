@@ -23,7 +23,7 @@ export class TxoStore {
     public events?: EventEmitter,
   ) {}
 
-   destroy() {
+  destroy() {
     this.storage.destroy();
     this.stopSync = true;
   }

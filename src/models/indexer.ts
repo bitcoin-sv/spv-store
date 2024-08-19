@@ -8,7 +8,7 @@ export abstract class Indexer {
 
   constructor(
     public owners = new Set<string>(),
-    public network = 'mainnet',
+    public network = "mainnet",
     public syncMode = TxoStatus.TRUSTED,
   ) {}
 

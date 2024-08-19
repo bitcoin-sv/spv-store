@@ -1,1 +1,1 @@
-export * from './1sat-web'
+export * from "./1sat-web";

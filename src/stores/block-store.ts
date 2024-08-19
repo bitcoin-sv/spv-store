@@ -13,7 +13,7 @@ export class BlockStore implements ChainTracker {
     public storage: BlockStorage,
     public services: Services,
     public emitter?: EventEmitter,
-  ) { }
+  ) {}
 
   destroy() {
     this.stopSync = true;
@@ -37,7 +37,7 @@ export class BlockStore implements ChainTracker {
         this.emitter?.emit("newChaintip", blocks[blocks.length - 1].height);
       } catch (e) {
         if (returnOnChaintip) {
-          throw e
+          throw e;
         }
         console.error(e);
       }
