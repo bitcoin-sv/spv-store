@@ -1,0 +1,17 @@
+{
+  "name": "ts-casemod-spv",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@bsv/sdk": "^1.1.14",
+    "@tempfix/idb": "^8.0.3",
+    "events": "^3.3.0",
+    "indexeddb": "^0.0.0"
+  }
+}
