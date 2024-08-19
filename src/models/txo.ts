@@ -1,9 +1,9 @@
-import { Block } from './block';
-import { IndexData } from './index-data';
-import type { Indexer } from './indexer';
-import { Outpoint } from './outpoint';
-import { Spend } from './spend';
-import { Buffer } from 'buffer';
+import { Utils } from "@bsv/sdk";
+import { Block } from "./block";
+import { IndexData } from "./index-data";
+import type { Indexer } from "./indexer";
+import { Outpoint } from "./outpoint";
+import { Spend } from "./spend";
 
 export enum TxoStatus {
   TRUSTED = 0,
@@ -27,11 +27,13 @@ export class Txo {
 
   toObject(): any {
     this.events = [];
-    const sort = this.block.height.toString(16).padStart(8, '0');
+    const sort = this.block.height.toString(16).padStart(8, "0");
     if (!this.spend && this.status !== TxoStatus.DEPENDENCY) {
       for (const [tag, data] of Object.entries(this.data)) {
         for (const e of data.events) {
-          this.events.push(`${tag}:${e.id}:${e.value}:${sort}:${this.block?.idx}:${this.outpoint.vout}:${this.satoshis}`);
+          this.events.push(
+            `${tag}:${e.id}:${e.value}:${sort}:${this.block?.idx}:${this.outpoint.vout}:${this.satoshis}`,
+          );
         }
       }
     }
@@ -39,14 +41,25 @@ export class Txo {
   }
 
   static fromObject(obj: any, indexers: Indexer[] = []): Txo {
-    const txo = new Txo(new Outpoint(obj.txid, obj.vout), obj.satoshis, obj.script, obj.status);
-    txo.block = obj.block && new Block(obj.block.height, obj.block.idx, obj.block.hash);
+    const txo = new Txo(
+      new Outpoint(obj.txid, obj.vout),
+      obj.satoshis,
+      obj.script,
+      obj.status,
+    );
+    txo.block =
+      obj.block && new Block(obj.block.height, obj.block.idx, obj.block.hash);
     txo.spend =
       obj.spend &&
       new Spend(
         obj.spend.txid,
         obj.spend.vin,
-        obj.spend.block && new Block(obj.spend.block.height, obj.spend.block.idx, obj.spend.block.hash),
+        obj.spend.block &&
+          new Block(
+            obj.spend.block.height,
+            obj.spend.block.idx,
+            obj.spend.block.hash,
+          ),
       );
     txo.owner = obj.owner;
     for (const idx of indexers) {
@@ -62,12 +75,15 @@ export class Txo {
   toJSON() {
     return {
       ...this,
-      script: Buffer.from(this.script).toString('base64'),
+      script: Utils.toBase64(this.script),
       satoshis: this.satoshis.toString(),
-      data: Object.entries(this.data).reduce((acc: { [tag: string]: any }, [tag, data]) => {
-        acc[tag] = data.data;
-        return acc;
-      }, {}),
+      data: Object.entries(this.data).reduce(
+        (acc: { [tag: string]: any }, [tag, data]) => {
+          acc[tag] = data.data;
+          return acc;
+        },
+        {},
+      ),
     };
   }
 }

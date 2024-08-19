@@ -1,4 +1,4 @@
-import { OP, Utils, type Script } from '@bsv/sdk';
+import { OP, Utils, type Script } from "@bsv/sdk";
 
 export function parseAddress(script: Script, offset = 0): string {
   if (
@@ -10,5 +10,5 @@ export function parseAddress(script: Script, offset = 0): string {
   ) {
     return Utils.toBase58Check(script.chunks[2 + offset].data!, [0]);
   }
-  return '';
+  return "";
 }

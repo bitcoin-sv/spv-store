@@ -1,17 +1,21 @@
-import type { IndexContext } from '../models/index-context';
-import { Indexer } from '../models/indexer';
-import { IndexData } from '../models/index-data';
-import { parseAddress } from '../models/address';
-import { Txo, TxoStatus } from '../models/txo';
-import { Ordinal } from 'yours-wallet-provider';
-import { P2PKH, Utils } from '@bsv/sdk';
-import { Event } from '../models/event';
-import { TxoStore } from '../txo-store/txo-store';
-import { Ingest } from '../models/ingest';
-import { Block } from '../blocks/block';
+import type { IndexContext } from "../models/index-context";
+import { parseAddress } from "../models/address";
+import { P2PKH, Utils } from "@bsv/sdk";
+import { TxoStore } from "../stores/txo-store";
+import {
+  Block,
+  type Event,
+  Indexer,
+  IndexData,
+  Ingest,
+  Txo,
+  TxoStatus,
+  Outpoint,
+} from "../models";
+import type { Ordinal } from "./remote-types";
 
 export class FundIndexer extends Indexer {
-  tag = 'fund';
+  tag = "fund";
 
   parse(ctx: IndexContext, vout: number): IndexData | undefined {
     const txo = ctx.txos[vout];
@@ -21,13 +25,12 @@ export class FundIndexer extends Indexer {
     const events: Event[] = [];
     if (address && this.owners.has(address)) {
       txo.owner = address;
-      events.push({ id: 'address', value: address });
+      events.push({ id: "address", value: address });
     }
     return new IndexData(address, [], events);
   }
   async sync(txoStore: TxoStore): Promise<number> {
     const limit = 10000;
-    const txoDb = await txoStore.txoDb;
     let lastHeight = 0;
     for await (const owner of this.owners) {
       let offset = 0;
@@ -38,18 +41,22 @@ export class FundIndexer extends Indexer {
         );
         utxos = await resp.json();
         const ingests = utxos.map(
-          (u) => new Ingest(u.txid, u.height, u.idx || 0, false, true, this.syncMode == TxoStatus.TRUSTED),
+          (u) =>
+            new Ingest(
+              u.txid,
+              u.height,
+              u.idx || 0,
+              false,
+              true,
+              this.syncMode == TxoStatus.TRUSTED,
+            ),
         );
         await txoStore.queue(ingests);
 
-        const t = txoDb.transaction('txos', 'readwrite');
-        for (const u of utxos) {
-          if (u.satoshis <= 1) {
-            continue;
-          }
+        const txos = utxos.map((u) => {
+          if (u.satoshis <= 1) return;
           const txo = new Txo(
-            u.txid,
-            u.vout,
+            new Outpoint(u.outpoint),
             BigInt(u.satoshis),
             new P2PKH().lock(Utils.fromBase58Check(owner).data).toBinary(),
             TxoStatus.TRUSTED,
@@ -58,11 +65,15 @@ export class FundIndexer extends Indexer {
           if (u.height) {
             txo.block = new Block(u.height, BigInt(u.idx || 0));
           }
-          txo.data[this.tag] = new IndexData(owner, [], [{ id: 'address', value: owner }]);
-          await t.store.put(txo.toObject());
+          txo.data[this.tag] = new IndexData(
+            owner,
+            [],
+            [{ id: "address", value: owner }],
+          );
           lastHeight = Math.max(lastHeight, u.height || 0);
-        }
-        await t.done;
+          return txo.toObject();
+        });
+        await txoStore.storage.putMany(txos.filter((t) => t) as Txo[]);
         offset += limit;
       } while (utxos.length == 100);
     }

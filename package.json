@@ -1,17 +1,42 @@
 {
   "name": "ts-casemod-spv",
-  "module": "index.ts",
+  "author": "David Case",
+  "license": "MIT",
+  "version": "0.0.1",
   "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
+  "types": "dist/index.d.ts",
+  "main": "dist/index.cjs",
+  "module": "dist/index.module.js",
+  "unpkg": "dist/index.umd.js",
+  "source": "src/index.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.modern.js"
+    }
   },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "bun run clean && microbundle --globals @bsv/sdk=bsv",
+    "clean": "rimraf -rf dist",
+    "format": "prettier --write .",
+    "test": "jest"
   },
   "dependencies": {
-    "@bsv/sdk": "^1.1.14",
+    "@bsv/sdk": "^1.1.12",
     "@tempfix/idb": "^8.0.3",
+    "buffer": "^6.0.3",
     "events": "^3.3.0",
-    "indexeddb": "^0.0.0"
+    "microbundle": "^0.15.1",
+    "prettier": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "rimraf": "^5.0.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
   }
 }

@@ -1,14 +1,14 @@
 /* eslint-disable no-case-declarations */
-import { BSV20Txo, Bsv21 as Bsv21Type } from 'yours-wallet-provider';
-import type { IndexContext } from '../models/index-context';
-import { IndexData } from '../models/index-data';
-import { Indexer } from '../models/indexer';
-import { Txo, TxoStatus } from '../models/txo';
-import { Ord } from './ord';
-import { Utils } from '@bsv/sdk';
-import { TxoStore } from '../txo-store/txo-store';
-import { Block } from '../blocks/block';
-import { Ingest } from '../models/ingest';
+import type { IndexContext } from "../models/index-context";
+import { IndexData } from "../models/index-data";
+import { Indexer } from "../models/indexer";
+import { Txo, TxoStatus } from "../models/txo";
+import { Ord } from "./ord";
+import { Utils } from "@bsv/sdk";
+import { TxoStore } from "../stores/txo-store";
+import { Ingest } from "../models/ingest";
+import { Block, Outpoint } from "../models";
+import type { RemoteBsv20 } from "./remote-types";
 
 export enum Bsv21Status {
   Invalid = -1,
@@ -18,8 +18,8 @@ export enum Bsv21Status {
 
 export class Bsv21 {
   status = Bsv21Status.Pending;
-  public id = '';
-  public op = '';
+  public id: Outpoint;
+  public op = "";
   public amt = 0n;
   public dec = 0;
   public sym?: string;
@@ -27,6 +27,11 @@ export class Bsv21 {
   public supply?: bigint;
   public contract?: string;
   public reason?: string;
+
+  constructor(props: Bsv21) {
+    this.id = props.id || "";
+    Object.assign(this, props);
+  }
 
   toJSON(): any {
     return {
@@ -36,8 +41,8 @@ export class Bsv21 {
   }
 
   static fromJSON(obj: any): Bsv21 {
-    const bsv21 = new Bsv21();
-    Object.assign(bsv21, {
+    const bsv21 = new Bsv21({
+      id: new Outpoint(obj.id as string),
       ...obj,
       amt: BigInt(obj.amt),
     });
@@ -46,14 +51,14 @@ export class Bsv21 {
 }
 
 export class Bsv21Indexer extends Indexer {
-  tag = 'bsv21';
+  tag = "bsv21";
 
   parse(ctx: IndexContext, vout: number): IndexData | undefined {
     const txo = ctx.txos[vout];
     const ordIdxData = txo.data.ord as IndexData | undefined;
     if (!ordIdxData) return;
     const ord = ordIdxData.data as Ord;
-    if (!ord || ord.insc?.file.type !== 'application/bsv-20') return;
+    if (!ord || ord.insc?.file.type !== "application/bsv-20") return;
     let bsv21: Bsv21;
     try {
       bsv21 = Bsv21.fromJSON(JSON.parse(ord.insc!.file.text!));
@@ -63,14 +68,14 @@ export class Bsv21Indexer extends Indexer {
     const data = new IndexData(bsv21);
     if (bsv21.amt <= 0n || bsv21.amt > 2 ** 64 - 1) return;
     switch (bsv21.op) {
-      case 'deploy+mint':
+      case "deploy+mint":
         if (bsv21.dec > 18) return;
-        bsv21.id = `${txo.txid}_${txo.vout}`;
+        bsv21.id = txo.outpoint;
         bsv21.supply = bsv21.amt;
         bsv21.status = Bsv21Status.Valid;
         break;
-      case 'transfer':
-      case 'burn':
+      case "transfer":
+      case "burn":
         break;
       default:
         return;
@@ -79,10 +84,10 @@ export class Bsv21Indexer extends Indexer {
       return;
     }
     if (txo.owner && this.owners.has(txo.owner)) {
-      data.events.push({ id: 'address', value: txo.owner });
-      data.events.push({ id: 'id', value: bsv21.id });
+      data.events.push({ id: "address", value: txo.owner });
+      data.events.push({ id: "id", value: bsv21.id.toString() });
       if (bsv21.contract) {
-        data.events.push({ id: 'contract', value: bsv21.contract });
+        data.events.push({ id: "contract", value: bsv21.contract });
       }
     }
 
@@ -100,21 +105,22 @@ export class Bsv21Indexer extends Indexer {
           tokensIn[bsv21.data.id] = [];
         }
         tokensIn[bsv21.data.id].push(spend);
-        balance[bsv21.data!.id] = (balance[bsv21.data!.id] || 0n) + bsv21.data.amt;
+        balance[bsv21.data!.id] =
+          (balance[bsv21.data!.id] || 0n) + bsv21.data.amt;
       }
     }
     const tokensOut: { [id: string]: Txo[] } = {};
     const reasons: { [id: string]: string } = {};
     for (const txo of ctx.txos) {
       const bsv21 = txo.data?.bsv21;
-      if (!bsv21 || !['transfer', 'burn'].includes(bsv21.data.op)) continue;
+      if (!bsv21 || !["transfer", "burn"].includes(bsv21.data.op)) continue;
       let token: Bsv21 | undefined;
       for (const spend of tokensIn[bsv21.data.id] || []) {
         token = spend.data.bsv21.data;
-        bsv21.deps.push(`${spend.txid}_${spend.vout}`);
+        bsv21.deps.push(spend.outpoint.toString());
       }
       if ((balance[bsv21.data.id] || 0n) < bsv21.data.amt) {
-        reasons[bsv21.data.id] = 'Insufficient inputs';
+        reasons[bsv21.data.id] = "Insufficient inputs";
       }
 
       if (token) {
@@ -128,13 +134,16 @@ export class Bsv21Indexer extends Indexer {
         tokensOut[bsv21.data.id] = [];
       }
       tokensOut[bsv21.data.id].push(txo);
-      balance[bsv21.data.id] = (balance[bsv21.data.id] || 0n) - BigInt(bsv21.data.amt);
+      balance[bsv21.data.id] =
+        (balance[bsv21.data.id] || 0n) - BigInt(bsv21.data.amt);
     }
 
     for (const [id, txos] of Object.entries(tokensOut)) {
       const reason = reasons[id];
       for (const txo of txos) {
-        txo.data.bsv21.data.status = reason ? Bsv21Status.Invalid : Bsv21Status.Valid;
+        txo.data.bsv21.data.status = reason
+          ? Bsv21Status.Invalid
+          : Bsv21Status.Valid;
         txo.data.bsv21.data.reason = reason;
       }
     }
@@ -146,47 +155,54 @@ export class Bsv21Indexer extends Indexer {
 
   async sync(txoStore: TxoStore): Promise<number> {
     const limit = 100;
-    const txoDb = await txoStore.txoDb;
     let lastHeight = 0;
     for await (const owner of this.owners) {
-      let resp = await fetch(`https://ordinals.gorillapool.io/api/bsv20/${owner}/balance`);
-      const balance = (await resp.json()) as Bsv21Type[];
+      let resp = await fetch(
+        `https://ordinals.gorillapool.io/api/bsv20/${owner}/balance`,
+      );
+      const balance = (await resp.json()) as RemoteBsv20[];
       for await (const token of balance) {
         if (!token.id) continue;
-        console.log('importing', token.id);
+        console.log("importing", token.id);
         if (this.syncMode !== TxoStatus.TRUSTED) {
-          resp = await fetch(`https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}/ancestors`);
+          resp = await fetch(
+            `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}/ancestors`,
+          );
           const txids = (await resp.json()) as { [score: string]: string };
           const txns = Object.entries(txids).map(([score, txid]) => {
-            const [height, idx] = score.split('.').map(Number);
+            const [height, idx] = score.split(".").map(Number);
             return new Ingest(txid, height, idx || 0, true);
           });
           await txoStore.queue(txns);
         }
         // try {
         let offset = 0;
-        let utxos: BSV20Txo[] = [];
+        let utxos: RemoteBsv20[] = [];
         do {
-          // let deps: { [txid: string]: string[] } = {};
-          // if (this.syncMode !== TxoStatus.TRUSTED) {
-          //   resp = await fetch(
-          //     `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}/deps?limit=${limit}&offset=${offset}`,
-          //   );
-          //   deps = await resp.json();
-          // }
-
           resp = await fetch(
             `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}?limit=${limit}&offset=${offset}&includePending=true`,
           );
-          utxos = (await resp.json()) as BSV20Txo[];
+          utxos = (await resp.json()) as RemoteBsv20[];
           const ingests = utxos.map(
-            (u) => new Ingest(u.txid, u.height, u.idx || 0, false, true, this.syncMode === TxoStatus.TRUSTED),
+            (u) =>
+              new Ingest(
+                u.txid,
+                u.height,
+                u.idx || 0,
+                false,
+                true,
+                this.syncMode === TxoStatus.TRUSTED,
+              ),
           );
           await txoStore.queue(ingests);
 
-          const t = txoDb.transaction('txos', 'readwrite');
-          for (const u of utxos) {
-            const txo = new Txo(u.txid, u.vout, 1n, Utils.toArray(u.script, 'base64'), TxoStatus.TRUSTED);
+          const txos = utxos.map((u) => {
+            const txo = new Txo(
+              new Outpoint(u.txid, u.vout),
+              1n,
+              Utils.toArray(u.script, "base64"),
+              TxoStatus.TRUSTED,
+            );
             if (u.height) {
               txo.block = new Block(u.height, BigInt(u.idx || 0));
             }
@@ -202,24 +218,29 @@ export class Bsv21Indexer extends Indexer {
               }),
               undefined, //deps[u.txid] || [],
               [
-                { id: 'address', value: owner },
-                { id: 'id', value: token.id },
+                { id: "address", value: owner },
+                { id: "id", value: token.id!.toString() },
               ],
             );
             if (u.listing && u.payout && u.price) {
               txo.data.list = new IndexData(
                 {
-                  payout: Utils.toArray(u.payout, 'base64'),
+                  payout: Utils.toArray(u.payout, "base64"),
                   price: BigInt(u.price),
                 },
                 undefined,
-                [{ id: 'price', value: BigInt(u.price).toString(16).padStart(16, '0') }],
+                [
+                  {
+                    id: "price",
+                    value: BigInt(u.price).toString(16).padStart(16, "0"),
+                  },
+                ],
               );
             }
-            t.store.put(txo.toObject());
             lastHeight = Math.max(lastHeight, u.height || 0);
-          }
-          await t.done;
+            return txo.toObject();
+          });
+          await txoStore.storage.putMany(txos);
           offset += limit;
         } while (utxos.length == limit);
       }

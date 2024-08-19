@@ -1,4 +1,4 @@
-import { Transaction } from '@bsv/sdk';
+import { Transaction } from "@bsv/sdk";
 
 export interface TxnService {
   fetch(txid: string): Promise<Transaction>;

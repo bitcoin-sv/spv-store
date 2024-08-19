@@ -1,4 +1,4 @@
-import { Block } from "../../block-store/block";
+import { Block } from "./block";
 
 export class Spend {
   constructor(

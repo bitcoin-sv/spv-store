@@ -1,17 +1,17 @@
-import { Utils } from '@bsv/sdk';
+import { Utils } from "@bsv/sdk";
 export class Outpoint {
   txid: string;
   vout: number;
 
   constructor(txidOrOutpoint: string | number[], vout?: number) {
-    if(typeof txidOrOutpoint == 'string') {
+    if (typeof txidOrOutpoint == "string") {
       if (vout !== undefined) {
         this.txid = txidOrOutpoint;
         this.vout = vout;
       } else {
-        const [txid, vout] = txidOrOutpoint.split('_');
+        const [txid, vout] = txidOrOutpoint.split("_");
         this.txid = txid;
-        this.vout = parseInt(vout)    
+        this.vout = parseInt(vout);
       }
       return;
     } else if (vout !== undefined) {
@@ -22,7 +22,7 @@ export class Outpoint {
       const reader = new Utils.Reader(txidOrOutpoint);
       this.txid = Utils.toHex(reader.read(32).reverse());
       this.vout = reader.readInt32LE();
-    }    
+    }
   }
 
   toString(): string {
@@ -31,7 +31,7 @@ export class Outpoint {
 
   toBinary(): number[] {
     const writer = new Utils.Writer();
-    writer.write(Utils.toArray(this.txid, 'hex').reverse());
+    writer.write(Utils.toArray(this.txid, "hex").reverse());
     writer.writeUInt32LE(this.vout);
     return writer.toArray();
   }

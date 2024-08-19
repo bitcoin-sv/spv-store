@@ -1,11 +1,11 @@
-import { Network } from 'yours-wallet-provider';
-import type { IndexContext } from './index-context';
-import { IndexData } from './index-data';
-import { TxoStatus } from './txo';
-import { TxoStore } from '../txo-store';
+import { Network } from "yours-wallet-provider";
+import type { IndexContext } from "./index-context";
+import { IndexData } from "./index-data";
+import { TxoStatus } from "./txo";
+import { TxoStore } from "../txo-store";
 
 export abstract class Indexer {
-  tag = '';
+  tag = "";
 
   constructor(
     public owners = new Set<string>(),
@@ -22,12 +22,12 @@ export abstract class Indexer {
   }
 
   static parseEvent(event: string) {
-    const [tag, id, value, spent, sort, idx, vout, satoshis] = event.split(':');
+    const [tag, id, value, spent, sort, idx, vout, satoshis] = event.split(":");
     return {
       tag,
       id,
       value,
-      spent: spent === '1',
+      spent: spent === "1",
       sort: parseInt(sort, 16),
       idx: parseInt(idx),
       vout: parseInt(vout),

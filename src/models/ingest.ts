@@ -15,7 +15,7 @@ export class Ingest {
     public checkSpends = false,
     public downloadOnly = false,
   ) {
-    if (typeof idx == 'string') {
+    if (typeof idx == "string") {
       this.idx = parseInt(idx);
     }
   }

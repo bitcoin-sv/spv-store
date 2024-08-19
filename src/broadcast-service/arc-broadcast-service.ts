@@ -1,13 +1,24 @@
-import { type BroadcastFailure, type BroadcastResponse, Transaction, Utils } from '@bsv/sdk';
-import { type BroadcastService, BroadcastStatus, type BroadcastStatusResponse } from './broadcast-service';
+import {
+  type BroadcastFailure,
+  type BroadcastResponse,
+  Transaction,
+  Utils,
+} from "@bsv/sdk";
+import {
+  type BroadcastService,
+  BroadcastStatus,
+  type BroadcastStatusResponse,
+} from "./broadcast-service";
 
 export class ArcSatBroadcastService implements BroadcastService {
   constructor(
     public baseUrl: string,
     public apiKey?: string,
   ) {}
-  async broadcast(tx: Transaction): Promise<BroadcastResponse | BroadcastFailure> {
-    console.log('Broadcasting', tx.id('hex'), tx.toHex());
+  async broadcast(
+    tx: Transaction,
+  ): Promise<BroadcastResponse | BroadcastFailure> {
+    console.log("Broadcasting", tx.id("hex"), tx.toHex());
     let txBuf: Buffer | undefined;
     try {
       txBuf = Buffer.from(tx.toEF());
@@ -15,24 +26,24 @@ export class ArcSatBroadcastService implements BroadcastService {
       txBuf = Buffer.from(tx.toBinary());
     }
     const resp = await fetch(`${this.baseUrl}/v1/tx`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/octet-stream',
+        "Content-Type": "application/octet-stream",
       },
       body: Buffer.from(txBuf),
     });
     const body = await resp.json();
     if (resp.status !== 200) {
       return {
-        status: 'error',
+        status: "error",
         code: resp.status.toString(),
         description: `${body.detail}`,
       } as BroadcastFailure;
     }
     return {
-      status: 'success',
+      status: "success",
       txid: body,
-      message: 'Transaction broadcast successfully',
+      message: "Transaction broadcast successfully",
     } as BroadcastResponse;
   }
 
@@ -43,12 +54,12 @@ export class ArcSatBroadcastService implements BroadcastService {
     }
     const body = await resp.json();
     switch (body.status) {
-      case 'MINED':
+      case "MINED":
         return {
           status: BroadcastStatus.CONFIRMED,
-          proof: Utils.toArray(body.merkleProof, 'hex'),
+          proof: Utils.toArray(body.merkleProof, "hex"),
         };
-      case 'REJECTED':
+      case "REJECTED":
         return {
           status: BroadcastStatus.REJECTED,
           message: body.detail,
@@ -61,10 +72,10 @@ export class ArcSatBroadcastService implements BroadcastService {
   }
 
   async fetch(txid: string): Promise<Transaction> {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 
   async batchFetch(txids: string[]): Promise<Transaction[]> {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 }
