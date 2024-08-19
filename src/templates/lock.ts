@@ -20,7 +20,7 @@ export const lockSuffix =
  *
  * This class provides methods for interacting with OrdinalLock contract
  */
-export default class LockTemplate {
+export class LockTemplate {
   /**
    * Creates a Lock script
    *

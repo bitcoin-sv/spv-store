@@ -4,18 +4,15 @@
   "license": "MIT",
   "version": "0.0.1",
   "type": "module",
+  "source": "src/index.ts",
+  "exports": {
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.modern.js"
+  },
   "types": "dist/index.d.ts",
   "main": "dist/index.cjs",
   "module": "dist/index.module.js",
   "unpkg": "dist/index.umd.js",
-  "source": "src/index.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.modern.js"
-    }
-  },
   "files": [
     "dist"
   ],
@@ -26,12 +23,14 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bsv/sdk": "^1.1.12",
     "@tempfix/idb": "^8.0.3",
     "buffer": "^6.0.3",
-    "events": "^3.3.0",
     "microbundle": "^0.15.1",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "rollup-plugin-polyfill-node": "github:FredKSchott/rollup-plugin-polyfill-node"
+  },
+  "peerDependencies": {
+    "@bsv/sdk": "^1.1.12"
   },
   "devDependencies": {
     "@types/bun": "latest",

@@ -4,7 +4,6 @@ import {
   Transaction,
   Utils,
 } from "@bsv/sdk";
-import EventEmitter from "events";
 import {
   type BlockHeaderService,
   type BroadcastService,
@@ -23,14 +22,11 @@ const APIS = {
   testnet: "https://testnet.ordinals.gorillapool.io",
 };
 
-export class OneSatService
-  extends EventEmitter
+export class OneSatProvider
   implements BroadcastService, TxnService, BlockHeaderService, InventoryService
 {
   private interval: NodeJS.Timeout | undefined;
-  public constructor(public network: Network) {
-    super();
-  }
+  public constructor(public network: Network) {}
 
   async broadcast(
     tx: Transaction,
@@ -43,7 +39,7 @@ export class OneSatService
       },
       body: Uint8Array.from(tx.toBinary()),
     });
-    const body = await resp.json();
+    const body = await resp.json() as string | { message: string };
     if (resp.status !== 200) {
       return {
         status: "error",

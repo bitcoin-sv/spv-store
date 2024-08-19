@@ -1,4 +1,3 @@
-import EventEmitter from "events";
 import type { TxnStorage } from "../storage/txn-storage";
 import {
   isBroadcastResponse,
@@ -7,6 +6,7 @@ import {
   type Transaction,
 } from "@bsv/sdk";
 import type { Services, Stores } from "../case-mod-spv";
+import type { EventEmitter } from "../lib/event-emitter";
 
 export enum TxnStatus {
   REJECTED = -1,

@@ -4,7 +4,6 @@ import {
   type BroadcastResponse,
   type Transaction,
 } from "@bsv/sdk";
-import EventEmitter from "events";
 import type { TxoLookup, TxoResults } from "./models/search";
 import type {
   BlockHeaderService,
@@ -14,6 +13,8 @@ import type {
   TxnService,
 } from "./services";
 import type { BlockStore, TxnStore, TxoStore } from "./stores";
+import type { BlockHeader, Outpoint, Txo } from "./models";
+import { EventEmitter } from "./lib/event-emitter";
 
 export type Network = "mainnet" | "testnet";
 
@@ -31,7 +32,7 @@ export interface Stores {
   txos?: TxoStore;
 }
 
-export class CaseModSPV extends EventEmitter {
+export class CaseModSPV {
   private interval: Timer | undefined;
   private syncInProgress = false;
   constructor(
@@ -40,14 +41,13 @@ export class CaseModSPV extends EventEmitter {
     public events = new EventEmitter(),
     startSync = false,
   ) {
-    super();
     if (startSync) this.sync();
   }
 
   async destroy(): Promise<void> {
     if (this.interval) clearInterval(this.interval);
     Object.values(this.stores).forEach((store) => store.destroy());
-    this.removeAllListeners();
+    this.events.removeAllListeners();
   }
 
   async broadcast(
@@ -85,5 +85,21 @@ export class CaseModSPV extends EventEmitter {
     from?: string,
   ): Promise<TxoResults> {
     return this.stores.txos!.storage.search(lookup, limit, from);
+  }
+
+  async getTxo(outpoint: Outpoint): Promise<Txo | undefined> {
+    return this.stores.txos!.storage.get(outpoint);
+  }
+
+  async getTx(txid: string, fromRemote = false): Promise<Transaction | undefined> {
+    return this.stores.txns!.loadTx(txid, fromRemote);
+  }
+
+  async getSyncedBlock(): Promise<BlockHeader | undefined> {
+    return this.stores.blocks!.storage.getSynced();
+  }
+
+  async getChaintip(): Promise<BlockHeader | undefined> {
+    return this.services.blocks!.getChaintip();
   }
 }

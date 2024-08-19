@@ -2,7 +2,7 @@ import type { IndexContext } from "../models/index-context";
 import { Indexer } from "../models/indexer";
 import { IndexData } from "../models/index-data";
 import { Script, Utils } from "@bsv/sdk";
-import LockTemplate, { lockPrefix, lockSuffix } from "../template/lock";
+import { LockTemplate, lockPrefix, lockSuffix } from "../templates/lock";
 import { Txo, TxoStatus } from "../models/txo";
 import type { Event } from "../models/event";
 import { TxoStore } from "../stores/txo-store";

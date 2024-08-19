@@ -4,13 +4,10 @@ import {
   Transaction,
   Utils,
 } from "@bsv/sdk";
-import {
-  type BroadcastService,
-  BroadcastStatus,
-  type BroadcastStatusResponse,
-} from "./broadcast-service";
+import { BroadcastStatus, type BroadcastService, type BroadcastStatusResponse } from "../services";
 
-export class ArcSatBroadcastService implements BroadcastService {
+
+export class ArcSatBroadcastProvider implements BroadcastService {
   constructor(
     public baseUrl: string,
     public apiKey?: string,
@@ -32,19 +29,7 @@ export class ArcSatBroadcastService implements BroadcastService {
       },
       body: Buffer.from(txBuf),
     });
-    const body = await resp.json();
-    if (resp.status !== 200) {
-      return {
-        status: "error",
-        code: resp.status.toString(),
-        description: `${body.detail}`,
-      } as BroadcastFailure;
-    }
-    return {
-      status: "success",
-      txid: body,
-      message: "Transaction broadcast successfully",
-    } as BroadcastResponse;
+    return resp.json();
   }
 
   async status(txid: string): Promise<BroadcastStatusResponse | undefined> {

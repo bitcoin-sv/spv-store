@@ -78,7 +78,7 @@ export class TxoStorageIDB implements TxoStorage {
     return new TxoStorageIDB(db, indexers);
   }
 
-  async destroy(): Promise<void> {
+  destroy() {
     this.db.close();
   }
 

@@ -7,14 +7,13 @@ import { Ingest, IngestStatus } from "../models/ingest";
 import { Block } from "../models/block";
 import type { TxoStorage } from "../storage/txo-storage";
 import { Outpoint } from "../models/outpoint";
-import EventEmitter from "events";
 import type { TxLog } from "../services/inv-service";
 import type { Services, Stores } from "../case-mod-spv";
+import type { EventEmitter } from "../lib/event-emitter";
 
 export class TxoStore {
   queueLength = 0;
-  private destroyed = false;
-  private interval?: NodeJS.Timeout;
+  private stopSync = false;
   constructor(
     public storage: TxoStorage,
     public services: Services,
@@ -24,10 +23,9 @@ export class TxoStore {
     public events?: EventEmitter,
   ) {}
 
-  async destroy() {
-    this.destroyed = true;
-    if (this.interval) clearInterval(this.interval);
+   destroy() {
     this.storage.destroy();
+    this.stopSync = true;
   }
 
   private async updateSpends(outpoints: Outpoint[]) {
@@ -197,7 +195,7 @@ export class TxoStore {
       console.error("Failed to ingest txs", e);
       await new Promise((r) => setTimeout(r, 1000));
     }
-    if (this.destroyed) {
+    if (this.stopSync) {
       return;
     }
     this.processDownloads();
@@ -226,7 +224,7 @@ export class TxoStore {
     } else {
       await new Promise((r) => setTimeout(r, 1000));
     }
-    if (this.destroyed) {
+    if (this.stopSync) {
       return;
     }
     this.processIngests();
