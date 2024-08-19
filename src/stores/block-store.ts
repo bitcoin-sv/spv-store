@@ -4,7 +4,7 @@ import type { Services } from "../case-mod-spv";
 import type { EventEmitter } from "../lib/event-emitter";
 import type { BlockHeader } from "../models";
 
-const PAGE_SIZE = 100000;
+const PAGE_SIZE = 10000;
 
 export class BlockStore implements ChainTracker {
   private syncInProgress = false;
@@ -28,20 +28,29 @@ export class BlockStore implements ChainTracker {
     if (syncedBlock) {
       lastHeight = syncedBlock.height > 5 ? syncedBlock.height - 5 : 1;
     }
-    let blocks: BlockHeader[] = [];
-    do {
+    while (!this.stopSync) {
       try {
-        blocks = await this.services.blocks.getBlocks(lastHeight, PAGE_SIZE);
-        console.log("Syncing from", lastHeight);
+        let blocks = await this.services.blocks.getBlocks(
+          lastHeight,
+          PAGE_SIZE,
+        );
+        console.log(
+          `Syncing ${PAGE_SIZE} blocks from ${lastHeight}: ${blocks.length} received`,
+        );
         await this.storage.putMany(blocks);
-        this.emitter?.emit("newChaintip", blocks[blocks.length - 1].height);
+        if (blocks.length == 0) break;
+        const lastBlock = blocks[blocks.length - 1];
+        this.emitter?.emit("newChaintip", lastBlock.height);
+        if (blocks.length < PAGE_SIZE) break;
+        lastHeight = lastBlock.height + 1;
       } catch (e) {
         if (returnOnChaintip) {
           throw e;
         }
         console.error(e);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
-    } while (blocks.length == PAGE_SIZE && !this.stopSync);
+    }
     this.syncInProgress = false;
     if (returnOnChaintip || this.stopSync) {
       return;

@@ -2,7 +2,7 @@ import type { Txo } from "./txo";
 
 export class TxoLookup {
   constructor(
-    public indexer: string,
+    public tag: string,
     // public spent = false,
     public id?: string,
     public value?: string,
@@ -10,7 +10,7 @@ export class TxoLookup {
   ) {}
 
   toQueryKey(): string {
-    return TxoLookup.buildQueryKey(this.indexer, this.id, this.value);
+    return TxoLookup.buildQueryKey(this.tag, this.id, this.value);
   }
 
   static buildQueryKey(tag: string, id?: string, value?: string): string {

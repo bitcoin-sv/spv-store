@@ -18,6 +18,7 @@ export interface TxoSchema extends DBSchema {
     indexes: {
       events: string;
       spends: string;
+      tags: string;
       // owner: string;
     };
   };
@@ -64,6 +65,7 @@ export class TxoStorageIDB implements TxoStorage {
           });
           txos.createIndex("events", "events", { multiEntry: true });
           txos.createIndex("spends", "spend.txid", { multiEntry: true });
+          txos.createIndex("tags", "tags", { multiEntry: true });
           const ingestQueue = db.createObjectStore("ingestQueue", {
             keyPath: "txid",
           });
@@ -100,12 +102,12 @@ export class TxoStorageIDB implements TxoStorage {
   }
 
   async put(txo: Txo): Promise<void> {
-    await this.db.put("txos", txo.toObject());
+    await this.db.put("txos", txo);
   }
 
   async putMany(txos: Txo[]): Promise<void> {
     const t = this.db.transaction("txos", "readwrite");
-    await Promise.all(txos.map((txo) => t.store.put(txo.toObject())));
+    await Promise.all(txos.map((txo) => t.store.put(txo)));
     await t.done;
   }
 
@@ -129,12 +131,11 @@ export class TxoStorageIDB implements TxoStorage {
       true,
       false,
     );
+    const indexName = lookup.id ? "events" : "tags";
     const results: TxoResults = { txos: [] };
-    for await (const cursor of this.db
-      .transaction("txos")
-      .store.index("events")
-      .iterate(query)) {
-      const txo = Txo.fromObject(cursor.value, []);
+    const index = this.db.transaction("txos").store.index(indexName)
+    for await (const cursor of index.iterate(query)) {
+      const txo = cursor.value;
       results.nextPage = cursor.key;
       if (lookup.owner && txo.owner != lookup.owner) continue;
       results.txos.push(txo);
@@ -181,6 +182,10 @@ export class TxoStorageIDB implements TxoStorage {
     return ingests;
   }
 
+  async putIngest(ingest: Ingest): Promise<void> {
+    await this.db.put("ingestQueue", ingest);
+  }
+  
   async putIngests(ingests: Ingest[]): Promise<void> {
     const t = this.db.transaction("ingestQueue", "readwrite");
     for (const ingest of ingests) {

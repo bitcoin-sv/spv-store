@@ -10,9 +10,11 @@ import { Outpoint } from "../models/outpoint";
 import type { TxLog } from "../services/inv-service";
 import type { Services, Stores } from "../case-mod-spv";
 import type { EventEmitter } from "../lib/event-emitter";
+import type { TxoLookup, TxoResults } from "../models";
 
 export class TxoStore {
   queueLength = 0;
+  private syncInProgress = false;
   private stopSync = false;
   constructor(
     public storage: TxoStorage,
@@ -36,6 +38,13 @@ export class TxoStore {
     }
   }
 
+  public async search(lookup: TxoLookup, limit = 100, from?: string): Promise<TxoResults> {
+    const results = await this.storage.search(lookup, limit, from);
+    return {
+      txos: results.txos.map((t) => Txo.fromObject(t, this.indexers)),
+      nextPage: results.nextPage,
+    };
+  }
   async ingest(
     tx: Transaction,
     fromRemote = false,
@@ -90,34 +99,33 @@ export class TxoStore {
         ),
       )
     ).map((spend, vin) => {
-      if (!spend) {
+      if (spend) {
+        spend = Txo.fromObject(spend, this.indexers);
+      } else {
         const input = tx.inputs[vin];
         const spentOutput =
           input.sourceTransaction!.outputs[input.sourceOutputIndex];
-        spend =
-          Txo.fromObject(spend, this.indexers) ||
-          new Txo(
-            new Outpoint(
-              tx.inputs[vin].sourceTXID!,
-              tx.inputs[vin].sourceOutputIndex,
-            ),
-            BigInt(spentOutput.satoshis!),
-            spentOutput.lockingScript.toBinary(),
-            status,
-          );
+        spend = new Txo(
+          new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
+          BigInt(spentOutput.satoshis!),
+          spentOutput.lockingScript.toBinary(),
+          status,
+        );
       }
       spend.spend = new Spend(txid, vin, block);
-      return spend;
+      return spend.toObject();
     });
     await this.storage.putMany(ctx.spends);
 
-    ctx.txos = (
-      await this.storage.getMany(
-        tx.outputs.map((_, i) => new Outpoint(txid, i)),
-      )
-    ).map((txo, vout) => {
+    const txos = await this.storage.getMany(
+      tx.outputs.map((_, i) => new Outpoint(txid, i)),
+    );
+    for (let [vout, txo] of txos.entries()) {
       if (txo) {
         txo = Txo.fromObject(txo, this.indexers);
+        if(status > txo.status) {
+          txo.status = status;
+        }
       } else {
         txo = new Txo(
           new Outpoint(txid, vout),
@@ -129,7 +137,8 @@ export class TxoStore {
       txo.status = status;
       txo.block = block;
       txo.events = [];
-      this.indexers.forEach((i) => {
+      ctx.txos.push(txo);
+      for (const i of this.indexers) {
         try {
           const data = i.parse && i.parse(ctx, vout);
           if (data) {
@@ -138,9 +147,9 @@ export class TxoStore {
         } catch (e) {
           console.error("indexer error: continuing", i.tag, e);
         }
-      });
-      return Txo.fromObject(txo, this.indexers);
-    });
+      }
+      return txo.toObject();
+    }
 
     this.indexers.forEach((i) => i.preSave && i.preSave(ctx));
     await this.storage.putMany(ctx.txos);
@@ -164,16 +173,18 @@ export class TxoStore {
 
   async updateQueueStats() {
     const queueLength = await this.storage.getQueueLength();
-    this.events?.emit("queueStats", queueLength);
+    this.events?.emit("queueStats", {length: queueLength});
   }
   async queue(ingests: Ingest[]) {
     await this.storage.putIngests(ingests);
   }
 
   async processQueue() {
+    if (this.syncInProgress) return;
     await this.updateQueueStats();
     this.processDownloads();
     this.processIngests();
+    this.syncInProgress = true;
   }
 
   async processDownloads(returnOnDone = false) {
@@ -204,23 +215,28 @@ export class TxoStore {
   async processIngests() {
     const ingests = await this.storage.getIngests(IngestStatus.INGEST, 25);
     if (ingests.length) {
-      console.log("Ingesting", ingests.length, "txs");
-      for await (const ingest of ingests) {
-        const tx = await this.stores.txns!.loadTx(ingest.txid);
-        if (!tx) {
-          console.error("Failed to get tx", ingest.txid);
-          continue;
+      try {
+        console.log("Ingesting", ingests.length, "txs");
+        for await (const ingest of ingests) {
+          const tx = await this.stores.txns!.loadTx(ingest.txid);
+          if (!tx) {
+            console.error("Failed to get tx", ingest.txid);
+            continue;
+          }
+          await this.ingest(
+            tx,
+            true,
+            ingest.isDep ? TxoStatus.DEPENDENCY : TxoStatus.CONFIRMED,
+            ingest.checkSpends,
+          );
+          ingest.status = IngestStatus.CONFIRMED;
+          await this.storage.putIngest(ingest);
+          await this.updateQueueStats();
         }
-        await this.ingest(
-          tx,
-          true,
-          ingest.isDep ? TxoStatus.DEPENDENCY : TxoStatus.CONFIRMED,
-          ingest.checkSpends,
-        );
-        ingest.status = IngestStatus.CONFIRMED;
+      } catch (e) {
+        console.error("Failed to ingest txs", e);
+        await new Promise((r) => setTimeout(r, 1000));
       }
-      await this.storage.putIngests(ingests);
-      await this.updateQueueStats();
     } else {
       await new Promise((r) => setTimeout(r, 1000));
     }

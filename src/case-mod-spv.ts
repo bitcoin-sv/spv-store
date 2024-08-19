@@ -34,7 +34,6 @@ export interface Stores {
 
 export class CaseModSPV {
   private interval: Timer | undefined;
-  private syncInProgress = false;
   constructor(
     public services: Services,
     public stores: Stores,
@@ -75,6 +74,7 @@ export class CaseModSPV {
       this.events.emit("txosSynced");
     }
     this.stores.txos!.processQueue();
+    if (this.interval) clearInterval(this.interval);
     this.interval = setInterval(() => this.stores.txos!.syncTxLogs, 60 * 1000);
     this.stores.blocks!.sync();
   }
@@ -84,7 +84,7 @@ export class CaseModSPV {
     limit = 100,
     from?: string,
   ): Promise<TxoResults> {
-    return this.stores.txos!.storage.search(lookup, limit, from);
+    return this.stores.txos!.search(lookup, limit, from);
   }
 
   async getTxo(outpoint: Outpoint): Promise<Txo | undefined> {

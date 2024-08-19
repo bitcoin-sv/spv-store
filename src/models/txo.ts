@@ -17,6 +17,7 @@ export class Txo {
   data: { [tag: string]: IndexData } = {};
   events: string[] = [];
   owner?: string;
+  tags: string[] = [];
 
   constructor(
     public outpoint: Outpoint,
@@ -27,12 +28,14 @@ export class Txo {
 
   toObject(): any {
     this.events = [];
+    this.tags = [];
     const sort = this.block.height.toString(16).padStart(8, "0");
     if (!this.spend && this.status !== TxoStatus.DEPENDENCY) {
       for (const [tag, data] of Object.entries(this.data)) {
+        this.tags.push(`${tag}:${sort}:${this.block?.idx}:${this.outpoint.vout}`);
         for (const e of data.events) {
           this.events.push(
-            `${tag}:${e.id}:${e.value}:${sort}:${this.block?.idx}:${this.outpoint.vout}:${this.satoshis}`,
+            `${tag}:${e.id}:${e.value}:${sort}:${this.block?.idx}:${this.outpoint.vout}`,
           );
         }
       }
@@ -42,7 +45,7 @@ export class Txo {
 
   static fromObject(obj: any, indexers: Indexer[] = []): Txo {
     const txo = new Txo(
-      new Outpoint(obj.txid, obj.vout),
+      new Outpoint(obj.outpoint.txid, obj.outpoint.vout),
       obj.satoshis,
       obj.script,
       obj.status,
