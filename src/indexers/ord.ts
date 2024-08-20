@@ -237,7 +237,7 @@ export class OrdIndexer extends Indexer {
               new Ingest(
                 t.txid,
                 t.height || Date.now(),
-                parseInt(t.idx || "0"),
+                t.idx ? parseInt(t.idx) : 0,
                 true,
               ),
           );
@@ -249,7 +249,7 @@ export class OrdIndexer extends Indexer {
       do {
         const url = `https://ordinals.gorillapool.io/api/txos/address/${owner}/unspent?limit=${limit}&offset=${offset}&bsv20=false`;
         const resp = await fetch(url);
-        utxos = (await resp.json()) as Ordinal[];
+        utxos = ((await resp.json()) as Ordinal[]) || [];
         const ingests = utxos.map(
           (u) =>
             new Ingest(

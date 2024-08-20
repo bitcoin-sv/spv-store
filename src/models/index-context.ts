@@ -5,7 +5,7 @@ import type { Block } from "./block";
 export interface IndexContext {
   tx: Transaction;
   txid: string;
-  block?: Block;
+  block: Block;
   spends: Txo[];
   txos: Txo[];
 }

@@ -33,7 +33,7 @@ export interface TxoSchema extends DBSchema {
     key: [string, string];
     value: TxLog;
     indexes: {
-      height: [number, number];
+      height: [string, number, number];
     };
   };
   state: {
@@ -106,6 +106,7 @@ export class TxoStorageIDB implements TxoStorage {
   }
 
   async putMany(txos: Txo[]): Promise<void> {
+    if (!txos.length) return;
     const t = this.db.transaction("txos", "readwrite");
     await Promise.all(txos.map((txo) => t.store.put(txo)));
     await t.done;
@@ -133,7 +134,7 @@ export class TxoStorageIDB implements TxoStorage {
     );
     const indexName = lookup.id ? "events" : "tags";
     const results: TxoResults = { txos: [] };
-    const index = this.db.transaction("txos").store.index(indexName)
+    const index = this.db.transaction("txos").store.index(indexName);
     for await (const cursor of index.iterate(query)) {
       const txo = cursor.value;
       results.nextPage = cursor.key;
@@ -161,17 +162,22 @@ export class TxoStorageIDB implements TxoStorage {
       "ingestQueue",
       "status",
       IDBKeyRange.bound(
-        [IngestStatus.DOWNLOAD],
-        [IngestStatus.INGEST, Number.MAX_SAFE_INTEGER],
+        [IngestStatus.QUEUED],
+        [IngestStatus.DOWNLOADED, Number.MAX_SAFE_INTEGER],
       ),
     );
     return queueLength;
   }
 
-  async getIngests(status: IngestStatus, limit: number): Promise<Ingest[]> {
+  async getIngests(
+    status: IngestStatus,
+    limit: number,
+    start: number = 0,
+    stop: number = 0,
+  ): Promise<Ingest[]> {
     const query = IDBKeyRange.bound(
-      [status],
-      [status, Number.MAX_SAFE_INTEGER],
+      [status, start],
+      [status, stop || Number.MAX_SAFE_INTEGER],
     );
     const ingests = await this.db.getAllFromIndex(
       "ingestQueue",
@@ -185,8 +191,9 @@ export class TxoStorageIDB implements TxoStorage {
   async putIngest(ingest: Ingest): Promise<void> {
     await this.db.put("ingestQueue", ingest);
   }
-  
+
   async putIngests(ingests: Ingest[]): Promise<void> {
+    if (!ingests.length) return;
     const t = this.db.transaction("ingestQueue", "readwrite");
     for (const ingest of ingests) {
       await t.store.put(ingest);
@@ -215,6 +222,7 @@ export class TxoStorageIDB implements TxoStorage {
   }
 
   async putInvs(txLogs: TxLog[]): Promise<void> {
+    if (!txLogs.length) return;
     const t = this.db.transaction("txLog", "readwrite");
     await Promise.all(txLogs.map((log) => t.store.put(log)));
     await t.done;

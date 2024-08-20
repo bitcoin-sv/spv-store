@@ -44,6 +44,7 @@ export class BlockStorageIDB implements BlockStorage {
   }
 
   async putMany(blocks: BlockHeader[]): Promise<void> {
+    if (!blocks.length) return;
     const t = this.db.transaction("blocks", "readwrite");
     for (const block of blocks) {
       t.store.put(block);

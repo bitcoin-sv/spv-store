@@ -19,7 +19,12 @@ export interface TxoStorage {
   getQueueLength(): Promise<number>;
   putIngest(ingest: Ingest): Promise<void>;
   putIngests(ingests: Ingest[]): Promise<void>;
-  getIngests(status: IngestStatus, limit: number): Promise<Ingest[]>;
+  getIngests(
+    status: IngestStatus,
+    limit: number,
+    start?: number,
+    stop?: number,
+  ): Promise<Ingest[]>;
   getInv(owner: string, txid: string): Promise<TxLog | undefined>;
   getInvs(owner: string, txids: string[]): Promise<(TxLog | undefined)[]>;
   putInv(txLog: TxLog): Promise<void>;

@@ -3,7 +3,7 @@ export class TxLog {
     public owner: string,
     public txid: string,
     public height: number = 0,
-    public idx: number = 0,
+    public idx = 0,
   ) {}
 }
 

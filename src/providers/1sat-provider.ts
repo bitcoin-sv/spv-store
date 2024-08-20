@@ -1,6 +1,7 @@
 import {
   type BroadcastFailure,
   type BroadcastResponse,
+  MerklePath,
   Transaction,
   Utils,
 } from "@bsv/sdk";
@@ -25,14 +26,21 @@ const APIS = {
 export class OneSatProvider
   implements BroadcastService, TxnService, BlockHeaderService, InventoryService
 {
-  private interval: NodeJS.Timeout | undefined;
-  public constructor(public network: Network) {}
+  public constructor(
+    public network: Network,
+    // authKey?: PrivateKey
+  ) {}
 
   async broadcast(
     tx: Transaction,
+    owner?: string,
   ): Promise<BroadcastResponse | BroadcastFailure> {
     console.log("Broadcasting", tx.id("hex"), tx.toHex());
-    const resp = await fetch(`${APIS[this.network]}/api/tx/bin`, {
+    let url = owner
+      ? `${APIS[this.network]}/api/tx/address/${owner}/${tx.id("hex")}`
+      : `${APIS[this.network]}/api/tx`;
+
+    const resp = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/octet-stream",
@@ -90,13 +98,15 @@ export class OneSatProvider
       throw new Error(
         `${resp.status} - Failed to fetch txs: ${await resp.text()}`,
       );
-    const beefs = await resp.arrayBuffer();
-    const reader = new Utils.Reader([...Buffer.from(beefs)]);
+    const data = await resp.arrayBuffer();
+    const reader = new Utils.Reader([...Buffer.from(data)]);
     const txs: Transaction[] = [];
-    while (reader.pos < beefs.byteLength) {
-      const len = reader.readVarIntNum();
-      const beef = reader.read(len);
-      const tx = Transaction.fromBEEF(beef);
+    while (reader.pos < data.byteLength) {
+      let len = reader.readVarIntNum();
+      const rawtx = reader.read(len);
+      const tx = Transaction.fromBinary(rawtx);
+      len = reader.readVarIntNum();
+      if (len) tx.merklePath = MerklePath.fromBinary(reader.read(len));
       txs.push(tx);
     }
     return txs;
@@ -106,7 +116,12 @@ export class OneSatProvider
     const resp = await fetch(
       `${APIS[this.network]}/api/tx/address/${owner}/from/${fromHeight}`,
     );
-    return resp.json() as Promise<TxLog[]>;
+    return (
+      (await resp.json()) as { txid: string; height?: number; idx?: string }[]
+    ).map(
+      (l) =>
+        new TxLog(owner, l.txid, l.height || Date.now(), Number(l.idx || 0)),
+    );
   }
 
   async getBlocks(lastHeight: number, limit = 1000): Promise<BlockHeader[]> {

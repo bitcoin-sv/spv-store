@@ -54,7 +54,7 @@ export class LockIndexer extends Indexer {
         const resp = await fetch(
           `https://ordinals.gorillapool.io/api/locks/address/${owner}/unspent?limit=${limit}&offset=${offset}`,
         );
-        utxos = (await resp.json()) as Ordinal[];
+        utxos = ((await resp.json()) as Ordinal[]) || [];
 
         const ingests = utxos.map(
           (u) =>

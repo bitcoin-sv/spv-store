@@ -1,4 +1,4 @@
-import { Transaction } from "@bsv/sdk";
+import { MerklePath, Transaction } from "@bsv/sdk";
 import type { Indexer } from "../models/indexer";
 import type { IndexContext } from "../models/index-context";
 import { Txo, TxoStatus } from "../models/txo";
@@ -11,6 +11,8 @@ import type { TxLog } from "../services/inv-service";
 import type { Services, Stores } from "../case-mod-spv";
 import type { EventEmitter } from "../lib/event-emitter";
 import type { TxoLookup, TxoResults } from "../models";
+import { TxnStatus } from "./txn-store";
+import { BroadcastStatus } from "../services";
 
 export class TxoStore {
   queueLength = 0;
@@ -22,7 +24,7 @@ export class TxoStore {
     public stores: Stores,
     public indexers: Indexer[],
     public owners: Set<string>,
-    public events?: EventEmitter
+    public events?: EventEmitter,
   ) {}
 
   destroy() {
@@ -41,7 +43,7 @@ export class TxoStore {
   public async search(
     lookup: TxoLookup,
     limit = 100,
-    from?: string
+    from?: string,
   ): Promise<TxoResults> {
     const results = await this.storage.search(lookup, limit, from);
     return {
@@ -53,19 +55,15 @@ export class TxoStore {
     tx: Transaction,
     fromRemote = false,
     status = TxoStatus.CONFIRMED,
-    checkSpends = false
+    checkSpends = false,
   ): Promise<IndexContext> {
     const txid = tx.id("hex") as string;
     console.log("Ingesting", txid);
-    const block = {
-      height: Date.now(),
-      idx: 0n,
-    } as Block;
+    const block = new Block();
     if (tx.merklePath) {
-      const txHash = tx.hash("hex");
       block.height = tx.merklePath.blockHeight;
       block.idx = BigInt(
-        tx.merklePath.path[0].find((p) => p.hash == txHash)?.offset || 0
+        tx.merklePath.path[0].find((p) => p.hash == txid)?.offset || 0,
       );
     }
 
@@ -89,20 +87,19 @@ export class TxoStore {
       } else {
         input.sourceTransaction = await this.stores.txns!.loadTx(
           input.sourceTXID,
-          fromRemote
+          fromRemote,
         );
         if (!input.sourceTransaction)
           throw new Error(`Failed to get source tx ${input.sourceTXID}`);
       }
     }
 
-    ctx.spends = (
-      await this.storage.getMany(
-        tx.inputs.map(
-          (i) => new Outpoint(`${i.sourceTXID}_${i.sourceOutputIndex}`)
-        )
-      )
-    ).map((spend, vin) => {
+    const spends = await this.storage.getMany(
+      tx.inputs.map(
+        (i) => new Outpoint(`${i.sourceTXID}_${i.sourceOutputIndex}`),
+      ),
+    );
+    for (let [vin, spend] of spends.entries()) {
       if (spend) {
         spend = Txo.fromObject(spend, this.indexers);
       } else {
@@ -113,17 +110,18 @@ export class TxoStore {
           new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
           BigInt(spentOutput.satoshis!),
           spentOutput.lockingScript.toBinary(),
-          status
+          status,
         );
       }
       spend.spend = new Spend(txid, vin, block);
-      return spend.toObject();
-    });
+      ctx.spends.push(spend.toObject());
+    }
     await this.storage.putMany(ctx.spends);
 
     const txos = await this.storage.getMany(
-      tx.outputs.map((_, i) => new Outpoint(txid, i))
+      tx.outputs.map((_, i) => new Outpoint(txid, i)),
     );
+    const sort = ctx.block.height.toString(16).padStart(8, "0");
     for (let [vout, txo] of txos.entries()) {
       if (txo) {
         txo = Txo.fromObject(txo, this.indexers);
@@ -135,12 +133,13 @@ export class TxoStore {
           new Outpoint(txid, vout),
           BigInt(tx.outputs[vout].satoshis!),
           tx.outputs[vout].lockingScript.toBinary(),
-          status
+          status,
         );
       }
       txo.status = status;
       txo.block = block;
       txo.events = [];
+      txo.tags = [];
       ctx.txos.push(txo);
       for (const i of this.indexers) {
         try {
@@ -151,8 +150,13 @@ export class TxoStore {
         } catch (e) {
           console.error("indexer error: continuing", i.tag, e);
         }
+        if (txo.owner && this.owners.has(txo.owner)) {
+          txo.tags.push(
+            `${i.tag}:${sort}:${ctx.block?.idx}:${txo.outpoint.vout}`,
+          );
+        }
       }
-      return txo.toObject();
+      txo = txo.toObject();
     }
 
     this.indexers.forEach((i) => i.preSave && i.preSave(ctx));
@@ -167,7 +171,7 @@ export class TxoStore {
           this.events?.emit(
             `evt:${tag}:${e.id}`,
             e.value,
-            txo.outpoint.toString()
+            txo.outpoint.toString(),
           );
         }
       }
@@ -188,18 +192,20 @@ export class TxoStore {
     await this.updateQueueStats();
     this.processDownloads();
     this.processIngests();
+    this.processConfirms();
+    this.processImmutable();
     this.syncInProgress = true;
   }
 
   async processDownloads(returnOnDone = false) {
     try {
-      const ingests = await this.storage.getIngests(IngestStatus.DOWNLOAD, 25);
+      const ingests = await this.storage.getIngests(IngestStatus.QUEUED, 25);
       if (ingests.length) {
         await this.stores.txns!.ensureTxns(ingests.map((i) => i.txid));
         ingests.forEach((i) => {
           i.status = i.downloadOnly
-            ? IngestStatus.CONFIRMED
-            : IngestStatus.INGEST;
+            ? IngestStatus.INGESTED
+            : IngestStatus.DOWNLOADED;
         });
         await this.storage.putIngests(ingests);
         await this.updateQueueStats();
@@ -217,7 +223,7 @@ export class TxoStore {
   }
 
   async processIngests() {
-    const ingests = await this.storage.getIngests(IngestStatus.INGEST, 25);
+    const ingests = await this.storage.getIngests(IngestStatus.DOWNLOADED, 25);
     if (ingests.length) {
       try {
         console.log("Ingesting", ingests.length, "txs");
@@ -231,9 +237,9 @@ export class TxoStore {
             tx,
             true,
             ingest.isDep ? TxoStatus.DEPENDENCY : TxoStatus.CONFIRMED,
-            ingest.checkSpends
+            ingest.checkSpends,
           );
-          ingest.status = IngestStatus.CONFIRMED;
+          ingest.status = IngestStatus.INGESTED;
           await this.storage.putIngest(ingest);
           await this.updateQueueStats();
         }
@@ -250,29 +256,132 @@ export class TxoStore {
     this.processIngests();
   }
 
-  async syncTxLogs() {
-    const latestLogs = await Promise.all(
-      Array.from(this.owners).map(this.storage.getSynced)
-    );
+  async processConfirms(returnOnDone = false) {
+    try {
+      const ingests = await this.storage.getIngests(
+        IngestStatus.INGESTED,
+        25,
+        0,
+        Date.now() - 15000,
+      );
+      if (ingests.length) {
+        for await (const ingest of ingests) {
+          const tx = await this.stores.txns!.loadTx(ingest.txid, true);
+          if (!tx) {
+            console.error("Failed to get tx", ingest.txid);
+            continue;
+          }
+          if (!tx.merklePath) {
+            const status = await this.services.broadcast.status(ingest.txid);
+            if (
+              !status ||
+              status.status == BroadcastStatus.MEMPOOL ||
+              !status.proof
+            ) {
+              ingest.height = Date.now();
+            } else {
+              tx.merklePath = MerklePath.fromBinary(status.proof);
+            }
+          }
+          if (tx.merklePath) {
+            const ctx = await this.ingest(
+              tx,
+              true,
+              ingest.isDep ? TxoStatus.DEPENDENCY : TxoStatus.CONFIRMED,
+            );
+            ingest.status = IngestStatus.CONFIRMED;
+            ingest.height = ctx.block.height;
+            ingest.idx = Number(ctx.block.idx);
+          }
+          await this.storage.putIngest(ingest);
+        }
+      } else if (!returnOnDone) {
+        await new Promise((r) => setTimeout(r, 1000));
+      } else return;
+    } catch (e) {
+      console.error("Failed to ingest txs", e);
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+    if (this.stopSync) {
+      return;
+    }
+    this.processConfirms();
+  }
 
-    for (const latestLog of latestLogs) {
-      if (!latestLog) continue;
+  async processImmutable(returnOnDone = false) {
+    try {
+      const chaintip = await this.stores.blocks!.storage.getSynced();
+      if (!chaintip) {
+        await new Promise((r) => setTimeout(r, 10000));
+        this.processImmutable();
+        return;
+      }
+      const ingests = await this.storage.getIngests(
+        IngestStatus.CONFIRMED,
+        25,
+        0,
+        chaintip?.height - 6,
+      );
+      if (ingests.length) {
+        for await (const ingest of ingests) {
+          const tx = await this.stores.txns!.loadTx(ingest.txid, true);
+          if (!tx || !tx.merklePath) {
+            // TODO: We have a problem and need to clean it up
+            console.error("Failed to get tx", ingest.txid);
+            continue;
+          }
+          if (!tx.merklePath.verify(ingest.txid, this.stores.blocks!)) {
+            // TODO: Refresh merkle path in case of reorg
+            // ingest.height = ctx.block.height;
+            // ingest.idx = ctx.block.idx;
+            continue;
+          }
+          ingest.status = IngestStatus.IMMUTABLE;
+          await this.storage.putIngest(ingest);
+        }
+      } else if (!returnOnDone) {
+        await new Promise((r) => setTimeout(r, 1000));
+      } else return;
+    } catch (e) {
+      console.error("Failed to ingest txs", e);
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+    if (this.stopSync) {
+      return;
+    }
+    this.processImmutable();
+  }
+
+  async syncTxLogs() {
+    for (const owner of this.owners) {
+      const latestLog = await this.storage.getSynced(owner);
       const newLogs = await this.services.inv.pollTxLogs(
-        latestLog.owner,
-        latestLog.height || 0
+        owner,
+        latestLog?.height || 0,
       );
       const oldLogs = await this.storage.getInvs(
-        latestLog.owner,
-        newLogs.map((log) => log.txid)
+        owner,
+        newLogs.map((log) => log.txid),
       );
       const puts = newLogs.reduce((puts, log, i) => {
-        if (!oldLogs[i] || oldLogs[i]!.height !== log.height) puts.push(log);
+        if (
+          !oldLogs[i] ||
+          oldLogs[i].height != log.height ||
+          (log.idx && oldLogs[i]?.idx != log.idx)
+        ) {
+          log.owner = owner;
+          puts.push(log);
+        }
         return puts;
       }, [] as TxLog[]);
       await this.storage.putIngests(
-        puts.map((log) => new Ingest(log.txid, log.height, log.idx | 0, false))
+        puts.map(
+          (log) => new Ingest(log.txid, log.height, Number(log.idx), false),
+        ),
       );
-      await this.storage.putInvs(puts);
+      if (puts.length) {
+        await this.storage.putInvs(puts);
+      }
     }
   }
 }

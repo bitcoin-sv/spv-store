@@ -170,8 +170,13 @@ export class Bsv21Indexer extends Indexer {
           );
           const txids = (await resp.json()) as { [score: string]: string };
           const txns = Object.entries(txids).map(([score, txid]) => {
-            const [height, idx] = score.split(".").map(Number);
-            return new Ingest(txid, height, idx || 0, true);
+            const [height, idx] = score.split(".");
+            return new Ingest(
+              txid,
+              Number(height || Date.now()),
+              Number(idx || 0),
+              true,
+            );
           });
           await txoStore.queue(txns);
         }
@@ -182,13 +187,13 @@ export class Bsv21Indexer extends Indexer {
           resp = await fetch(
             `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}?limit=${limit}&offset=${offset}&includePending=true`,
           );
-          utxos = (await resp.json()) as RemoteBsv20[];
+          utxos = ((await resp.json()) as RemoteBsv20[]) || [];
           const ingests = utxos.map(
             (u) =>
               new Ingest(
                 u.txid,
                 u.height,
-                u.idx || 0,
+                Number(u.idx || 0),
                 false,
                 true,
                 this.syncMode === TxoStatus.TRUSTED,

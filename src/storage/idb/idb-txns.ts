@@ -86,10 +86,9 @@ export class TxnStorageIDB implements TxnStorage {
       status: TxnStatus.PENDING,
     };
     if (tx.merklePath) {
-      const txHash = tx.hash("hex");
       txn.block.height = tx.merklePath.blockHeight;
       txn.block.idx = BigInt(
-        tx.merklePath.path[0].find((p) => p.hash == txHash)?.offset || 0,
+        tx.merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0,
       );
       txn.proof = tx.merklePath.toBinary();
       txn.status = TxnStatus.CONFIRMED;
@@ -98,6 +97,7 @@ export class TxnStorageIDB implements TxnStorage {
   }
 
   async putMany(txs: Transaction[]): Promise<void> {
+    if (!txs.length) return;
     const t = this.db.transaction("txns", "readwrite");
     await Promise.all(
       txs.map((tx) => {
@@ -108,10 +108,9 @@ export class TxnStorageIDB implements TxnStorage {
           status: TxnStatus.PENDING,
         };
         if (tx.merklePath) {
-          const txHash = tx.hash("hex");
           txn.block.height = tx.merklePath.blockHeight;
           txn.block.idx = BigInt(
-            tx.merklePath.path[0].find((p) => p.hash == txHash)?.offset || 0,
+            tx.merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0,
           );
           txn.proof = tx.merklePath.toBinary();
           txn.status = TxnStatus.CONFIRMED;
