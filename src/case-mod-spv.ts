@@ -38,19 +38,29 @@ export class CaseModSPV {
     public services: Services,
     public stores: Stores,
     public events = new EventEmitter(),
-    startSync = false,
+    startSync = false
   ) {
     if (startSync) this.sync();
   }
 
   async destroy(): Promise<void> {
     if (this.interval) clearInterval(this.interval);
-    Object.values(this.stores).forEach((store) => store.destroy());
+
+    for (const store of Object.values(this.stores)) {
+      if (store.destroy) {
+        await store.destroy();
+      }
+    }
+    this.events.emit(
+      "destroyed",
+      "The CaseModSPV instance has been destroyed!"
+    );
+
     this.events.removeAllListeners();
   }
 
   async broadcast(
-    tx: Transaction,
+    tx: Transaction
   ): Promise<BroadcastResponse | BroadcastFailure> {
     const resp = await this.stores.txns!.broadcast(tx);
     if (isBroadcastResponse(resp)) {
@@ -69,7 +79,7 @@ export class CaseModSPV {
       }
       await this.stores.txos!.storage.setState(
         "isSynced",
-        Date.now().toString(),
+        Date.now().toString()
       );
       this.events.emit("txosSynced");
     }
@@ -78,7 +88,7 @@ export class CaseModSPV {
     if (this.interval) clearInterval(this.interval);
     this.interval = setInterval(
       () => this.stores.txos!.syncTxLogs(),
-      60 * 1000,
+      60 * 1000
     );
     this.stores.blocks!.sync();
   }
@@ -86,7 +96,7 @@ export class CaseModSPV {
   async search(
     lookup: TxoLookup,
     limit = 100,
-    from?: string,
+    from?: string
   ): Promise<TxoResults> {
     return this.stores.txos!.search(lookup, limit, from);
   }
@@ -97,7 +107,7 @@ export class CaseModSPV {
 
   async getTx(
     txid: string,
-    fromRemote = false,
+    fromRemote = false
   ): Promise<Transaction | undefined> {
     return this.stores.txns!.loadTx(txid, fromRemote);
   }

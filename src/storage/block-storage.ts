@@ -1,7 +1,7 @@
 import type { BlockHeader } from "../models/block-header";
 
 export interface BlockStorage {
-  destroy(): void;
+  destroy(): Promise<void>;
   put(block: BlockHeader): Promise<void>;
   putMany(blocks: BlockHeader[]): Promise<void>;
   getByHash(hash: string): Promise<BlockHeader | undefined>;

@@ -6,7 +6,7 @@ import type { Spend } from "../models/spend";
 import type { Txo } from "../models/txo";
 
 export interface TxoStorage {
-  destroy(): void;
+  destroy(): Promise<void>;
   get(outpoint: Outpoint): Promise<Txo | undefined>;
   getMany(outpoints: Outpoint[]): Promise<(Txo | undefined)[]>;
   getBySpend(txid: string): Promise<(Txo | undefined)[]>;
@@ -23,7 +23,7 @@ export interface TxoStorage {
     status: IngestStatus,
     limit: number,
     start?: number,
-    stop?: number,
+    stop?: number
   ): Promise<Ingest[]>;
   getInv(owner: string, txid: string): Promise<TxLog | undefined>;
   getInvs(owner: string, txids: string[]): Promise<(TxLog | undefined)[]>;

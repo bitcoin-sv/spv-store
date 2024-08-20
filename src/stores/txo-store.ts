@@ -24,12 +24,12 @@ export class TxoStore {
     public stores: Stores,
     public indexers: Indexer[],
     public owners: Set<string>,
-    public events?: EventEmitter,
+    public events?: EventEmitter
   ) {}
 
-  destroy() {
-    this.storage.destroy();
+  async destroy() {
     this.stopSync = true;
+    await this.storage.destroy();
   }
 
   private async updateSpends(outpoints: Outpoint[]) {
@@ -43,7 +43,7 @@ export class TxoStore {
   public async search(
     lookup: TxoLookup,
     limit = 100,
-    from?: string,
+    from?: string
   ): Promise<TxoResults> {
     const results = await this.storage.search(lookup, limit, from);
     return {
@@ -55,7 +55,7 @@ export class TxoStore {
     tx: Transaction,
     fromRemote = false,
     status = TxoStatus.CONFIRMED,
-    checkSpends = false,
+    checkSpends = false
   ): Promise<IndexContext> {
     const txid = tx.id("hex") as string;
     console.log("Ingesting", txid);
@@ -63,7 +63,7 @@ export class TxoStore {
     if (tx.merklePath) {
       block.height = tx.merklePath.blockHeight;
       block.idx = BigInt(
-        tx.merklePath.path[0].find((p) => p.hash == txid)?.offset || 0,
+        tx.merklePath.path[0].find((p) => p.hash == txid)?.offset || 0
       );
     }
 
@@ -87,7 +87,7 @@ export class TxoStore {
       } else {
         input.sourceTransaction = await this.stores.txns!.loadTx(
           input.sourceTXID,
-          fromRemote,
+          fromRemote
         );
         if (!input.sourceTransaction)
           throw new Error(`Failed to get source tx ${input.sourceTXID}`);
@@ -96,8 +96,8 @@ export class TxoStore {
 
     const spends = await this.storage.getMany(
       tx.inputs.map(
-        (i) => new Outpoint(`${i.sourceTXID}_${i.sourceOutputIndex}`),
-      ),
+        (i) => new Outpoint(`${i.sourceTXID}_${i.sourceOutputIndex}`)
+      )
     );
     for (let [vin, spend] of spends.entries()) {
       if (spend) {
@@ -110,7 +110,7 @@ export class TxoStore {
           new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
           BigInt(spentOutput.satoshis!),
           spentOutput.lockingScript.toBinary(),
-          status,
+          status
         );
       }
       spend.spend = new Spend(txid, vin, block);
@@ -119,7 +119,7 @@ export class TxoStore {
     await this.storage.putMany(ctx.spends);
 
     const txos = await this.storage.getMany(
-      tx.outputs.map((_, i) => new Outpoint(txid, i)),
+      tx.outputs.map((_, i) => new Outpoint(txid, i))
     );
     const sort = ctx.block.height.toString(16).padStart(8, "0");
     for (let [vout, txo] of txos.entries()) {
@@ -133,7 +133,7 @@ export class TxoStore {
           new Outpoint(txid, vout),
           BigInt(tx.outputs[vout].satoshis!),
           tx.outputs[vout].lockingScript.toBinary(),
-          status,
+          status
         );
       }
       txo.status = status;
@@ -152,7 +152,7 @@ export class TxoStore {
         }
         if (txo.owner && this.owners.has(txo.owner)) {
           txo.tags.push(
-            `${i.tag}:${sort}:${ctx.block?.idx}:${txo.outpoint.vout}`,
+            `${i.tag}:${sort}:${ctx.block?.idx}:${txo.outpoint.vout}`
           );
         }
       }
@@ -171,7 +171,7 @@ export class TxoStore {
           this.events?.emit(
             `evt:${tag}:${e.id}`,
             e.value,
-            txo.outpoint.toString(),
+            txo.outpoint.toString()
           );
         }
       }
@@ -237,7 +237,7 @@ export class TxoStore {
             tx,
             true,
             ingest.isDep ? TxoStatus.DEPENDENCY : TxoStatus.CONFIRMED,
-            ingest.checkSpends,
+            ingest.checkSpends
           );
           ingest.status = IngestStatus.INGESTED;
           await this.storage.putIngest(ingest);
@@ -262,7 +262,7 @@ export class TxoStore {
         IngestStatus.INGESTED,
         25,
         0,
-        Date.now() - 15000,
+        Date.now() - 15000
       );
       if (ingests.length) {
         for await (const ingest of ingests) {
@@ -287,7 +287,7 @@ export class TxoStore {
             const ctx = await this.ingest(
               tx,
               true,
-              ingest.isDep ? TxoStatus.DEPENDENCY : TxoStatus.CONFIRMED,
+              ingest.isDep ? TxoStatus.DEPENDENCY : TxoStatus.CONFIRMED
             );
             ingest.status = IngestStatus.CONFIRMED;
             ingest.height = ctx.block.height;
@@ -320,7 +320,7 @@ export class TxoStore {
         IngestStatus.CONFIRMED,
         25,
         0,
-        chaintip?.height - 6,
+        chaintip?.height - 6
       );
       if (ingests.length) {
         for await (const ingest of ingests) {
@@ -357,16 +357,16 @@ export class TxoStore {
       const latestLog = await this.storage.getSynced(owner);
       const newLogs = await this.services.inv.pollTxLogs(
         owner,
-        latestLog?.height || 0,
+        latestLog?.height || 0
       );
       const oldLogs = await this.storage.getInvs(
         owner,
-        newLogs.map((log) => log.txid),
+        newLogs.map((log) => log.txid)
       );
       const puts = newLogs.reduce((puts, log, i) => {
         if (
           !oldLogs[i] ||
-          oldLogs[i].height != log.height ||
+          oldLogs[i]!.height != log.height ||
           (log.idx && oldLogs[i]?.idx != log.idx)
         ) {
           log.owner = owner;
@@ -376,8 +376,8 @@ export class TxoStore {
       }, [] as TxLog[]);
       await this.storage.putIngests(
         puts.map(
-          (log) => new Ingest(log.txid, log.height, Number(log.idx), false),
-        ),
+          (log) => new Ingest(log.txid, log.height, Number(log.idx), false)
+        )
       );
       if (puts.length) {
         await this.storage.putInvs(puts);

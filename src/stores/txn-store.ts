@@ -21,15 +21,15 @@ export class TxnStore {
     public storage: TxnStorage,
     public services: Services,
     public stores: Stores,
-    public events?: EventEmitter,
+    public events?: EventEmitter
   ) {}
 
-  destroy() {
-    this.storage.destroy();
+  async destroy() {
+    await this.storage.destroy();
   }
 
   async broadcast(
-    tx: Transaction,
+    tx: Transaction
   ): Promise<BroadcastResponse | BroadcastFailure> {
     const resp = await this.services.broadcast.broadcast(tx);
     if (isBroadcastResponse(resp)) {
@@ -42,7 +42,7 @@ export class TxnStore {
 
   async loadTx(
     txid: string,
-    fromRemote = false,
+    fromRemote = false
   ): Promise<Transaction | undefined> {
     let tx = await this.storage.get(txid);
     if (!tx && fromRemote) {

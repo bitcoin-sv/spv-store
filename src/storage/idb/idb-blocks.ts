@@ -26,17 +26,21 @@ export class BlockStorageIDB implements BlockStorage {
         upgrade(db) {
           db.createObjectStore("blocks", { keyPath: "height" }).createIndex(
             "hash",
-            "hash",
+            "hash"
           );
         },
-      },
+      }
     );
 
     return new BlockStorageIDB(db);
   }
 
-  destroy() {
+  async destroy() {
+    const destroyed = new Promise(async (resolve) => {
+      this.db.onclose = resolve;
+    });
     this.db.close();
+    await destroyed;
   }
 
   async put(block: BlockHeader): Promise<void> {

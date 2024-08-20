@@ -48,12 +48,12 @@ export interface TxoSchema extends DBSchema {
 export class TxoStorageIDB implements TxoStorage {
   private constructor(
     public db: IDBPDatabase<TxoSchema>,
-    public indexers: Indexer[] = [],
+    public indexers: Indexer[] = []
   ) {}
   static async init(
     accountId: string,
     indexers: Indexer[] = [],
-    network: Network,
+    network: Network
   ): Promise<TxoStorageIDB> {
     const db = await openDB<TxoSchema>(
       `txostore-${accountId}-${network}`,
@@ -75,13 +75,17 @@ export class TxoStorageIDB implements TxoStorage {
             keyPath: ["owner", "txid"],
           }).createIndex("height", ["owner", "height", "idx"]);
         },
-      },
+      }
     );
     return new TxoStorageIDB(db, indexers);
   }
 
-  destroy() {
+  async destroy() {
+    const destroyed = new Promise(async (resolve) => {
+      this.db.onclose = resolve;
+    });
     this.db.close();
+    await destroyed;
   }
 
   async get(outpoint: Outpoint): Promise<Txo | undefined> {
@@ -91,7 +95,7 @@ export class TxoStorageIDB implements TxoStorage {
   async getMany(outpoints: Outpoint[]): Promise<(Txo | undefined)[]> {
     const t = this.db.transaction("txos");
     const txos = await Promise.all(
-      outpoints.map((outpoint) => t.store.get([outpoint.txid, outpoint.vout])),
+      outpoints.map((outpoint) => t.store.get([outpoint.txid, outpoint.vout]))
     );
     await t.done;
     return txos;
@@ -122,7 +126,7 @@ export class TxoStorageIDB implements TxoStorage {
   async search(
     lookup: TxoLookup,
     limit = 10,
-    from?: string,
+    from?: string
   ): Promise<TxoResults> {
     const dbkey = lookup.toQueryKey();
     const start = from || dbkey;
@@ -130,7 +134,7 @@ export class TxoStorageIDB implements TxoStorage {
       start,
       dbkey + "\uffff",
       true,
-      false,
+      false
     );
     const indexName = lookup.id ? "events" : "tags";
     const results: TxoResults = { txos: [] };
@@ -163,8 +167,8 @@ export class TxoStorageIDB implements TxoStorage {
       "status",
       IDBKeyRange.bound(
         [IngestStatus.QUEUED],
-        [IngestStatus.DOWNLOADED, Number.MAX_SAFE_INTEGER],
-      ),
+        [IngestStatus.DOWNLOADED, Number.MAX_SAFE_INTEGER]
+      )
     );
     return queueLength;
   }
@@ -173,17 +177,17 @@ export class TxoStorageIDB implements TxoStorage {
     status: IngestStatus,
     limit: number,
     start: number = 0,
-    stop: number = 0,
+    stop: number = 0
   ): Promise<Ingest[]> {
     const query = IDBKeyRange.bound(
       [status, start],
-      [status, stop || Number.MAX_SAFE_INTEGER],
+      [status, stop || Number.MAX_SAFE_INTEGER]
     );
     const ingests = await this.db.getAllFromIndex(
       "ingestQueue",
       "status",
       query,
-      limit,
+      limit
     );
     return ingests;
   }
@@ -207,11 +211,11 @@ export class TxoStorageIDB implements TxoStorage {
 
   async getInvs(
     owner: string,
-    txids: string[],
+    txids: string[]
   ): Promise<(TxLog | undefined)[]> {
     const t = this.db.transaction("txLog", "readonly");
     const txLogs = await Promise.all(
-      txids.map((txid) => t.store.get([owner, txid]).catch(() => undefined)),
+      txids.map((txid) => t.store.get([owner, txid]).catch(() => undefined))
     );
     await t.done;
     return txLogs;

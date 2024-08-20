@@ -40,7 +40,7 @@ export class TxnStorageIDB implements TxnStorage {
       upgrade(db) {
         db.createObjectStore("txns", { keyPath: "txid" }).createIndex(
           "status",
-          ["status", "height"],
+          ["status", "height"]
         );
         db.createObjectStore("state", { keyPath: "key" });
       },
@@ -49,8 +49,12 @@ export class TxnStorageIDB implements TxnStorage {
     return new TxnStorageIDB(db);
   }
 
-  destroy() {
+  async destroy() {
+    const destroyed = new Promise(async (resolve) => {
+      this.db.onclose = resolve;
+    });
     this.db.close();
+    await destroyed;
   }
 
   async get(txid: string): Promise<Transaction | undefined> {
@@ -88,7 +92,7 @@ export class TxnStorageIDB implements TxnStorage {
     if (tx.merklePath) {
       txn.block.height = tx.merklePath.blockHeight;
       txn.block.idx = BigInt(
-        tx.merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0,
+        tx.merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0
       );
       txn.proof = tx.merklePath.toBinary();
       txn.status = TxnStatus.CONFIRMED;
@@ -110,13 +114,13 @@ export class TxnStorageIDB implements TxnStorage {
         if (tx.merklePath) {
           txn.block.height = tx.merklePath.blockHeight;
           txn.block.idx = BigInt(
-            tx.merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0,
+            tx.merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0
           );
           txn.proof = tx.merklePath.toBinary();
           txn.status = TxnStatus.CONFIRMED;
         }
         return t.store.put(txn);
-      }),
+      })
     );
     await t.done;
   }
