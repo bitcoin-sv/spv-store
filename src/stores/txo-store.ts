@@ -22,7 +22,7 @@ export class TxoStore {
     public stores: Stores,
     public indexers: Indexer[],
     public owners: Set<string>,
-    public events?: EventEmitter,
+    public events?: EventEmitter
   ) {}
 
   destroy() {
@@ -34,11 +34,15 @@ export class TxoStore {
     const spends = await this.services.spends.getSpends(outpoints);
     for (const [i, outpoint] of outpoints.entries()) {
       if (!spends[i]) continue;
-      await this.storage.setSpend(outpoint, new Spend(spends[i], 0));
+      await this.storage.setSpend(outpoint, new Spend(spends[i]!, 0));
     }
   }
 
-  public async search(lookup: TxoLookup, limit = 100, from?: string): Promise<TxoResults> {
+  public async search(
+    lookup: TxoLookup,
+    limit = 100,
+    from?: string
+  ): Promise<TxoResults> {
     const results = await this.storage.search(lookup, limit, from);
     return {
       txos: results.txos.map((t) => Txo.fromObject(t, this.indexers)),
@@ -49,7 +53,7 @@ export class TxoStore {
     tx: Transaction,
     fromRemote = false,
     status = TxoStatus.CONFIRMED,
-    checkSpends = false,
+    checkSpends = false
   ): Promise<IndexContext> {
     const txid = tx.id("hex") as string;
     console.log("Ingesting", txid);
@@ -61,7 +65,7 @@ export class TxoStore {
       const txHash = tx.hash("hex");
       block.height = tx.merklePath.blockHeight;
       block.idx = BigInt(
-        tx.merklePath.path[0].find((p) => p.hash == txHash)?.offset || 0,
+        tx.merklePath.path[0].find((p) => p.hash == txHash)?.offset || 0
       );
     }
 
@@ -85,7 +89,7 @@ export class TxoStore {
       } else {
         input.sourceTransaction = await this.stores.txns!.loadTx(
           input.sourceTXID,
-          fromRemote,
+          fromRemote
         );
         if (!input.sourceTransaction)
           throw new Error(`Failed to get source tx ${input.sourceTXID}`);
@@ -95,8 +99,8 @@ export class TxoStore {
     ctx.spends = (
       await this.storage.getMany(
         tx.inputs.map(
-          (i) => new Outpoint(`${i.sourceTXID}_${i.sourceOutputIndex}`),
-        ),
+          (i) => new Outpoint(`${i.sourceTXID}_${i.sourceOutputIndex}`)
+        )
       )
     ).map((spend, vin) => {
       if (spend) {
@@ -109,7 +113,7 @@ export class TxoStore {
           new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
           BigInt(spentOutput.satoshis!),
           spentOutput.lockingScript.toBinary(),
-          status,
+          status
         );
       }
       spend.spend = new Spend(txid, vin, block);
@@ -118,12 +122,12 @@ export class TxoStore {
     await this.storage.putMany(ctx.spends);
 
     const txos = await this.storage.getMany(
-      tx.outputs.map((_, i) => new Outpoint(txid, i)),
+      tx.outputs.map((_, i) => new Outpoint(txid, i))
     );
     for (let [vout, txo] of txos.entries()) {
       if (txo) {
         txo = Txo.fromObject(txo, this.indexers);
-        if(status > txo.status) {
+        if (status > txo.status) {
           txo.status = status;
         }
       } else {
@@ -131,7 +135,7 @@ export class TxoStore {
           new Outpoint(txid, vout),
           BigInt(tx.outputs[vout].satoshis!),
           tx.outputs[vout].lockingScript.toBinary(),
-          status,
+          status
         );
       }
       txo.status = status;
@@ -163,7 +167,7 @@ export class TxoStore {
           this.events?.emit(
             `evt:${tag}:${e.id}`,
             e.value,
-            txo.outpoint.toString(),
+            txo.outpoint.toString()
           );
         }
       }
@@ -173,7 +177,7 @@ export class TxoStore {
 
   async updateQueueStats() {
     const queueLength = await this.storage.getQueueLength();
-    this.events?.emit("queueStats", {length: queueLength});
+    this.events?.emit("queueStats", { length: queueLength });
   }
   async queue(ingests: Ingest[]) {
     await this.storage.putIngests(ingests);
@@ -227,7 +231,7 @@ export class TxoStore {
             tx,
             true,
             ingest.isDep ? TxoStatus.DEPENDENCY : TxoStatus.CONFIRMED,
-            ingest.checkSpends,
+            ingest.checkSpends
           );
           ingest.status = IngestStatus.CONFIRMED;
           await this.storage.putIngest(ingest);
@@ -248,25 +252,25 @@ export class TxoStore {
 
   async syncTxLogs() {
     const latestLogs = await Promise.all(
-      Array.from(this.owners).map(this.storage.getSynced),
+      Array.from(this.owners).map(this.storage.getSynced)
     );
 
     for (const latestLog of latestLogs) {
       if (!latestLog) continue;
       const newLogs = await this.services.inv.pollTxLogs(
         latestLog.owner,
-        latestLog.height || 0,
+        latestLog.height || 0
       );
       const oldLogs = await this.storage.getInvs(
         latestLog.owner,
-        newLogs.map((log) => log.txid),
+        newLogs.map((log) => log.txid)
       );
       const puts = newLogs.reduce((puts, log, i) => {
-        if (!oldLogs[i] || oldLogs[i].height < log.height) puts.push(log);
+        if (!oldLogs[i] || oldLogs[i]!.height !== log.height) puts.push(log);
         return puts;
       }, [] as TxLog[]);
       await this.storage.putIngests(
-        puts.map((log) => new Ingest(log.txid, log.height, log.idx | 0, false)),
+        puts.map((log) => new Ingest(log.txid, log.height, log.idx | 0, false))
       );
       await this.storage.putInvs(puts);
     }

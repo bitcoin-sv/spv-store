@@ -12,7 +12,7 @@ export class BlockStore implements ChainTracker {
   constructor(
     public storage: BlockStorage,
     public services: Services,
-    public emitter?: EventEmitter,
+    public emitter?: EventEmitter
   ) {}
 
   destroy() {
@@ -32,15 +32,15 @@ export class BlockStore implements ChainTracker {
       try {
         let blocks = await this.services.blocks.getBlocks(
           lastHeight,
-          PAGE_SIZE,
+          PAGE_SIZE
         );
         console.log(
-          `Syncing ${PAGE_SIZE} blocks from ${lastHeight}: ${blocks.length} received`,
+          `Syncing ${PAGE_SIZE} blocks from ${lastHeight}: ${blocks.length} received`
         );
         await this.storage.putMany(blocks);
         if (blocks.length == 0) break;
         const lastBlock = blocks[blocks.length - 1];
-        this.emitter?.emit("newChaintip", lastBlock.height);
+        this.emitter?.emit("syncedBlockHeight", lastBlock.height);
         if (blocks.length < PAGE_SIZE) break;
         lastHeight = lastBlock.height + 1;
       } catch (e) {

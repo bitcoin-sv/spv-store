@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "bun run clean && microbundle --globals @bsv/sdk=bsv",
+    "build": "npm run clean && microbundle --globals @bsv/sdk=bsv",
     "clean": "rimraf -rf dist",
     "format": "prettier --write .",
     "test": "jest"
