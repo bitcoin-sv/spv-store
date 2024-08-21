@@ -63,7 +63,7 @@ function buildTxoIndex(txo: Txo) {
   const blockStr = txo.block.height.toString(10).padStart(7, "0");
   const idxStr = txo.block.idx.toString(10).padStart(9, "0");
   const sort = `${blockStr}.${idxStr}`;
-  if (!txo.spend && txo.status !== TxoStatus.DEPENDENCY) {
+  if (!txo.spend && txo.status !== TxoStatus.Dependency) {
     for (const [tag, data] of Object.entries(txo.data)) {
       if (data.events.length) txo.tags.push(`${tag}:${sort}`);
       for (const e of data.events) {

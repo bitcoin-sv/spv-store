@@ -1,22 +1,27 @@
+import type { Network } from "../casemod-spv";
 import type { TxoStore } from "../stores";
 import type { IndexContext } from "./index-context";
 import { IndexData } from "./index-data";
-import { TxoStatus } from "./txo";
 
+export enum IndexMode {
+  Trust = 1,
+  Verify = 2,
+  TrustAndVerify = 3,
+}
 export abstract class Indexer {
   tag = "";
 
   constructor(
     public owners = new Set<string>(),
-    public network = "mainnet",
-    public syncMode = TxoStatus.TRUSTED,
+    public mode: IndexMode,
+    public network: Network = "mainnet",
   ) {}
 
-  parse(ctx: IndexContext, vout: number): IndexData | undefined {
+  async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     return;
   }
 
-  preSave(ctx: IndexContext): void {
+  async preSave(ctx: IndexContext): Promise<void> {
     return;
   }
 

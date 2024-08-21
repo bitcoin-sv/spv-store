@@ -3,9 +3,10 @@ import { IndexData } from "./index-data";
 import { Outpoint } from "./outpoint";
 
 export enum TxoStatus {
-  TRUSTED = 0,
-  DEPENDENCY = 1,
-  CONFIRMED = 2,
+  Unindexed = -1,
+  Trusted = 0,
+  Dependency = 1,
+  Confirmed = 2,
 }
 
 export class Txo {
@@ -20,6 +21,6 @@ export class Txo {
     public outpoint: Outpoint,
     public satoshis: bigint,
     public script: number[],
-    public status?: TxoStatus,
+    public status: TxoStatus,
   ) {}
 }

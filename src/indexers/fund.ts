@@ -10,6 +10,7 @@ import {
   TxoStatus,
   Outpoint,
   type Ingest,
+  IndexMode,
 } from "../models";
 import type { Ordinal } from "./remote-types";
 
@@ -48,7 +49,7 @@ export class FundIndexer extends Indexer {
             new Outpoint(u.outpoint),
             BigInt(u.satoshis),
             new P2PKH().lock(Utils.fromBase58Check(owner).data).toBinary(),
-            TxoStatus.TRUSTED,
+            TxoStatus.Trusted,
           );
           txo.owner = owner;
           if (u.height) {
@@ -71,7 +72,7 @@ export class FundIndexer extends Indexer {
                 height: t.block.height,
                 idx: Number(t.block.idx),
                 checkSpends: true,
-                downloadOnly: this.syncMode === TxoStatus.TRUSTED,
+                downloadOnly: this.mode === IndexMode.Trust,
               }) as Ingest,
           ),
         );

@@ -17,6 +17,7 @@ import {
 import type { BlockHeader } from "../models/block-header";
 import type { Network } from "../casemod-spv";
 import type { Outpoint } from "../models/outpoint";
+import type { Ordinal } from "../indexers/remote-types";
 
 const APIS = {
   mainnet: "https://ordinals.gorillapool.io",
@@ -153,5 +154,22 @@ export class OneSatProvider
       body,
     });
     return resp.ok ? (resp.json() as Promise<(string | undefined)[]>) : [];
+  }
+
+  async getTxo(outpoint: Outpoint): Promise<Ordinal | undefined> {
+    const resp = await fetch(
+      `${APIS[this.network]}/api/txos/outpoint/${outpoint.toString()}`,
+    );
+    return resp.ok ? (resp.json() as Promise<Ordinal>) : undefined;
+  }
+  async getTxos(outpoints: Outpoint[]): Promise<Ordinal[]> {
+    const resp = await fetch(`${APIS[this.network]}/api/txos/outpoints`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(outpoints)
+    });
+    return resp.ok ? (resp.json() as Promise<Ordinal[]>) : [];
   }
 }

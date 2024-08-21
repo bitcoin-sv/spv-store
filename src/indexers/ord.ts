@@ -5,6 +5,7 @@ import type { Ordinal } from "./remote-types";
 import {
   IndexData,
   Indexer,
+  IndexMode,
   Outpoint,
   parseAddress,
   Txo,
@@ -12,6 +13,7 @@ import {
   type Event,
   type Ingest,
 } from "../models";
+import { OneSatProvider } from "../providers/1sat-provider";
 
 export interface File {
   hash: string;
@@ -21,17 +23,10 @@ export interface File {
   json?: { [key: string]: any };
 }
 
-export interface OriginData {
+export interface Origin {
+  outpoint: Outpoint;
+  nonce?: number;
   insc?: Inscription;
-  map?: { [key: string]: any };
-}
-
-export class Origin {
-  constructor(
-    public outpoint: string,
-    public nonce: number,
-    public data: OriginData = {},
-  ) {}
 }
 
 export interface Inscription {
@@ -48,7 +43,7 @@ export class Ord {
 export class OrdIndexer extends Indexer {
   tag = "ord";
 
-  parse(ctx: IndexContext, vout: number): IndexData | undefined {
+  async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     const script = ctx.tx.outputs[vout].lockingScript;
     let fromPos: number | undefined;
@@ -68,7 +63,6 @@ export class OrdIndexer extends Indexer {
     const ord: Ord = {};
     if (!txo.owner) txo.owner = parseAddress(script, 0);
 
-    const events: Event[] = [];
     const deps: string[] = [];
     if (fromPos !== undefined) {
       const insc = (ord.insc = {
@@ -76,7 +70,6 @@ export class OrdIndexer extends Indexer {
         fields: {},
       } as Inscription);
       const script = ctx.tx.outputs[vout].lockingScript;
-      // const events: { id: string, value: string }[] = []
       for (let i = fromPos; i < script.chunks.length; i += 2) {
         const field = script.chunks[i];
         if (field.op == OP.OP_ENDIF) {
@@ -111,36 +104,19 @@ export class OrdIndexer extends Indexer {
             insc.file.hash = Buffer.from(Hash.sha256(value.data)).toString(
               "hex",
             );
-            events.push({ id: "hash", value: insc.file.hash });
             if (value.data?.length <= 1024) {
               try {
-                insc.file.text = new TextDecoder("utf8", {
+                const text = new TextDecoder("utf8", {
                   fatal: true,
-                }).decode(Buffer.from(value.data));
-                const words = new Set<string>();
-                insc.file.text.split(/\W+/).forEach((word) => {
-                  if (word.length > 3 && word.length < 20) {
-                    words.add(word);
-                  }
-                });
-                words.forEach((word) =>
-                  events.push({ id: "word", value: word }),
-                );
+                }).decode(Buffer.from(value.data));              
+                insc.file.json = JSON.parse(text);
               } catch {
                 console.log("Error parsing text");
-              }
-              if (insc.file.text) {
-                try {
-                  insc.file.json = JSON.parse(insc.file.text);
-                } catch {
-                  console.log("Error parsing json");
-                }
               }
             }
             break;
           case 1:
             insc.file.type = Buffer.from(value.data || []).toString();
-            events.push({ id: "type", value: insc.file.type });
             break;
           case 3:
             if (!value.data || value.data.length != 36) break;
@@ -153,7 +129,6 @@ export class OrdIndexer extends Indexer {
               )
                 continue;
               insc.parent = parent.toString();
-              events.push({ id: "parent", value: parent.toString() });
             } catch {
               console.log("Error parsing parent outpoint");
             }
@@ -172,14 +147,28 @@ export class OrdIndexer extends Indexer {
     }
     let inSat = 0n;
     for (const spend of ctx.spends) {
-      deps.push(spend.outpoint.toString());
+      // deps.push(spend.outpoint.toString());
       if (inSat == outSat && spend.satoshis == 1n) {
         if ((spend.data.ord?.data as Ord)?.origin) {
-          ord.origin = Object.assign(
-            {},
-            spend.data.ord?.data?.origin,
-          ) as Origin;
-          ord.origin.nonce++;
+          ord.origin = {
+            ...spend.data.ord.data.origin,
+          };
+          if (ord.origin?.nonce) {
+            ord.origin.nonce++;
+          }
+        } else if (this.mode !== IndexMode.Verify) {
+          const provider = new OneSatProvider(this.network)
+          const txo = await provider.getTxo(spend.outpoint)
+          if (txo?.origin?.data?.insc) {
+            ord.origin = {
+              outpoint: new Outpoint(txo.origin.outpoint),
+              insc: { file: txo.origin.data.insc.file },
+              nonce: 0,
+            };
+          }
+          if (this.mode == IndexMode.TrustAndVerify) {
+            //TODO: queue deps
+          }
         }
         break;
       } else if (inSat > outSat) {
@@ -188,23 +177,16 @@ export class OrdIndexer extends Indexer {
       inSat += spend.satoshis;
     }
     if (!ord.origin) {
-      ord.origin = new Origin(txo.outpoint.toString(), 0);
-    }
-
-    if (ord.origin) {
-      ord.origin.data = txo.data.ord?.data?.origin?.data;
-      if (txo.data.map) {
-        ord.origin.data.map = Object.assign(
-          ord.origin.data?.map || {},
-          txo.data.map.data,
-        );
-      }
-      events.push({ id: "origin", value: ord.origin.outpoint });
+      ord.origin = {
+        outpoint: txo.outpoint,
+        nonce: 0,
+      };
     }
 
     if (txo.owner && this.owners.has(txo.owner)) {
-      events.push({ id: "address", value: txo.owner });
-      return new IndexData(ord, deps, events);
+      return new IndexData(ord, deps, [
+        { id: "address", value: txo.owner }
+      ]);
     }
     return new IndexData(ord);
   }
@@ -216,95 +198,99 @@ export class OrdIndexer extends Indexer {
       let offset = 0;
       let utxos: Ordinal[] = [];
       offset = 0;
-      do {
-        const url = `https://ordinals.gorillapool.io/api/txos/address/${owner}/unspent?limit=${limit}&offset=${offset}&bsv20=false`;
-        const resp = await fetch(url);
-        utxos = ((await resp.json()) as Ordinal[]) || [];
-        const txos: Txo[] = [];
-        for (const u of utxos) {
-          const ord: Ord = {};
-          if (u.origin?.data?.bsv20) continue;
-          const events: Event[] = [{ id: "address", value: owner }];
-          if (u.origin?.data?.insc && u.origin?.data?.insc?.file) {
-            ord.insc = { file: u.origin.data.insc.file };
-            if (ord.insc.file.type) {
-              events.push({ id: "type", value: ord.insc.file.type });
+      if (this.mode !== IndexMode.Verify) {
+        do {
+          const url = `https://ordinals.gorillapool.io/api/txos/address/${owner}/unspent?limit=${limit}&offset=${offset}&bsv20=false`;
+          const resp = await fetch(url);
+          utxos = ((await resp.json()) as Ordinal[]) || [];
+          const txos: Txo[] = [];
+          for (const u of utxos) {
+            const ord: Ord = {};
+            if (u.origin?.data?.bsv20) continue;
+            const events: Event[] = [{ id: "address", value: owner }];
+            if (u.origin?.data?.insc && u.origin?.data?.insc?.file) {
+              ord.insc = { file: u.origin.data.insc.file };
             }
+            if (u.origin?.data?.insc) {
+              ord.origin = {
+                outpoint: new Outpoint(u.origin.outpoint),
+                nonce: 0,
+                insc: { file: u.origin.data.insc.file },
+              };
+            }
+            if (!ord.origin && !ord.insc) continue;
+            const txo = new Txo(
+              new Outpoint(u.outpoint),
+              1n,
+              new P2PKH().lock(Utils.fromBase58Check(owner).data).toBinary(),
+              TxoStatus.Trusted,
+            );
+            if (u.height) {
+              txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
+            }
+            txo.data[this.tag] = new IndexData(ord, undefined, events);
+            if (u.data?.list && u.data?.list.payout && u.data?.list.price) {
+              const price = BigInt(u.data.list.price);
+              txo.data.list = new IndexData(
+                {
+                  payout: Utils.toArray(u.data.list.payout, "base64"),
+                  price,
+                },
+                undefined,
+                [{ id: "price", value: price.toString(16).padStart(16, "0") }],
+              );
+            }
+            lastHeight = Math.max(lastHeight, u.height || 0);
+            txos.push(txo);
           }
-          if (u.origin) {
-            ord.origin = new Origin(u.origin.outpoint, 0);
-            events.push({ id: "origin", value: ord.origin.outpoint });
-          }
-          if (!ord.origin && !ord.insc) continue;
-          const txo = new Txo(
-            new Outpoint(u.outpoint),
-            1n,
-            new P2PKH().lock(Utils.fromBase58Check(owner).data).toBinary(),
-            TxoStatus.TRUSTED,
-          );
-          if (u.height) {
-            txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
-          }
-          txo.data[this.tag] = new IndexData(ord, undefined, events);
-          if (u.data?.list && u.data?.list.payout && u.data?.list.price) {
-            const price = BigInt(u.data.list.price);
-            txo.data.list = new IndexData(
+
+          await txoStore.storage.putMany(txos);
+          if (this.mode !== IndexMode.Trust) {
+            const resp = await fetch(
+              `https://ordinals.gorillapool.io/api/inscriptions/ancestors`,
               {
-                payout: Utils.toArray(u.data.list.payout, "base64"),
-                price,
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(txos.map((t) => t.outpoint)),
               },
-              undefined,
-              [{ id: "price", value: price.toString(16).padStart(16, "0") }],
+            );
+            const ancestors = (await resp.json()) as {
+              txid: string;
+              idx: string;
+              height?: number;
+            }[];
+            await txoStore.queue(
+              ancestors.map(
+                (u) =>
+                  ({
+                    txid: u.txid,
+                    height: Number(u.height || Date.now()),
+                    idx: Number(u.idx || 0),
+                    isDepOnly: true,
+                  }) as Ingest,
+              ),
             );
           }
-          lastHeight = Math.max(lastHeight, u.height || 0);
-          txos.push(txo);
-        }
 
-        await txoStore.storage.putMany(txos);
-        if (this.syncMode !== TxoStatus.TRUSTED) {
-          const resp = await fetch(
-            `https://ordinals.gorillapool.io/api/inscriptions/ancestors`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(txos.map((t) => t.outpoint)),
-            },
-          );
-          const ancestors = (await resp.json()) as {
-            txid: string;
-            idx: string;
-            height?: number;
-          }[];
           await txoStore.queue(
-            ancestors.map(
-              (u) =>
+            txos.map(
+              (t) =>
                 ({
-                  txid: u.txid,
-                  height: Number(u.height || Date.now()),
-                  idx: Number(u.idx || 0),
-                  isDepOnly: true,
+                  txid: t.outpoint.txid,
+                  height: t.block.height,
+                  idx: Number(t.block.idx),
+                  checkSpends: true,
+                  downloadOnly: this.mode === IndexMode.Trust,
                 }) as Ingest,
             ),
           );
-        }
 
-        await txoStore.queue(
-          txos.map(
-            (t) =>
-              ({
-                txid: t.outpoint.txid,
-                height: t.block.height,
-                idx: Number(t.block.idx),
-                checkSpends: true,
-                downloadOnly: this.syncMode === TxoStatus.TRUSTED,
-              }) as Ingest,
-          ),
-        );
-
-        offset += limit;
-      } while (utxos.length == limit);
+          offset += limit;
+        } while (utxos.length == limit);
+      }
     }
     return lastHeight;
   }
+
+  // async queueDeps(txoStore: TxoStore, out)
 }

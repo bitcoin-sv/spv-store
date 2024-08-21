@@ -47,24 +47,10 @@ export class TxoStore {
     return this.storage.search(lookup, limit, from);
   }
 
-  // async parse(tx: Transaction): Promise<IndexContext> {
-  // }
-
-  async ingest(
-    tx: Transaction,
-    fromRemote = false,
-    isDepOnly = false,
-    checkSpends = false,
-  ): Promise<IndexContext> {
+  async parse(tx: Transaction, fromRemote = false): Promise<IndexContext> {
     const txid = tx.id("hex") as string;
     console.log("Ingesting", txid);
     const block: Block = { height: Date.now(), idx: 0n };
-    if (tx.merklePath) {
-      block.height = tx.merklePath.blockHeight;
-      block.idx = BigInt(
-        tx.merklePath.path[0].find((p) => p.hash == txid)?.offset || 0,
-      );
-    }
 
     const ctx: IndexContext = {
       txid,
@@ -93,34 +79,34 @@ export class TxoStore {
       }
     }
 
-    ctx.spends = await this.storage.setSpends(
-      tx.inputs.map(
-        (i) => new Outpoint(`${i.sourceTXID}_${i.sourceOutputIndex}`),
-      ),
-      txid,
+    const spends = await this.storage.getMany(
+      tx.inputs.map((i) => new Outpoint(i.sourceTXID!, i.sourceOutputIndex))
     );
-
-    const txos = await this.storage.getMany(
-      tx.outputs.map((_, i) => new Outpoint(txid, i)),
-    );
-    for (let [vout, txo] of txos.entries()) {
-      if (txo) {
-        if (!isDepOnly && txo.status == TxoStatus.DEPENDENCY) {
-          txo.status = TxoStatus.CONFIRMED;
-        }
-        txo.satoshis = BigInt(tx.outputs[vout].satoshis!);
-        txo.script = tx.outputs[vout].lockingScript.toBinary();
-      } else {
+    for (const [vin, input] of tx.inputs.entries()) {
+      let spend = spends[vin]
+      if(!spend) {
+        spend = new Txo(
+          new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
+          BigInt(input.sourceTransaction!.outputs[input.sourceOutputIndex].satoshis!),
+          input.sourceTransaction!.outputs[input.sourceOutputIndex].lockingScript.toBinary(),
+          TxoStatus.Unindexed
+        )
+      }
+      spend.spend = txid
+      ctx.spends.push(spend)
+    }
+    
+    const txos = await this.storage.getMany(tx.outputs.map((_, i) => new Outpoint(txid, i)));
+    for (let [vout, output] of tx.outputs.entries()) {
+      let txo = txos[vout]
+      if(!txo) {
         txo = new Txo(
           new Outpoint(txid, vout),
-          BigInt(tx.outputs[vout].satoshis!),
-          tx.outputs[vout].lockingScript.toBinary(),
-          isDepOnly ? TxoStatus.DEPENDENCY : TxoStatus.CONFIRMED,
-        );
+          BigInt(output.satoshis!),
+          output.lockingScript.toBinary(),
+          TxoStatus.Unindexed
+        )
       }
-      txo.block = block;
-      txo.tags = [];
-      ctx.txos.push(txo);
       for (const i of this.indexers) {
         try {
           const data = i.parse && i.parse(ctx, vout);
@@ -134,8 +120,36 @@ export class TxoStore {
     }
 
     this.indexers.forEach((i) => i.preSave && i.preSave(ctx));
+    return ctx;
+  }
+
+  async ingest(
+    tx: Transaction,
+    fromRemote = false,
+    isDepOnly = false,
+    checkSpends = false,
+  ): Promise<IndexContext> {
+    const txid = tx.id("hex") as string;
+    console.log("Ingesting", txid);
+    const block: Block = { height: Date.now(), idx: 0n };
+    if (tx.merklePath) {
+      block.height = tx.merklePath.blockHeight;
+      block.idx = BigInt(
+        tx.merklePath.path[0].find((p) => p.hash == txid)?.offset || 0,
+      );
+    }
+
+    const ctx = await this.parse(tx, fromRemote);
+
+    ctx.txos.forEach((txo) => {
+      txo.block = block;
+      if(txo.status == TxoStatus.Unindexed || txo.status == TxoStatus.Dependency) {
+        txo.status = isDepOnly ? TxoStatus.Dependency : TxoStatus.Confirmed;
+      }
+    })
+    await this.storage.putMany(ctx.spends);
     await this.storage.putMany(ctx.txos);
-    await this.stores.txns!.saveTx(tx);
+    // await this.stores.txns!.saveTx(tx);
     if (checkSpends) {
       await this.updateSpends(ctx.txos.map((t) => t.outpoint));
     }

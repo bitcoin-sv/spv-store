@@ -1,7 +1,7 @@
 /* eslint-disable no-case-declarations */
 import type { IndexContext } from "../models/index-context";
 import { IndexData } from "../models/index-data";
-import { Indexer } from "../models/indexer";
+import { Indexer, IndexMode } from "../models/indexer";
 import { Txo, TxoStatus } from "../models/txo";
 import { Ord } from "./ord";
 import { Utils } from "@bsv/sdk";
@@ -167,7 +167,7 @@ export class Bsv21Indexer extends Indexer {
               new Outpoint(u.txid, u.vout),
               1n,
               Utils.toArray(u.script, "base64"),
-              TxoStatus.TRUSTED,
+              TxoStatus.Trusted,
             );
             if (u.height) {
               txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
@@ -215,7 +215,7 @@ export class Bsv21Indexer extends Indexer {
                   height: t.block.height,
                   idx: Number(t.block.idx),
                   checkSpends: true,
-                  downloadOnly: this.syncMode === TxoStatus.TRUSTED,
+                  downloadOnly: this.mode === IndexMode.Trust,
                 }) as Ingest,
             ),
           );

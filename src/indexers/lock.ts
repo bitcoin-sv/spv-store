@@ -1,5 +1,5 @@
 import type { IndexContext } from "../models/index-context";
-import { Indexer } from "../models/indexer";
+import { Indexer, IndexMode as IndexMode } from "../models/indexer";
 import { IndexData } from "../models/index-data";
 import { Script, Utils } from "@bsv/sdk";
 import { LockTemplate, lockPrefix, lockSuffix } from "../templates/lock";
@@ -61,7 +61,7 @@ export class LockIndexer extends Indexer {
             new Outpoint(u.outpoint),
             BigInt(u.satoshis),
             new LockTemplate().lock(owner, u.data.lock.until).toBinary(),
-            TxoStatus.TRUSTED,
+            TxoStatus.Trusted,
           );
           if (u.height) {
             txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
@@ -89,7 +89,7 @@ export class LockIndexer extends Indexer {
                 height: t.block.height,
                 idx: Number(t.block.idx),
                 checkSpends: true,
-                downloadOnly: this.syncMode === TxoStatus.TRUSTED,
+                downloadOnly: this.mode === IndexMode.Trust,
               }) as Ingest,
           ),
         );
