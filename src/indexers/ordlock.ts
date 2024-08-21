@@ -18,13 +18,6 @@ export class Listing {
     public payout: number[] = [],
     public price = 0n,
   ) {}
-
-  toJSON() {
-    return {
-      payout: Utils.toBase64(this.payout),
-      price: this.price.toString(),
-    };
-  }
 }
 
 export class OrdLockIndexer extends Indexer {

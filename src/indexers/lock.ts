@@ -6,9 +6,8 @@ import { LockTemplate, lockPrefix, lockSuffix } from "../templates/lock";
 import { Txo, TxoStatus } from "../models/txo";
 import type { Event } from "../models/event";
 import { TxoStore } from "../stores/txo-store";
-import { Ingest } from "../models/ingest";
 import type { Ordinal } from "./remote-types";
-import { Block, Outpoint } from "../models";
+import { Outpoint } from "../models";
 
 const PREFIX = Buffer.from(lockPrefix, "hex");
 const SUFFIX = Buffer.from(lockSuffix, "hex");
@@ -55,22 +54,9 @@ export class LockIndexer extends Indexer {
           `https://ordinals.gorillapool.io/api/locks/address/${owner}/unspent?limit=${limit}&offset=${offset}`,
         );
         utxos = ((await resp.json()) as Ordinal[]) || [];
-
-        const ingests = utxos.map(
-          (u) =>
-            new Ingest(
-              u.txid,
-              u.height,
-              u.idx || 0,
-              false,
-              true,
-              this.syncMode == TxoStatus.TRUSTED,
-            ),
-        );
-        await txoStore.queue(ingests);
-
-        const txos = utxos.map((u) => {
-          if (!u.data?.lock || !u.data.lock.until) return;
+        const txos: Txo[] = [];
+        for (const u of utxos) {
+          if (!u.data?.lock || !u.data.lock.until) continue;
           const txo = new Txo(
             new Outpoint(u.outpoint),
             BigInt(u.satoshis),
@@ -78,7 +64,7 @@ export class LockIndexer extends Indexer {
             TxoStatus.TRUSTED,
           );
           if (u.height) {
-            txo.block = new Block(u.height, BigInt(u.idx || 0));
+            txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
           }
           txo.data[this.tag] = new IndexData(
             new Lock(u.data.lock.until),
@@ -92,9 +78,19 @@ export class LockIndexer extends Indexer {
             ],
           );
           lastHeight = Math.max(lastHeight, u.height || 0);
-          return txo.toObject();
-        });
-        await txoStore.storage.putMany(txos.filter((t) => t) as Txo[]);
+          txo.buildIndex();
+          txos.push(txo);
+        }
+        await txoStore.storage.putMany(txos);
+        await txoStore.queue(
+          txos.map((t) => ({
+            txid: t.outpoint.txid,
+            height: t.block.height,
+            idx: Number(t.block.idx),
+            checkSpends: true,
+            downloadOnly: this.syncMode === TxoStatus.TRUSTED,
+          })),
+        );
         offset += limit;
       } while (utxos.length == 100);
     }

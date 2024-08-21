@@ -1,28 +1,37 @@
 import type { ChainTracker } from "@bsv/sdk";
 import type { BlockStorage } from "../storage/block-storage";
-import type { Services } from "../case-mod-spv";
+import type { Services } from "../casemod-spv";
 import type { EventEmitter } from "../lib/event-emitter";
 import type { BlockHeader } from "../models";
 
 const PAGE_SIZE = 10000;
 
 export class BlockStore implements ChainTracker {
-  private syncInProgress = false;
+  private syncRunning: Promise<void> | undefined;
   private stopSync = false;
   constructor(
     public storage: BlockStorage,
     public services: Services,
-    public emitter?: EventEmitter
+    public emitter?: EventEmitter,
   ) {}
 
   async destroy() {
     this.stopSync = true;
+    await this.syncRunning;
     await this.storage.destroy();
   }
 
   async sync(returnOnChaintip = true): Promise<void> {
-    if (this.syncInProgress) return;
-    this.syncInProgress = true;
+    if (this.syncRunning) return;
+    // const doSync = async (returnOnChaintip: boolean) =>
+    this.syncRunning = this.doSync(returnOnChaintip);
+    if (returnOnChaintip) {
+      await this.syncRunning;
+      this.syncRunning = undefined;
+    }
+  }
+
+  private async doSync(returnOnChaintip = true): Promise<void> {
     let lastHeight = 1;
     const syncedBlock = await this.storage.getSynced();
     if (syncedBlock) {
@@ -32,10 +41,10 @@ export class BlockStore implements ChainTracker {
       try {
         let blocks = await this.services.blocks.getBlocks(
           lastHeight,
-          PAGE_SIZE
+          PAGE_SIZE,
         );
         console.log(
-          `Syncing ${PAGE_SIZE} blocks from ${lastHeight}: ${blocks.length} received`
+          `Syncing ${PAGE_SIZE} blocks from ${lastHeight}: ${blocks.length} received`,
         );
         await this.storage.putMany(blocks);
         if (blocks.length == 0) break;
@@ -51,11 +60,12 @@ export class BlockStore implements ChainTracker {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
-    this.syncInProgress = false;
+    // this.syncInProgress = false;
     if (returnOnChaintip || this.stopSync) {
       return;
     }
-    setTimeout(() => this.sync(returnOnChaintip), 1000 * 60);
+    await new Promise((resolve) => setTimeout(resolve, 660 * 1000));
+    return this.doSync(returnOnChaintip);
   }
 
   async isValidRootForHeight(root: string, height: number): Promise<boolean> {

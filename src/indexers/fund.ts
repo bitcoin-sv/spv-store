@@ -3,11 +3,9 @@ import { parseAddress } from "../models/address";
 import { P2PKH, Utils } from "@bsv/sdk";
 import { TxoStore } from "../stores/txo-store";
 import {
-  Block,
   type Event,
   Indexer,
   IndexData,
-  Ingest,
   Txo,
   TxoStatus,
   Outpoint,
@@ -26,9 +24,11 @@ export class FundIndexer extends Indexer {
     if (address && this.owners.has(address)) {
       txo.owner = address;
       events.push({ id: "address", value: address });
+      return new IndexData(address, [], events);
     }
-    return new IndexData(address, [], events);
+    return undefined;
   }
+
   async sync(txoStore: TxoStore): Promise<number> {
     const limit = 10000;
     let lastHeight = 0;
@@ -40,21 +40,9 @@ export class FundIndexer extends Indexer {
           `https://ordinals.gorillapool.io/api/txos/address/${owner}/unspent?limit=${limit}&offset=${offset}`,
         );
         utxos = ((await resp.json()) as Ordinal[]) || [];
-        const ingests = utxos.map(
-          (u) =>
-            new Ingest(
-              u.txid,
-              u.height,
-              u.idx || 0,
-              false,
-              true,
-              this.syncMode == TxoStatus.TRUSTED,
-            ),
-        );
-        await txoStore.queue(ingests);
-
-        const txos = utxos.map((u) => {
-          if (u.satoshis <= 1) return;
+        const txos: Txo[] = [];
+        for (const u of utxos) {
+          if (u.satoshis <= 1) continue;
           const txo = new Txo(
             new Outpoint(u.outpoint),
             BigInt(u.satoshis),
@@ -63,7 +51,7 @@ export class FundIndexer extends Indexer {
           );
           txo.owner = owner;
           if (u.height) {
-            txo.block = new Block(u.height, BigInt(u.idx || 0));
+            txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
           }
           txo.data[this.tag] = new IndexData(
             owner,
@@ -71,9 +59,19 @@ export class FundIndexer extends Indexer {
             [{ id: "address", value: owner }],
           );
           lastHeight = Math.max(lastHeight, u.height || 0);
-          return txo.toObject();
-        });
-        await txoStore.storage.putMany(txos.filter((t) => t) as Txo[]);
+          txo.buildIndex();
+          txos.push(txo);
+        }
+        await txoStore.storage.putMany(txos);
+        await txoStore.queue(
+          txos.map((t) => ({
+            txid: t.outpoint.txid,
+            height: t.block.height,
+            idx: Number(t.block.idx),
+            checkSpends: true,
+            downloadOnly: this.syncMode === TxoStatus.TRUSTED,
+          })),
+        );
         offset += limit;
       } while (utxos.length == 100);
     }

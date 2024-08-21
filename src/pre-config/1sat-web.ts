@@ -4,7 +4,7 @@ import {
   type Network,
   type Services,
   type Stores,
-} from "../case-mod-spv";
+} from "../casemod-spv";
 import type { Indexer } from "../models/indexer";
 import { BlockStorageIDB, TxnStorageIDB, TxoStorageIDB } from "../storage/idb";
 import { BlockStore, TxnStore, TxoStore } from "../stores";

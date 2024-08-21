@@ -3,10 +3,9 @@ import { Txo } from "../../models/txo";
 import { IngestStatus, type Ingest } from "../../models/ingest";
 import type { TxoStorage } from "../txo-storage";
 import type { Outpoint } from "../../models/outpoint";
-import type { Spend } from "../../models/spend";
 import type { Indexer } from "../../models/indexer";
 import type { TxoLookup, TxoResults } from "../../models/search";
-import type { Network } from "../../case-mod-spv";
+import type { Network } from "../../casemod-spv";
 import type { TxLog } from "../../services/inv-service";
 
 const TXO_DB_VERSION = 1;
@@ -16,8 +15,8 @@ export interface TxoSchema extends DBSchema {
     key: [string, number];
     value: Txo;
     indexes: {
+      spend: string;
       events: string;
-      spends: string;
       tags: string;
       // owner: string;
     };
@@ -48,12 +47,12 @@ export interface TxoSchema extends DBSchema {
 export class TxoStorageIDB implements TxoStorage {
   private constructor(
     public db: IDBPDatabase<TxoSchema>,
-    public indexers: Indexer[] = []
+    public indexers: Indexer[] = [],
   ) {}
   static async init(
     accountId: string,
     indexers: Indexer[] = [],
-    network: Network
+    network: Network,
   ): Promise<TxoStorageIDB> {
     const db = await openDB<TxoSchema>(
       `txostore-${accountId}-${network}`,
@@ -63,8 +62,8 @@ export class TxoStorageIDB implements TxoStorage {
           const txos = db.createObjectStore("txos", {
             keyPath: ["outpoint.txid", "outpoint.vout"],
           });
+          txos.createIndex("spend", "spend");
           txos.createIndex("events", "events", { multiEntry: true });
-          txos.createIndex("spends", "spend.txid", { multiEntry: true });
           txos.createIndex("tags", "tags", { multiEntry: true });
           const ingestQueue = db.createObjectStore("ingestQueue", {
             keyPath: "txid",
@@ -75,7 +74,7 @@ export class TxoStorageIDB implements TxoStorage {
             keyPath: ["owner", "txid"],
           }).createIndex("height", ["owner", "height", "idx"]);
         },
-      }
+      },
     );
     return new TxoStorageIDB(db, indexers);
   }
@@ -95,14 +94,14 @@ export class TxoStorageIDB implements TxoStorage {
   async getMany(outpoints: Outpoint[]): Promise<(Txo | undefined)[]> {
     const t = this.db.transaction("txos");
     const txos = await Promise.all(
-      outpoints.map((outpoint) => t.store.get([outpoint.txid, outpoint.vout]))
+      outpoints.map((outpoint) => t.store.get([outpoint.txid, outpoint.vout])),
     );
     await t.done;
     return txos;
   }
 
   async getBySpend(txid: string): Promise<(Txo | undefined)[]> {
-    return this.db.getAllFromIndex("txos", "spends", txid);
+    return this.db.getAllFromIndex("txos", "spend", txid);
   }
 
   async put(txo: Txo): Promise<void> {
@@ -116,17 +115,42 @@ export class TxoStorageIDB implements TxoStorage {
     await t.done;
   }
 
-  async setSpend(outpoint: Outpoint, spend: Spend): Promise<void> {
-    const txo = await this.get(outpoint);
+  async setSpend(outpoint: Outpoint, spendTxid: string): Promise<Txo> {
+    const t = this.db.transaction("txos", "readwrite");
+    const txo = await t.store.get([outpoint.txid, outpoint.vout]);
     if (!txo) throw new Error("Txo not found");
-    txo.spend = spend;
-    await this.put(txo);
+    txo.events = [];
+    txo.tags = [];
+    txo.spend = spendTxid;
+    await t.store.put(txo);
+    await t.done;
+    return txo;
+  }
+
+  async setSpends(outpoints: Outpoint[], spendTxid: string): Promise<Txo[]> {
+    const t = this.db.transaction("txos", "readwrite");
+    const txos = await Promise.all([
+      ...outpoints.map(async (outpoint) => {
+        let txo = await t.store.get([outpoint.txid, outpoint.vout]);
+        if (!txo) {
+          txo = new Txo(outpoint, 0n, []);
+        } else {
+          txo.events = [];
+          txo.tags = [];
+        }
+        txo.spend = spendTxid;
+        await t.store.put(txo);
+        return txo;
+      }),
+    ]);
+    await t.done;
+    return txos;
   }
 
   async search(
     lookup: TxoLookup,
     limit = 10,
-    from?: string
+    from?: string,
   ): Promise<TxoResults> {
     const dbkey = lookup.toQueryKey();
     const start = from || dbkey;
@@ -134,7 +158,7 @@ export class TxoStorageIDB implements TxoStorage {
       start,
       dbkey + "\uffff",
       true,
-      false
+      false,
     );
     const indexName = lookup.id ? "events" : "tags";
     const results: TxoResults = { txos: [] };
@@ -167,8 +191,8 @@ export class TxoStorageIDB implements TxoStorage {
       "status",
       IDBKeyRange.bound(
         [IngestStatus.QUEUED],
-        [IngestStatus.DOWNLOADED, Number.MAX_SAFE_INTEGER]
-      )
+        [IngestStatus.DOWNLOADED, Number.MAX_SAFE_INTEGER],
+      ),
     );
     return queueLength;
   }
@@ -177,17 +201,17 @@ export class TxoStorageIDB implements TxoStorage {
     status: IngestStatus,
     limit: number,
     start: number = 0,
-    stop: number = 0
+    stop: number = 0,
   ): Promise<Ingest[]> {
     const query = IDBKeyRange.bound(
       [status, start],
-      [status, stop || Number.MAX_SAFE_INTEGER]
+      [status, stop || Number.MAX_SAFE_INTEGER],
     );
     const ingests = await this.db.getAllFromIndex(
       "ingestQueue",
       "status",
       query,
-      limit
+      limit,
     );
     return ingests;
   }
@@ -211,11 +235,11 @@ export class TxoStorageIDB implements TxoStorage {
 
   async getInvs(
     owner: string,
-    txids: string[]
+    txids: string[],
   ): Promise<(TxLog | undefined)[]> {
     const t = this.db.transaction("txLog", "readonly");
     const txLogs = await Promise.all(
-      txids.map((txid) => t.store.get([owner, txid]).catch(() => undefined))
+      txids.map((txid) => t.store.get([owner, txid]).catch(() => undefined)),
     );
     await t.done;
     return txLogs;

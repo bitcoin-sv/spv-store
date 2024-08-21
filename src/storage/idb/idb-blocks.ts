@@ -1,7 +1,7 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "@tempfix/idb";
 import type { BlockStorage } from "../block-storage";
 import type { BlockHeader } from "../../models/block-header";
-import type { Network } from "../../case-mod-spv";
+import type { Network } from "../../casemod-spv";
 
 const BLOCK_DB_VERSION = 1;
 
@@ -26,10 +26,10 @@ export class BlockStorageIDB implements BlockStorage {
         upgrade(db) {
           db.createObjectStore("blocks", { keyPath: "height" }).createIndex(
             "hash",
-            "hash"
+            "hash",
           );
         },
-      }
+      },
     );
 
     return new BlockStorageIDB(db);

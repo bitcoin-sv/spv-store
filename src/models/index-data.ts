@@ -8,8 +8,4 @@ export class IndexData {
     public deps: string[] = [],
     public events: Event[] = [],
   ) {}
-
-  toJSON() {
-    return this.data;
-  }
 }

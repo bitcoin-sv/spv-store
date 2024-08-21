@@ -6,8 +6,7 @@ import { Txo, TxoStatus } from "../models/txo";
 import { Ord } from "./ord";
 import { Utils } from "@bsv/sdk";
 import { TxoStore } from "../stores/txo-store";
-import { Ingest } from "../models/ingest";
-import { Block, Outpoint } from "../models";
+import { Outpoint } from "../models";
 import type { RemoteBsv20 } from "./remote-types";
 
 export enum Bsv21Status {
@@ -33,14 +32,8 @@ export class Bsv21 {
     Object.assign(this, props);
   }
 
-  toJSON(): any {
-    return {
-      ...this,
-      amt: this.amt.toString(),
-    };
-  }
-
   static fromJSON(obj: any): Bsv21 {
+    // if (typeof obj.id != "string" && !Array.isArray(obj.id)) return;
     const bsv21 = new Bsv21({
       id: new Outpoint(obj.id as string),
       ...obj,
@@ -149,10 +142,6 @@ export class Bsv21Indexer extends Indexer {
     }
   }
 
-  fromObj(obj: IndexData): IndexData {
-    return new IndexData(Bsv21.fromJSON(obj.data), obj.deps);
-  }
-
   async sync(txoStore: TxoStore): Promise<number> {
     const limit = 100;
     let lastHeight = 0;
@@ -164,22 +153,6 @@ export class Bsv21Indexer extends Indexer {
       for await (const token of balance) {
         if (!token.id) continue;
         console.log("importing", token.id);
-        if (this.syncMode !== TxoStatus.TRUSTED) {
-          resp = await fetch(
-            `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}/ancestors`,
-          );
-          const txids = (await resp.json()) as { [score: string]: string };
-          const txns = Object.entries(txids).map(([score, txid]) => {
-            const [height, idx] = score.split(".");
-            return new Ingest(
-              txid,
-              Number(height || Date.now()),
-              Number(idx || 0),
-              true,
-            );
-          });
-          await txoStore.queue(txns);
-        }
         // try {
         let offset = 0;
         let utxos: RemoteBsv20[] = [];
@@ -188,20 +161,8 @@ export class Bsv21Indexer extends Indexer {
             `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}?limit=${limit}&offset=${offset}&includePending=true`,
           );
           utxos = ((await resp.json()) as RemoteBsv20[]) || [];
-          const ingests = utxos.map(
-            (u) =>
-              new Ingest(
-                u.txid,
-                u.height,
-                Number(u.idx || 0),
-                false,
-                true,
-                this.syncMode === TxoStatus.TRUSTED,
-              ),
-          );
-          await txoStore.queue(ingests);
-
-          const txos = utxos.map((u) => {
+          const txos: Txo[] = [];
+          for (const u of utxos) {
             const txo = new Txo(
               new Outpoint(u.txid, u.vout),
               1n,
@@ -209,7 +170,7 @@ export class Bsv21Indexer extends Indexer {
               TxoStatus.TRUSTED,
             );
             if (u.height) {
-              txo.block = new Block(u.height, BigInt(u.idx || 0));
+              txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
             }
             txo.data.bsv21 = new IndexData(
               Bsv21.fromJSON({
@@ -243,10 +204,37 @@ export class Bsv21Indexer extends Indexer {
               );
             }
             lastHeight = Math.max(lastHeight, u.height || 0);
-            return txo.toObject();
-          });
+            txo.buildIndex();
+            txos.push(txo);
+          }
           await txoStore.storage.putMany(txos);
+          await txoStore.queue(
+            txos.map((t) => ({
+              txid: t.outpoint.txid,
+              height: t.block.height,
+              idx: Number(t.block.idx),
+              checkSpends: true,
+              downloadOnly: this.syncMode === TxoStatus.TRUSTED,
+            })),
+          );
           offset += limit;
+          // if (this.syncMode !== TxoStatus.TRUSTED) {
+          //   resp = await fetch(
+          //     `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}/ancestors`,
+          //   );
+          //   const txids = (await resp.json()) as { [score: string]: string };
+          //   await txoStore.queue(
+          //     Object.entries(txids).map(([score, txid]) => {
+          //       const [height, idx] = score.split(".");
+          //       return {
+          //         txid,
+          //         height: Number(height || Date.now()),
+          //         idx: Number(idx || 0),
+          //         isDep: true
+          //       }
+          //     })
+          //   );
+          // }
         } while (utxos.length == limit);
       }
     }

@@ -7,20 +7,12 @@ export enum IngestStatus {
   IMMUTABLE = 4,
 }
 
-export class Ingest {
-  status = IngestStatus.QUEUED;
-  constructor(
-    public txid: string,
-    public height: number,
-    public idx = 0,
-    public isDep = false,
-    public checkSpends = false,
-    public downloadOnly = false,
-  ) {
-    if (!idx) {
-      this.idx = 0;
-    } else if (typeof idx == "string") {
-      this.idx = parseInt(idx);
-    }
-  }
+export interface Ingest {
+  txid: string;
+  height: number;
+  idx: number;
+  isDepOnly?: boolean;
+  checkSpends?: boolean;
+  downloadOnly?: boolean;
+  status?: IngestStatus;
 }

@@ -13,7 +13,7 @@ import type {
   TxnService,
 } from "./services";
 import type { BlockStore, TxnStore, TxoStore } from "./stores";
-import type { BlockHeader, Outpoint, Txo } from "./models";
+import type { BlockHeader, IndexContext, Outpoint, Txo } from "./models";
 import { EventEmitter } from "./lib/event-emitter";
 
 export type Network = "mainnet" | "testnet";
@@ -38,7 +38,7 @@ export class CaseModSPV {
     public services: Services,
     public stores: Stores,
     public events = new EventEmitter(),
-    startSync = false
+    startSync = false,
   ) {
     if (startSync) this.sync();
   }
@@ -53,14 +53,14 @@ export class CaseModSPV {
     }
     this.events.emit(
       "destroyed",
-      "The CaseModSPV instance has been destroyed!"
+      "The CaseModSPV instance has been destroyed!",
     );
 
     this.events.removeAllListeners();
   }
 
   async broadcast(
-    tx: Transaction
+    tx: Transaction,
   ): Promise<BroadcastResponse | BroadcastFailure> {
     const resp = await this.stores.txns!.broadcast(tx);
     if (isBroadcastResponse(resp)) {
@@ -79,24 +79,24 @@ export class CaseModSPV {
       }
       await this.stores.txos!.storage.setState(
         "isSynced",
-        Date.now().toString()
+        Date.now().toString(),
       );
       this.events.emit("txosSynced");
     }
-    this.stores.txos!.processQueue();
-    this.stores.txos!.syncTxLogs();
-    if (this.interval) clearInterval(this.interval);
-    this.interval = setInterval(
-      () => this.stores.txos!.syncTxLogs(),
-      60 * 1000
-    );
     this.stores.blocks!.sync();
+    this.stores.txos!.processQueue();
+    // this.stores.txos!.syncTxLogs();
+    if (this.interval) clearInterval(this.interval);
+    // this.interval = setInterval(
+    //   () => this.stores.txos!.syncTxLogs(),
+    //   60 * 1000
+    // );
   }
 
   async search(
     lookup: TxoLookup,
     limit = 100,
-    from?: string
+    from?: string,
   ): Promise<TxoResults> {
     return this.stores.txos!.search(lookup, limit, from);
   }
@@ -105,12 +105,20 @@ export class CaseModSPV {
     return this.stores.txos!.storage.get(outpoint);
   }
 
+  async getTxos(outpoints: Outpoint[]): Promise<(Txo | undefined)[]> {
+    return this.stores.txos!.storage.getMany(outpoints);
+  }
+
   async getTx(
     txid: string,
-    fromRemote = false
+    fromRemote = false,
   ): Promise<Transaction | undefined> {
     return this.stores.txns!.loadTx(txid, fromRemote);
   }
+
+  // async parseTx(tx: Transaction): Promise<IndexContext> {
+  //   // return this.services.txns!.parse(tx);
+  // }
 
   async getSyncedBlock(): Promise<BlockHeader | undefined> {
     return this.stores.blocks!.storage.getSynced();

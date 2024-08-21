@@ -15,7 +15,7 @@ import {
   type TxnService,
 } from "../services";
 import type { BlockHeader } from "../models/block-header";
-import type { Network } from "../case-mod-spv";
+import type { Network } from "../casemod-spv";
 import type { Outpoint } from "../models/outpoint";
 
 const APIS = {

@@ -12,13 +12,6 @@ export class Bsv20 {
   public reason?: string;
   public fundAddress = "";
 
-  toJSON() {
-    return {
-      ...this,
-      amt: this.amt.toString(),
-    };
-  }
-
   static fromJSON(obj: any): Bsv20 {
     const bsv20 = new Bsv20();
     Object.assign(bsv20, {
@@ -60,9 +53,5 @@ export class Bsv20Indexer extends Indexer {
     } catch (e) {
       return;
     }
-  }
-
-  fromObj(obj: IndexData): IndexData {
-    return new IndexData(Bsv20.fromJSON(obj.data), obj.deps);
   }
 }

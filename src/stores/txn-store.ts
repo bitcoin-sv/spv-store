@@ -5,7 +5,7 @@ import {
   type BroadcastResponse,
   type Transaction,
 } from "@bsv/sdk";
-import type { Services, Stores } from "../case-mod-spv";
+import type { Services, Stores } from "../casemod-spv";
 import type { EventEmitter } from "../lib/event-emitter";
 
 export enum TxnStatus {
@@ -21,7 +21,7 @@ export class TxnStore {
     public storage: TxnStorage,
     public services: Services,
     public stores: Stores,
-    public events?: EventEmitter
+    public events?: EventEmitter,
   ) {}
 
   async destroy() {
@@ -29,7 +29,7 @@ export class TxnStore {
   }
 
   async broadcast(
-    tx: Transaction
+    tx: Transaction,
   ): Promise<BroadcastResponse | BroadcastFailure> {
     const resp = await this.services.broadcast.broadcast(tx);
     if (isBroadcastResponse(resp)) {
@@ -42,7 +42,7 @@ export class TxnStore {
 
   async loadTx(
     txid: string,
-    fromRemote = false
+    fromRemote = false,
   ): Promise<Transaction | undefined> {
     let tx = await this.storage.get(txid);
     if (!tx && fromRemote) {

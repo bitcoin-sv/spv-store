@@ -34,10 +34,6 @@ export abstract class Indexer {
     };
   }
 
-  fromObj(obj: IndexData): IndexData {
-    return obj;
-  }
-
   async sync(txoStore: TxoStore): Promise<number> {
     return 0;
   }

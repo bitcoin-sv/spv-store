@@ -1,9 +1,9 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "@tempfix/idb";
 import { MerklePath, Transaction } from "@bsv/sdk";
-import { Block } from "../../models/block";
+import { type Block } from "../../models/block";
 import { TxnStatus } from "../../stores/txn-store";
 import type { TxnStorage } from "../txn-storage";
-import type { Network } from "../../case-mod-spv";
+import type { Network } from "../../casemod-spv";
 
 const TXN_DB_VERSION = 1;
 
@@ -40,7 +40,7 @@ export class TxnStorageIDB implements TxnStorage {
       upgrade(db) {
         db.createObjectStore("txns", { keyPath: "txid" }).createIndex(
           "status",
-          ["status", "height"]
+          ["status", "height"],
         );
         db.createObjectStore("state", { keyPath: "key" });
       },
@@ -86,13 +86,13 @@ export class TxnStorageIDB implements TxnStorage {
     const txn: Txn = {
       txid: tx.id("hex"),
       rawtx: tx.toBinary(),
-      block: new Block(),
+      block: { height: Date.now(), idx: BigInt(0) },
       status: TxnStatus.PENDING,
     };
     if (tx.merklePath) {
       txn.block.height = tx.merklePath.blockHeight;
       txn.block.idx = BigInt(
-        tx.merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0
+        tx.merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0,
       );
       txn.proof = tx.merklePath.toBinary();
       txn.status = TxnStatus.CONFIRMED;
@@ -108,19 +108,19 @@ export class TxnStorageIDB implements TxnStorage {
         const txn: Txn = {
           txid: tx.id("hex"),
           rawtx: tx.toBinary(),
-          block: new Block(),
+          block: { height: Date.now(), idx: BigInt(0) },
           status: TxnStatus.PENDING,
         };
         if (tx.merklePath) {
           txn.block.height = tx.merklePath.blockHeight;
           txn.block.idx = BigInt(
-            tx.merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0
+            tx.merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0,
           );
           txn.proof = tx.merklePath.toBinary();
           txn.status = TxnStatus.CONFIRMED;
         }
         return t.store.put(txn);
-      })
+      }),
     );
     await t.done;
   }

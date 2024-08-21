@@ -8,5 +8,4 @@ export * from "./indexer";
 export * from "./ingest";
 export * from "./outpoint";
 export * from "./search";
-export * from "./spend";
 export * from "./txo";

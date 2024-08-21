@@ -18,10 +18,12 @@ export class Outpoint {
       this.txid = Utils.toHex(txidOrOutpoint);
       this.vout = vout;
       return;
-    } else {
+    } else if (Array.isArray(txidOrOutpoint) && txidOrOutpoint.length !== 36) {
       const reader = new Utils.Reader(txidOrOutpoint);
       this.txid = Utils.toHex(reader.read(32).reverse());
       this.vout = reader.readInt32LE();
+    } else {
+      throw new Error("Invalid Outpoint");
     }
   }
 
@@ -34,10 +36,6 @@ export class Outpoint {
     writer.write(Utils.toArray(this.txid, "hex").reverse());
     writer.writeUInt32LE(this.vout);
     return writer.toArray();
-  }
-
-  toJSON() {
-    return this.toString();
   }
 
   static fromJSON(json: string) {

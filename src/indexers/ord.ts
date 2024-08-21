@@ -3,10 +3,8 @@ import type { IndexContext } from "../models/index-context";
 import { TxoStore } from "../stores/txo-store";
 import type { Ordinal } from "./remote-types";
 import {
-  Block,
   IndexData,
   Indexer,
-  Ingest,
   Outpoint,
   parseAddress,
   Txo,
@@ -210,61 +208,21 @@ export class OrdIndexer extends Indexer {
     return new IndexData(ord);
   }
 
-  fromObj(obj: IndexData): IndexData {
-    const ord: Ord = {};
-    Object.assign(ord, obj.data);
-    return new IndexData(ord, obj.deps);
-  }
-
   async sync(txoStore: TxoStore): Promise<number> {
-    const limit = 10000;
+    const limit = 100;
     let lastHeight = 0;
     for await (const owner of this.owners) {
-      let txos: { txid: string; idx: string; height?: number }[] = [];
       let offset = 0;
-      if (this.syncMode !== TxoStatus.TRUSTED) {
-        do {
-          const resp = await fetch(
-            `https://ordinals.gorillapool.io/api/inscriptions/address/${owner}/ancestors?limit=${limit}&offset=${offset}`,
-          );
-          txos = (await resp.json()) as {
-            txid: string;
-            idx: string;
-            height?: number;
-          }[];
-          const txns = txos.map(
-            (t) =>
-              new Ingest(
-                t.txid,
-                t.height || Date.now(),
-                t.idx ? parseInt(t.idx) : 0,
-                true,
-              ),
-          );
-          await txoStore.queue(txns);
-        } while (txos.length == limit);
-      }
       let utxos: Ordinal[] = [];
       offset = 0;
       do {
         const url = `https://ordinals.gorillapool.io/api/txos/address/${owner}/unspent?limit=${limit}&offset=${offset}&bsv20=false`;
         const resp = await fetch(url);
         utxos = ((await resp.json()) as Ordinal[]) || [];
-        const ingests = utxos.map(
-          (u) =>
-            new Ingest(
-              u.txid,
-              u.height,
-              u.idx || 0,
-              false,
-              true,
-              this.syncMode === TxoStatus.TRUSTED,
-            ),
-        );
-        await txoStore.queue(ingests);
-
-        const txos = utxos.map((u) => {
+        const txos: Txo[] = [];
+        for (const u of utxos) {
           const ord: Ord = {};
+          if (u.origin?.data?.bsv20) continue;
           const events: Event[] = [{ id: "address", value: owner }];
           if (u.origin?.data?.insc && u.origin?.data?.insc?.file) {
             ord.insc = { file: u.origin.data.insc.file };
@@ -276,8 +234,7 @@ export class OrdIndexer extends Indexer {
             ord.origin = new Origin(u.origin.outpoint, 0);
             events.push({ id: "origin", value: ord.origin.outpoint });
           }
-
-          if (!ord.origin && !ord.insc) return;
+          if (!ord.origin && !ord.insc) continue;
           const txo = new Txo(
             new Outpoint(u.outpoint),
             1n,
@@ -285,7 +242,7 @@ export class OrdIndexer extends Indexer {
             TxoStatus.TRUSTED,
           );
           if (u.height) {
-            txo.block = new Block(u.height, BigInt(u.idx || 0));
+            txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
           }
           txo.data[this.tag] = new IndexData(ord, undefined, events);
           if (u.data?.list && u.data?.list.payout && u.data?.list.price) {
@@ -300,10 +257,45 @@ export class OrdIndexer extends Indexer {
             );
           }
           lastHeight = Math.max(lastHeight, u.height || 0);
-          return txo.toObject();
-        });
+          txo.buildIndex();
+          txos.push(txo);
+        }
 
-        await txoStore.storage.putMany(txos.filter((t) => t) as Txo[]);
+        await txoStore.storage.putMany(txos);
+        if (this.syncMode !== TxoStatus.TRUSTED) {
+          const resp = await fetch(
+            `https://ordinals.gorillapool.io/api/inscriptions/ancestors`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(txos.map((t) => t.outpoint.toString())),
+            },
+          );
+          const ancestors = (await resp.json()) as {
+            txid: string;
+            idx: string;
+            height?: number;
+          }[];
+          await txoStore.queue(
+            ancestors.map((u) => ({
+              txid: u.txid,
+              height: Number(u.height || Date.now()),
+              idx: Number(u.idx || 0),
+              isDep: true,
+            })),
+          );
+        }
+
+        await txoStore.queue(
+          txos.map((t) => ({
+            txid: t.outpoint.txid,
+            height: t.block.height,
+            idx: Number(t.block.idx),
+            checkSpends: true,
+            downloadOnly: this.syncMode === TxoStatus.TRUSTED,
+          })),
+        );
+
         offset += limit;
       } while (utxos.length == limit);
     }
