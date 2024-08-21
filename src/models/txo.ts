@@ -22,31 +22,4 @@ export class Txo {
     public script: number[],
     public status?: TxoStatus,
   ) {}
-
-  buildIndex(isDepOnly = false) {
-    this.tags = [];
-    this.events = [];
-    const blockStr = this.block.height.toString(10).padStart(7, "0");
-    const idxStr = this.block.idx.toString(10).padStart(9, "0");
-    const sort = `${blockStr}.${idxStr}`;
-    if (!this.spend && !isDepOnly) {
-      for (const [tag, data] of Object.entries(this.data)) {
-        this.tags.push(`${tag}:${sort}`);
-        for (const e of data.events) {
-          this.events.push(`${tag}:${e.id}:${e.value}:${sort}`);
-        }
-      }
-    }
-  }
-
-  static hydrate(obj: Txo) {
-    const txo = new Txo(
-      new Outpoint(obj.outpoint.txid, obj.outpoint.vout),
-      BigInt(obj.satoshis),
-      obj.script,
-      obj.status,
-    );
-    Object.assign(txo, obj);
-    return txo;
-  }
 }

@@ -1,8 +1,8 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "@tempfix/idb";
-import { Txo } from "../../models/txo";
+import { Txo, TxoStatus } from "../../models/txo";
 import { IngestStatus, type Ingest } from "../../models/ingest";
 import type { TxoStorage } from "../txo-storage";
-import type { Outpoint } from "../../models/outpoint";
+import { Outpoint } from "../../models/outpoint";
 import type { Indexer } from "../../models/indexer";
 import type { TxoLookup, TxoResults } from "../../models/search";
 import type { Network } from "../../casemod-spv";
@@ -42,6 +42,35 @@ export interface TxoSchema extends DBSchema {
       value: string;
     };
   };
+}
+
+function hydrateTxo(obj: Txo) {
+  obj.outpoint = new Outpoint(obj.outpoint.txid, obj.outpoint.vout);
+  return obj;
+  // const txo = new Txo(
+  //   obj.outpoint,
+  //   obj.satoshis,
+  //   obj.script,
+  //   obj.status,
+  // );
+  // Object.assign(txo, obj);
+  // return txo;
+}
+
+function buildTxoIndex(txo: Txo) {
+  txo.tags = [];
+  txo.events = [];
+  const blockStr = txo.block.height.toString(10).padStart(7, "0");
+  const idxStr = txo.block.idx.toString(10).padStart(9, "0");
+  const sort = `${blockStr}.${idxStr}`;
+  if (!txo.spend && txo.status !== TxoStatus.DEPENDENCY) {
+    for (const [tag, data] of Object.entries(txo.data)) {
+      if (data.events.length) txo.tags.push(`${tag}:${sort}`);
+      for (const e of data.events) {
+        txo.events.push(`${tag}:${e.id}:${e.value}:${sort}`);
+      }
+    }
+  }
 }
 
 export class TxoStorageIDB implements TxoStorage {
@@ -88,7 +117,8 @@ export class TxoStorageIDB implements TxoStorage {
   }
 
   async get(outpoint: Outpoint): Promise<Txo | undefined> {
-    return this.db.get("txos", [outpoint.txid, outpoint.vout]);
+    let txo = await this.db.get("txos", [outpoint.txid, outpoint.vout]);
+    return txo && hydrateTxo(txo);
   }
 
   async getMany(outpoints: Outpoint[]): Promise<(Txo | undefined)[]> {
@@ -97,34 +127,40 @@ export class TxoStorageIDB implements TxoStorage {
       outpoints.map((outpoint) => t.store.get([outpoint.txid, outpoint.vout])),
     );
     await t.done;
-    return txos;
+    return txos.map((txo) => txo && hydrateTxo(txo));
   }
 
   async getBySpend(txid: string): Promise<(Txo | undefined)[]> {
-    return this.db.getAllFromIndex("txos", "spend", txid);
+    const txos = await this.db.getAllFromIndex("txos", "spend", txid);
+    return txos.map((txo) => hydrateTxo(txo));
   }
 
   async put(txo: Txo): Promise<void> {
+    buildTxoIndex(txo);
     await this.db.put("txos", txo);
   }
 
   async putMany(txos: Txo[]): Promise<void> {
     if (!txos.length) return;
     const t = this.db.transaction("txos", "readwrite");
-    await Promise.all(txos.map((txo) => t.store.put(txo)));
+    await Promise.all(
+      txos.map((txo) => {
+        buildTxoIndex(txo);
+        return t.store.put(txo);
+      }),
+    );
     await t.done;
   }
 
   async setSpend(outpoint: Outpoint, spendTxid: string): Promise<Txo> {
     const t = this.db.transaction("txos", "readwrite");
-    const txo = await t.store.get([outpoint.txid, outpoint.vout]);
+    let txo = await t.store.get([outpoint.txid, outpoint.vout]);
     if (!txo) throw new Error("Txo not found");
-    txo.events = [];
-    txo.tags = [];
     txo.spend = spendTxid;
+    buildTxoIndex(txo);
     await t.store.put(txo);
     await t.done;
-    return txo;
+    return hydrateTxo(txo);
   }
 
   async setSpends(outpoints: Outpoint[], spendTxid: string): Promise<Txo[]> {
@@ -134,13 +170,11 @@ export class TxoStorageIDB implements TxoStorage {
         let txo = await t.store.get([outpoint.txid, outpoint.vout]);
         if (!txo) {
           txo = new Txo(outpoint, 0n, []);
-        } else {
-          txo.events = [];
-          txo.tags = [];
         }
         txo.spend = spendTxid;
+        buildTxoIndex(txo);
         await t.store.put(txo);
-        return txo;
+        return hydrateTxo(txo);
       }),
     ]);
     await t.done;
@@ -164,7 +198,7 @@ export class TxoStorageIDB implements TxoStorage {
     const results: TxoResults = { txos: [] };
     const index = this.db.transaction("txos").store.index(indexName);
     for await (const cursor of index.iterate(query)) {
-      const txo = cursor.value;
+      const txo = hydrateTxo(cursor.value);
       results.nextPage = cursor.key;
       if (lookup.owner && txo.owner != lookup.owner) continue;
       results.txos.push(txo);

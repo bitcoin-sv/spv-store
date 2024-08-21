@@ -7,7 +7,7 @@ import { Txo, TxoStatus } from "../models/txo";
 import type { Event } from "../models/event";
 import { TxoStore } from "../stores/txo-store";
 import type { Ordinal } from "./remote-types";
-import { Outpoint } from "../models";
+import { Outpoint, type Ingest } from "../models";
 
 const PREFIX = Buffer.from(lockPrefix, "hex");
 const SUFFIX = Buffer.from(lockSuffix, "hex");
@@ -78,18 +78,20 @@ export class LockIndexer extends Indexer {
             ],
           );
           lastHeight = Math.max(lastHeight, u.height || 0);
-          txo.buildIndex();
           txos.push(txo);
         }
         await txoStore.storage.putMany(txos);
         await txoStore.queue(
-          txos.map((t) => ({
-            txid: t.outpoint.txid,
-            height: t.block.height,
-            idx: Number(t.block.idx),
-            checkSpends: true,
-            downloadOnly: this.syncMode === TxoStatus.TRUSTED,
-          })),
+          txos.map(
+            (t) =>
+              ({
+                txid: t.outpoint.txid,
+                height: t.block.height,
+                idx: Number(t.block.idx),
+                checkSpends: true,
+                downloadOnly: this.syncMode === TxoStatus.TRUSTED,
+              }) as Ingest,
+          ),
         );
         offset += limit;
       } while (utxos.length == 100);

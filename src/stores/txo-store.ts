@@ -105,7 +105,6 @@ export class TxoStore {
     );
     for (let [vout, txo] of txos.entries()) {
       if (txo) {
-        txo = Txo.hydrate(txo);
         if (!isDepOnly && txo.status == TxoStatus.DEPENDENCY) {
           txo.status = TxoStatus.CONFIRMED;
         }
@@ -132,13 +131,12 @@ export class TxoStore {
           console.error("indexer error: continuing", i.tag, e);
         }
       }
-      txo.buildIndex(isDepOnly);
     }
 
     this.indexers.forEach((i) => i.preSave && i.preSave(ctx));
     await this.storage.putMany(ctx.txos);
     await this.stores.txns!.saveTx(tx);
-    if (fromRemote && checkSpends) {
+    if (checkSpends) {
       await this.updateSpends(ctx.txos.map((t) => t.outpoint));
     }
     for (const txo of ctx.txos) {
@@ -152,12 +150,6 @@ export class TxoStore {
         }
       }
     }
-    console.log("Ingested", {
-      txid: ctx.txid,
-      block: ctx.block,
-      spends: ctx.spends,
-      txo: ctx.txos,
-    });
     return ctx;
   }
 
@@ -188,7 +180,7 @@ export class TxoStore {
         await this.stores.txns!.ensureTxns(ingests.map((i) => i.txid));
         ingests.forEach((i) => {
           i.status = i.downloadOnly
-            ? IngestStatus.INGESTED
+            ? IngestStatus.CONFIRMED
             : IngestStatus.DOWNLOADED;
         });
         await this.storage.putIngests(ingests);

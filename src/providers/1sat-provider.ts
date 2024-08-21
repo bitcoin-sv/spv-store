@@ -144,12 +144,13 @@ export class OneSatProvider
   }
 
   async getSpends(outpoints: Outpoint[]): Promise<(string | undefined)[]> {
+    const body = JSON.stringify(outpoints);
     const resp = await fetch(`${APIS[this.network]}/api/spends`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(outpoints),
+      body,
     });
     return resp.ok ? (resp.json() as Promise<(string | undefined)[]>) : [];
   }

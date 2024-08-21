@@ -9,6 +9,7 @@ import {
   Txo,
   TxoStatus,
   Outpoint,
+  type Ingest,
 } from "../models";
 import type { Ordinal } from "./remote-types";
 
@@ -59,18 +60,20 @@ export class FundIndexer extends Indexer {
             [{ id: "address", value: owner }],
           );
           lastHeight = Math.max(lastHeight, u.height || 0);
-          txo.buildIndex();
           txos.push(txo);
         }
         await txoStore.storage.putMany(txos);
         await txoStore.queue(
-          txos.map((t) => ({
-            txid: t.outpoint.txid,
-            height: t.block.height,
-            idx: Number(t.block.idx),
-            checkSpends: true,
-            downloadOnly: this.syncMode === TxoStatus.TRUSTED,
-          })),
+          txos.map(
+            (t) =>
+              ({
+                txid: t.outpoint.txid,
+                height: t.block.height,
+                idx: Number(t.block.idx),
+                checkSpends: true,
+                downloadOnly: this.syncMode === TxoStatus.TRUSTED,
+              }) as Ingest,
+          ),
         );
         offset += limit;
       } while (utxos.length == 100);

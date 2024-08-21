@@ -38,7 +38,7 @@ export class Outpoint {
     return writer.toArray();
   }
 
-  static fromJSON(json: string) {
-    return new Outpoint(json);
+  toJSON(): string {
+    return this.toString();
   }
 }

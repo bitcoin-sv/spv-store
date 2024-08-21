@@ -6,7 +6,7 @@ import { Txo, TxoStatus } from "../models/txo";
 import { Ord } from "./ord";
 import { Utils } from "@bsv/sdk";
 import { TxoStore } from "../stores/txo-store";
-import { Outpoint } from "../models";
+import { Outpoint, type Ingest } from "../models";
 import type { RemoteBsv20 } from "./remote-types";
 
 export enum Bsv21Status {
@@ -204,18 +204,20 @@ export class Bsv21Indexer extends Indexer {
               );
             }
             lastHeight = Math.max(lastHeight, u.height || 0);
-            txo.buildIndex();
             txos.push(txo);
           }
           await txoStore.storage.putMany(txos);
           await txoStore.queue(
-            txos.map((t) => ({
-              txid: t.outpoint.txid,
-              height: t.block.height,
-              idx: Number(t.block.idx),
-              checkSpends: true,
-              downloadOnly: this.syncMode === TxoStatus.TRUSTED,
-            })),
+            txos.map(
+              (t) =>
+                ({
+                  txid: t.outpoint.txid,
+                  height: t.block.height,
+                  idx: Number(t.block.idx),
+                  checkSpends: true,
+                  downloadOnly: this.syncMode === TxoStatus.TRUSTED,
+                }) as Ingest,
+            ),
           );
           offset += limit;
           // if (this.syncMode !== TxoStatus.TRUSTED) {
@@ -230,8 +232,8 @@ export class Bsv21Indexer extends Indexer {
           //         txid,
           //         height: Number(height || Date.now()),
           //         idx: Number(idx || 0),
-          //         isDep: true
-          //       }
+          //         isDepOnly: true
+          //       } as Ingest
           //     })
           //   );
           // }

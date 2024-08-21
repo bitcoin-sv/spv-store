@@ -47,6 +47,7 @@ export class TxnStore {
     let tx = await this.storage.get(txid);
     if (!tx && fromRemote) {
       tx = await this.services.txns.fetch(txid);
+      await this.storage.put(tx);
     }
     return tx;
   }

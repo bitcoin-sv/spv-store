@@ -10,6 +10,7 @@ import {
   Txo,
   TxoStatus,
   type Event,
+  type Ingest,
 } from "../models";
 
 export interface File {
@@ -257,7 +258,6 @@ export class OrdIndexer extends Indexer {
             );
           }
           lastHeight = Math.max(lastHeight, u.height || 0);
-          txo.buildIndex();
           txos.push(txo);
         }
 
@@ -268,7 +268,7 @@ export class OrdIndexer extends Indexer {
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(txos.map((t) => t.outpoint.toString())),
+              body: JSON.stringify(txos.map((t) => t.outpoint)),
             },
           );
           const ancestors = (await resp.json()) as {
@@ -277,23 +277,29 @@ export class OrdIndexer extends Indexer {
             height?: number;
           }[];
           await txoStore.queue(
-            ancestors.map((u) => ({
-              txid: u.txid,
-              height: Number(u.height || Date.now()),
-              idx: Number(u.idx || 0),
-              isDep: true,
-            })),
+            ancestors.map(
+              (u) =>
+                ({
+                  txid: u.txid,
+                  height: Number(u.height || Date.now()),
+                  idx: Number(u.idx || 0),
+                  isDepOnly: true,
+                }) as Ingest,
+            ),
           );
         }
 
         await txoStore.queue(
-          txos.map((t) => ({
-            txid: t.outpoint.txid,
-            height: t.block.height,
-            idx: Number(t.block.idx),
-            checkSpends: true,
-            downloadOnly: this.syncMode === TxoStatus.TRUSTED,
-          })),
+          txos.map(
+            (t) =>
+              ({
+                txid: t.outpoint.txid,
+                height: t.block.height,
+                idx: Number(t.block.idx),
+                checkSpends: true,
+                downloadOnly: this.syncMode === TxoStatus.TRUSTED,
+              }) as Ingest,
+          ),
         );
 
         offset += limit;
