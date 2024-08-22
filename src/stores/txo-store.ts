@@ -1,6 +1,6 @@
 import { MerklePath, Transaction } from "@bsv/sdk";
 import type { Indexer } from "../models/indexer";
-import type { IndexContext } from "../models/index-context";
+import { IndexContext } from "../models/index-context";
 import { Txo, TxoStatus } from "../models/txo";
 import { type Ingest, IngestStatus } from "../models/ingest";
 import type { Block } from "../models/block";
@@ -14,16 +14,16 @@ import { BroadcastStatus } from "../services";
 
 export class TxoStore {
   queueLength = 0;
-  private syncRunning: Promise<void> | undefined;
+  private syncRunning : Promise<void> | undefined;
   private stopSync = false;
   constructor(
-    public storage: TxoStorage,
-    public services: Services,
-    public stores: Stores,
-    public indexers: Indexer[],
-    public owners: Set<string>,
-    public events?: EventEmitter,
-  ) {}
+    public storage : TxoStorage,
+    public services : Services,
+    public stores : Stores,
+    public indexers : Indexer[],
+    public owners : Set<string>,
+    public events ?: EventEmitter,
+  ) { }
 
   async destroy() {
     this.stopSync = true;
@@ -31,7 +31,7 @@ export class TxoStore {
     await this.storage.destroy();
   }
 
-  private async updateSpends(outpoints: Outpoint[]) {
+  private async updateSpends(outpoints : Outpoint[]) {
     const spends = await this.services.spends.getSpends(outpoints);
     for (const [i, outpoint] of outpoints.entries()) {
       if (!spends[i]) continue;
@@ -40,25 +40,20 @@ export class TxoStore {
   }
 
   public async search(
-    lookup: TxoLookup,
+    lookup : TxoLookup,
     limit = 100,
-    from?: string,
-  ): Promise<TxoResults> {
+    from ?: string,
+  ) : Promise<TxoResults> {
     return this.storage.search(lookup, limit, from);
   }
 
-  async parse(tx: Transaction, fromRemote = false): Promise<IndexContext> {
-    const txid = tx.id("hex") as string;
-    console.log("Ingesting", txid);
-    const block: Block = { height: Date.now(), idx: 0n };
-
-    const ctx: IndexContext = {
-      txid,
-      tx,
-      block,
-      spends: [],
-      txos: [],
-    };
+  async parse(
+    tx : Transaction,
+    previewOnly = true,
+    fromRemote = false,
+  ) : Promise<IndexContext> {
+    const ctx = new IndexContext(tx)
+    console.log("Ingesting", ctx.txid);
 
     for (const input of tx.inputs) {
       if (!input.sourceTXID) {
@@ -80,36 +75,42 @@ export class TxoStore {
     }
 
     const spends = await this.storage.getMany(
-      tx.inputs.map((i) => new Outpoint(i.sourceTXID!, i.sourceOutputIndex))
+      tx.inputs.map((i) => new Outpoint(i.sourceTXID!, i.sourceOutputIndex)),
     );
     for (const [vin, input] of tx.inputs.entries()) {
-      let spend = spends[vin]
-      if(!spend) {
+      let spend = spends[vin];
+      if (!spend) {
         spend = new Txo(
           new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
-          BigInt(input.sourceTransaction!.outputs[input.sourceOutputIndex].satoshis!),
-          input.sourceTransaction!.outputs[input.sourceOutputIndex].lockingScript.toBinary(),
-          TxoStatus.Unindexed
-        )
+          BigInt(
+            input.sourceTransaction!.outputs[input.sourceOutputIndex].satoshis!,
+          ),
+          input.sourceTransaction!.outputs[
+            input.sourceOutputIndex
+          ].lockingScript.toBinary(),
+          TxoStatus.Unindexed,
+        );
       }
-      spend.spend = txid
-      ctx.spends.push(spend)
+      spend.spend = ctx.txid;
+      ctx.spends.push(spend);
     }
-    
-    const txos = await this.storage.getMany(tx.outputs.map((_, i) => new Outpoint(txid, i)));
-    for (let [vout, output] of tx.outputs.entries()) {
-      let txo = txos[vout]
-      if(!txo) {
+
+    const txos = await this.storage.getMany(
+      tx.outputs.map((_, i) => new Outpoint(ctx.txid, i)),
+    );
+    for (const [vout, output] of tx.outputs.entries()) {
+      let txo = txos[vout];
+      if (!txo) {
         txo = new Txo(
-          new Outpoint(txid, vout),
+          new Outpoint(ctx.txid, vout),
           BigInt(output.satoshis!),
           output.lockingScript.toBinary(),
-          TxoStatus.Unindexed
-        )
+          TxoStatus.Unindexed,
+        );
       }
       for (const i of this.indexers) {
         try {
-          const data = i.parse && i.parse(ctx, vout);
+          const data = i.parse && (await i.parse(ctx, vout, previewOnly));
           if (data) {
             txo.data[i.tag] = data;
           }
@@ -124,14 +125,14 @@ export class TxoStore {
   }
 
   async ingest(
-    tx: Transaction,
+    tx : Transaction,
     fromRemote = false,
     isDepOnly = false,
     checkSpends = false,
-  ): Promise<IndexContext> {
+  ) : Promise<IndexContext> {
     const txid = tx.id("hex") as string;
     console.log("Ingesting", txid);
-    const block: Block = { height: Date.now(), idx: 0n };
+    const block : Block = { height: Date.now(), idx: 0n };
     if (tx.merklePath) {
       block.height = tx.merklePath.blockHeight;
       block.idx = BigInt(
@@ -139,14 +140,17 @@ export class TxoStore {
       );
     }
 
-    const ctx = await this.parse(tx, fromRemote);
+    const ctx = await this.parse(tx, false, fromRemote);
 
     ctx.txos.forEach((txo) => {
       txo.block = block;
-      if(txo.status == TxoStatus.Unindexed || txo.status == TxoStatus.Dependency) {
+      if (
+        txo.status == TxoStatus.Unindexed ||
+        txo.status == TxoStatus.Dependency
+      ) {
         txo.status = isDepOnly ? TxoStatus.Dependency : TxoStatus.Confirmed;
       }
-    })
+    });
     await this.storage.putMany(ctx.spends);
     await this.storage.putMany(ctx.txos);
     // await this.stores.txns!.saveTx(tx);
@@ -171,7 +175,7 @@ export class TxoStore {
     const queueLength = await this.storage.getQueueLength();
     this.events?.emit("queueStats", { length: queueLength });
   }
-  async queue(ingests: Ingest[]) {
+  async queue(ingests : Ingest[]) {
     ingests.forEach((i) => (i.status = i.status || IngestStatus.QUEUED));
     await this.storage.putIngests(ingests);
   }
@@ -184,10 +188,10 @@ export class TxoStore {
       this.processIngests(),
       this.processConfirms(),
       this.processImmutable(),
-    ]).then(() => {});
+    ]).then(() => { });
   }
 
-  async processDownloads(): Promise<void> {
+  async processDownloads() : Promise<void> {
     try {
       const ingests = await this.storage.getIngests(IngestStatus.QUEUED, 25);
       if (ingests.length) {
@@ -212,7 +216,7 @@ export class TxoStore {
     return this.processDownloads();
   }
 
-  async processIngests(): Promise<void> {
+  async processIngests() : Promise<void> {
     try {
       const ingests = await this.storage.getIngests(
         IngestStatus.DOWNLOADED,
@@ -244,7 +248,7 @@ export class TxoStore {
     return this.processIngests();
   }
 
-  async processConfirms(): Promise<void> {
+  async processConfirms() : Promise<void> {
     try {
       const ingests = await this.storage.getIngests(
         IngestStatus.INGESTED,
@@ -292,7 +296,7 @@ export class TxoStore {
     return this.processConfirms();
   }
 
-  async processImmutable(): Promise<void> {
+  async processImmutable() : Promise<void> {
     try {
       const chaintip = await this.stores.blocks!.storage.getSynced();
       if (!chaintip) {

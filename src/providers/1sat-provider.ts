@@ -25,19 +25,18 @@ const APIS = {
 };
 
 export class OneSatProvider
-  implements BroadcastService, TxnService, BlockHeaderService, InventoryService
-{
+  implements BroadcastService, TxnService, BlockHeaderService, InventoryService {
   public constructor(
-    public network: Network,
+    public network : Network,
     // authKey?: PrivateKey
-  ) {}
+  ) { }
 
   async broadcast(
-    tx: Transaction,
-    owner?: string,
-  ): Promise<BroadcastResponse | BroadcastFailure> {
+    tx : Transaction,
+    owner ?: string,
+  ) : Promise<BroadcastResponse | BroadcastFailure> {
     console.log("Broadcasting", tx.id("hex"), tx.toHex());
-    let url = owner
+    const url = owner
       ? `${APIS[this.network]}/api/tx/address/${owner}/${tx.id("hex")}`
       : `${APIS[this.network]}/api/tx`;
 
@@ -48,12 +47,12 @@ export class OneSatProvider
       },
       body: Uint8Array.from(tx.toBinary()),
     });
-    const body = (await resp.json()) as string | { message: string };
+    const body = (await resp.json()) as string | { message : string };
     if (resp.status !== 200) {
       return {
         status: "error",
         code: resp.status.toString(),
-        description: `${(body as { message: string }).message}`,
+        description: `${(body as { message : string }).message}`,
       } as BroadcastFailure;
     }
     return {
@@ -63,7 +62,7 @@ export class OneSatProvider
     } as BroadcastResponse;
   }
 
-  async status(txid: string): Promise<BroadcastStatusResponse | undefined> {
+  async status(txid : string) : Promise<BroadcastStatusResponse | undefined> {
     const resp = await fetch(`${APIS[this.network]}/api/tx/${txid}/proof`);
     switch (resp.status) {
       case 200:
@@ -78,7 +77,7 @@ export class OneSatProvider
     }
   }
 
-  async fetch(txid: string): Promise<Transaction> {
+  async fetch(txid : string) : Promise<Transaction> {
     const resp = await fetch(`${APIS[this.network]}/api/tx/${txid}`);
     console.log("Fetching", txid);
     if (resp.status !== 200)
@@ -87,7 +86,7 @@ export class OneSatProvider
     return Transaction.fromBEEF([...Buffer.from(beef)]);
   }
 
-  async batchFetch(txids: string[]): Promise<Transaction[]> {
+  async batchFetch(txids : string[]) : Promise<Transaction[]> {
     const resp = await fetch(`${APIS[this.network]}/api/tx/batch`, {
       method: "POST",
       headers: {
@@ -101,7 +100,7 @@ export class OneSatProvider
       );
     const data = await resp.arrayBuffer();
     const reader = new Utils.Reader([...Buffer.from(data)]);
-    const txs: Transaction[] = [];
+    const txs : Transaction[] = [];
     while (reader.pos < data.byteLength) {
       let len = reader.readVarIntNum();
       const rawtx = reader.read(len);
@@ -113,38 +112,38 @@ export class OneSatProvider
     return txs;
   }
 
-  async pollTxLogs(owner: string, fromHeight = 0): Promise<TxLog[]> {
+  async pollTxLogs(owner : string, fromHeight = 0) : Promise<TxLog[]> {
     const resp = await fetch(
       `${APIS[this.network]}/api/tx/address/${owner}/from/${fromHeight}`,
     );
     return (
-      (await resp.json()) as { txid: string; height?: number; idx?: string }[]
+      (await resp.json()) as { txid : string; height ?: number; idx ?: string }[]
     ).map(
       (l) =>
         new TxLog(owner, l.txid, l.height || Date.now(), Number(l.idx || 0)),
     );
   }
 
-  async getBlocks(lastHeight: number, limit = 1000): Promise<BlockHeader[]> {
+  async getBlocks(lastHeight : number, limit = 1000) : Promise<BlockHeader[]> {
     const resp = await fetch(
       `${APIS[this.network]}/api/blocks/list/${lastHeight}?limit=${limit}`,
     );
     return resp.json() as Promise<BlockHeader[]>;
   }
 
-  async getChaintip(): Promise<BlockHeader> {
+  async getChaintip() : Promise<BlockHeader> {
     const resp = await fetch(`${APIS[this.network]}/api/blocks/tip`);
     return resp.json() as Promise<BlockHeader>;
   }
 
-  async getSpend(outpoint: Outpoint): Promise<string | undefined> {
+  async getSpend(outpoint : Outpoint) : Promise<string | undefined> {
     const resp = await fetch(
       `${APIS[this.network]}/api/spends/${outpoint.toString()}`,
     );
     return resp.ok ? (resp.json() as Promise<string>) : undefined;
   }
 
-  async getSpends(outpoints: Outpoint[]): Promise<(string | undefined)[]> {
+  async getSpends(outpoints : Outpoint[]) : Promise<(string | undefined)[]> {
     const body = JSON.stringify(outpoints);
     const resp = await fetch(`${APIS[this.network]}/api/spends`, {
       method: "POST",
@@ -156,19 +155,19 @@ export class OneSatProvider
     return resp.ok ? (resp.json() as Promise<(string | undefined)[]>) : [];
   }
 
-  async getTxo(outpoint: Outpoint): Promise<Ordinal | undefined> {
+  async getTxo(outpoint : Outpoint) : Promise<Ordinal | undefined> {
     const resp = await fetch(
       `${APIS[this.network]}/api/txos/outpoint/${outpoint.toString()}`,
     );
     return resp.ok ? (resp.json() as Promise<Ordinal>) : undefined;
   }
-  async getTxos(outpoints: Outpoint[]): Promise<Ordinal[]> {
+  async getTxos(outpoints : Outpoint[]) : Promise<Ordinal[]> {
     const resp = await fetch(`${APIS[this.network]}/api/txos/outpoints`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(outpoints)
+      body: JSON.stringify(outpoints),
     });
     return resp.ok ? (resp.json() as Promise<Ordinal[]>) : [];
   }

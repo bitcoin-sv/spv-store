@@ -19,31 +19,31 @@ import { EventEmitter } from "./lib/event-emitter";
 export type Network = "mainnet" | "testnet";
 
 export interface Services {
-  blocks: BlockHeaderService;
-  txns: TxnService;
-  broadcast: BroadcastService;
-  inv: InventoryService;
-  spends: SpendsService;
+  blocks : BlockHeaderService;
+  txns : TxnService;
+  broadcast : BroadcastService;
+  inv : InventoryService;
+  spends : SpendsService;
 }
 
 export interface Stores {
-  blocks?: BlockStore;
-  txns?: TxnStore;
-  txos?: TxoStore;
+  blocks ?: BlockStore;
+  txns ?: TxnStore;
+  txos ?: TxoStore;
 }
 
 export class CaseModSPV {
-  private interval: Timer | undefined;
+  private interval : Timer | undefined;
   constructor(
-    public services: Services,
-    public stores: Stores,
+    public services : Services,
+    public stores : Stores,
     public events = new EventEmitter(),
     startSync = false,
   ) {
     if (startSync) this.sync();
   }
 
-  async destroy(): Promise<void> {
+  async destroy() : Promise<void> {
     if (this.interval) clearInterval(this.interval);
 
     for (const store of Object.values(this.stores)) {
@@ -60,8 +60,8 @@ export class CaseModSPV {
   }
 
   async broadcast(
-    tx: Transaction,
-  ): Promise<BroadcastResponse | BroadcastFailure> {
+    tx : Transaction,
+  ) : Promise<BroadcastResponse | BroadcastFailure> {
     const resp = await this.stores.txns!.broadcast(tx);
     if (isBroadcastResponse(resp)) {
       await this.stores.txos!.ingest(tx);
@@ -69,7 +69,7 @@ export class CaseModSPV {
     return resp;
   }
 
-  async sync(): Promise<void> {
+  async sync() : Promise<void> {
     await this.stores.blocks!.sync(true);
     this.events.emit("blocksSynced");
     const isSynced = await this.stores.txos!.storage.getState("isSynced");
@@ -94,25 +94,25 @@ export class CaseModSPV {
   }
 
   async search(
-    lookup: TxoLookup,
+    lookup : TxoLookup,
     limit = 100,
-    from?: string,
-  ): Promise<TxoResults> {
+    from ?: string,
+  ) : Promise<TxoResults> {
     return this.stores.txos!.search(lookup, limit, from);
   }
 
-  async getTxo(outpoint: Outpoint): Promise<Txo | undefined> {
+  async getTxo(outpoint : Outpoint) : Promise<Txo | undefined> {
     return this.stores.txos!.storage.get(outpoint);
   }
 
-  async getTxos(outpoints: Outpoint[]): Promise<(Txo | undefined)[]> {
+  async getTxos(outpoints : Outpoint[]) : Promise<(Txo | undefined)[]> {
     return this.stores.txos!.storage.getMany(outpoints);
   }
 
   async getTx(
-    txid: string,
+    txid : string,
     fromRemote = false,
-  ): Promise<Transaction | undefined> {
+  ) : Promise<Transaction | undefined> {
     return this.stores.txns!.loadTx(txid, fromRemote);
   }
 
@@ -120,11 +120,11 @@ export class CaseModSPV {
   //   // return this.services.txns!.parse(tx);
   // }
 
-  async getSyncedBlock(): Promise<BlockHeader | undefined> {
+  async getSyncedBlock() : Promise<BlockHeader | undefined> {
     return this.stores.blocks!.storage.getSynced();
   }
 
-  async getChaintip(): Promise<BlockHeader | undefined> {
+  async getChaintip() : Promise<BlockHeader | undefined> {
     return this.services.blocks!.getChaintip();
   }
 }

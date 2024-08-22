@@ -8,34 +8,34 @@ import type { Network } from "../../casemod-spv";
 const TXN_DB_VERSION = 1;
 
 export interface Txn {
-  txid: string;
-  rawtx: number[];
-  proof?: number[];
-  block: Block;
-  status: TxnStatus;
+  txid : string;
+  rawtx : number[];
+  proof ?: number[];
+  block : Block;
+  status : TxnStatus;
 }
 
 export interface TxnSchema extends DBSchema {
-  txns: {
-    key: string;
-    value: Txn;
-    indexes: {
-      status: [number, number];
+  txns : {
+    key : string;
+    value : Txn;
+    indexes : {
+      status : [number, number];
     };
   };
-  state: {
-    key: string;
-    value: {
-      key: string;
-      state: number;
+  state : {
+    key : string;
+    value : {
+      key : string;
+      state : number;
     };
   };
 }
 
 export class TxnStorageIDB implements TxnStorage {
-  private constructor(public db: IDBPDatabase<TxnSchema>) {}
+  private constructor(public db : IDBPDatabase<TxnSchema>) { }
 
-  static async init(network: Network): Promise<TxnStorageIDB> {
+  static async init(network : Network) : Promise<TxnStorageIDB> {
     const db = await openDB<TxnSchema>(`txns-${network}`, TXN_DB_VERSION, {
       upgrade(db) {
         db.createObjectStore("txns", { keyPath: "txid" }).createIndex(
@@ -57,7 +57,7 @@ export class TxnStorageIDB implements TxnStorage {
     await destroyed;
   }
 
-  async get(txid: string): Promise<Transaction | undefined> {
+  async get(txid : string) : Promise<Transaction | undefined> {
     const txn = await this.db.get("txns", txid).catch(() => null);
     if (txn) {
       const tx = Transaction.fromBinary(txn.rawtx);
@@ -68,7 +68,7 @@ export class TxnStorageIDB implements TxnStorage {
     }
   }
 
-  async getMany(txids: string[]): Promise<(Transaction | undefined)[]> {
+  async getMany(txids : string[]) : Promise<(Transaction | undefined)[]> {
     const t = this.db.transaction("txns");
     const txns = await Promise.all(txids.map((txid) => t.store.get(txid)));
     await t.done;
@@ -82,8 +82,8 @@ export class TxnStorageIDB implements TxnStorage {
     });
   }
 
-  async put(tx: Transaction) {
-    const txn: Txn = {
+  async put(tx : Transaction) {
+    const txn : Txn = {
       txid: tx.id("hex"),
       rawtx: tx.toBinary(),
       block: { height: Date.now(), idx: BigInt(0) },
@@ -100,12 +100,12 @@ export class TxnStorageIDB implements TxnStorage {
     await this.db.put("txns", txn);
   }
 
-  async putMany(txs: Transaction[]): Promise<void> {
+  async putMany(txs : Transaction[]) : Promise<void> {
     if (!txs.length) return;
     const t = this.db.transaction("txns", "readwrite");
     await Promise.all(
       txs.map((tx) => {
-        const txn: Txn = {
+        const txn : Txn = {
           txid: tx.id("hex"),
           rawtx: tx.toBinary(),
           block: { height: Date.now(), idx: BigInt(0) },
@@ -125,7 +125,7 @@ export class TxnStorageIDB implements TxnStorage {
     await t.done;
   }
 
-  async exists(txids: string[]): Promise<boolean[]> {
+  async exists(txids : string[]) : Promise<boolean[]> {
     const t = this.db.transaction("txns");
     const foundTxids = await Promise.all([
       ...txids.map((txid) => t.store.getKey(txid).catch(() => null)),

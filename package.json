@@ -19,14 +19,13 @@
   "scripts": {
     "build": "npm run clean && microbundle --globals @bsv/sdk=bsv",
     "clean": "rimraf -rf dist",
-    "format": "prettier --write .",
+    "format": "tsfmt -r",
     "test": "jest"
   },
   "dependencies": {
     "@tempfix/idb": "^8.0.3",
     "buffer": "^6.0.3",
     "microbundle": "^0.15.1",
-    "prettier": "^3.3.3",
     "rollup-plugin-polyfill-node": "github:FredKSchott/rollup-plugin-polyfill-node"
   },
   "peerDependencies": {
@@ -34,8 +33,10 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "globals": "^15.9.0",
     "rimraf": "^5.0.7",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "typescript-formatter": "^7.2.2"
   }
 }

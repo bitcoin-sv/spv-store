@@ -11,40 +11,40 @@ import type { TxLog } from "../../services/inv-service";
 const TXO_DB_VERSION = 1;
 
 export interface TxoSchema extends DBSchema {
-  txos: {
-    key: [string, number];
-    value: Txo;
-    indexes: {
-      spend: string;
-      events: string;
-      tags: string;
+  txos : {
+    key : [string, number];
+    value : Txo;
+    indexes : {
+      spend : string;
+      events : string;
+      tags : string;
       // owner: string;
     };
   };
-  ingestQueue: {
-    key: string;
-    value: Ingest;
-    indexes: {
-      status: [number, number, number];
+  ingestQueue : {
+    key : string;
+    value : Ingest;
+    indexes : {
+      status : [number, number, number];
     };
   };
-  txLog: {
-    key: [string, string];
-    value: TxLog;
-    indexes: {
-      height: [string, number, number];
+  txLog : {
+    key : [string, string];
+    value : TxLog;
+    indexes : {
+      height : [string, number, number];
     };
   };
-  state: {
-    key: string;
-    value: {
-      key: string;
-      value: string;
+  state : {
+    key : string;
+    value : {
+      key : string;
+      value : string;
     };
   };
 }
 
-function hydrateTxo(obj: Txo) {
+function hydrateTxo(obj : Txo) {
   obj.outpoint = new Outpoint(obj.outpoint.txid, obj.outpoint.vout);
   return obj;
   // const txo = new Txo(
@@ -57,7 +57,7 @@ function hydrateTxo(obj: Txo) {
   // return txo;
 }
 
-function buildTxoIndex(txo: Txo) {
+function buildTxoIndex(txo : Txo) {
   txo.tags = [];
   txo.events = [];
   const blockStr = txo.block.height.toString(10).padStart(7, "0");
@@ -75,14 +75,14 @@ function buildTxoIndex(txo: Txo) {
 
 export class TxoStorageIDB implements TxoStorage {
   private constructor(
-    public db: IDBPDatabase<TxoSchema>,
-    public indexers: Indexer[] = [],
-  ) {}
+    public db : IDBPDatabase<TxoSchema>,
+    public indexers : Indexer[] = [],
+  ) { }
   static async init(
-    accountId: string,
-    indexers: Indexer[] = [],
-    network: Network,
-  ): Promise<TxoStorageIDB> {
+    accountId : string,
+    indexers : Indexer[] = [],
+    network : Network,
+  ) : Promise<TxoStorageIDB> {
     const db = await openDB<TxoSchema>(
       `txostore-${accountId}-${network}`,
       TXO_DB_VERSION,
@@ -116,12 +116,12 @@ export class TxoStorageIDB implements TxoStorage {
     await destroyed;
   }
 
-  async get(outpoint: Outpoint): Promise<Txo | undefined> {
-    let txo = await this.db.get("txos", [outpoint.txid, outpoint.vout]);
+  async get(outpoint : Outpoint) : Promise<Txo | undefined> {
+    const txo = await this.db.get("txos", [outpoint.txid, outpoint.vout]);
     return txo && hydrateTxo(txo);
   }
 
-  async getMany(outpoints: Outpoint[]): Promise<(Txo | undefined)[]> {
+  async getMany(outpoints : Outpoint[]) : Promise<(Txo | undefined)[]> {
     const t = this.db.transaction("txos");
     const txos = await Promise.all(
       outpoints.map((outpoint) => t.store.get([outpoint.txid, outpoint.vout])),
@@ -130,17 +130,17 @@ export class TxoStorageIDB implements TxoStorage {
     return txos.map((txo) => txo && hydrateTxo(txo));
   }
 
-  async getBySpend(txid: string): Promise<(Txo | undefined)[]> {
+  async getBySpend(txid : string) : Promise<(Txo | undefined)[]> {
     const txos = await this.db.getAllFromIndex("txos", "spend", txid);
     return txos.map((txo) => hydrateTxo(txo));
   }
 
-  async put(txo: Txo): Promise<void> {
+  async put(txo : Txo) : Promise<void> {
     buildTxoIndex(txo);
     await this.db.put("txos", txo);
   }
 
-  async putMany(txos: Txo[]): Promise<void> {
+  async putMany(txos : Txo[]) : Promise<void> {
     if (!txos.length) return;
     const t = this.db.transaction("txos", "readwrite");
     await Promise.all(
@@ -152,9 +152,9 @@ export class TxoStorageIDB implements TxoStorage {
     await t.done;
   }
 
-  async setSpend(outpoint: Outpoint, spendTxid: string): Promise<Txo> {
+  async setSpend(outpoint : Outpoint, spendTxid : string) : Promise<Txo> {
     const t = this.db.transaction("txos", "readwrite");
-    let txo = await t.store.get([outpoint.txid, outpoint.vout]);
+    const txo = await t.store.get([outpoint.txid, outpoint.vout]);
     if (!txo) throw new Error("Txo not found");
     txo.spend = spendTxid;
     buildTxoIndex(txo);
@@ -163,39 +163,39 @@ export class TxoStorageIDB implements TxoStorage {
     return hydrateTxo(txo);
   }
 
-  async setSpends(outpoints: Outpoint[], spendTxid: string): Promise<Txo[]> {
-    const t = this.db.transaction("txos", "readwrite");
-    const txos = await Promise.all([
-      ...outpoints.map(async (outpoint) => {
-        let txo = await t.store.get([outpoint.txid, outpoint.vout]);
-        if (!txo) {
-          txo = new Txo(outpoint, 0n, []);
-        }
-        txo.spend = spendTxid;
-        buildTxoIndex(txo);
-        await t.store.put(txo);
-        return hydrateTxo(txo);
-      }),
-    ]);
-    await t.done;
-    return txos;
-  }
+  // async setSpends(outpoints : Outpoint[], spendTxid : string) : Promise<Txo[]> {
+  //   const t = this.db.transaction("txos", "readwrite");
+  //   const txos = await Promise.all([
+  //     ...outpoints.map(async (outpoint) => {
+  //       let txo = await t.store.get([outpoint.txid, outpoint.vout]);
+  //       if (!txo) {
+  //         txo = new Txo(outpoint, 0n, []);
+  //       }
+  //       txo.spend = spendTxid;
+  //       buildTxoIndex(txo);
+  //       await t.store.put(txo);
+  //       return hydrateTxo(txo);
+  //     }),
+  //   ]);
+  //   await t.done;
+  //   return txos;
+  // }
 
   async search(
-    lookup: TxoLookup,
+    lookup : TxoLookup,
     limit = 10,
-    from?: string,
-  ): Promise<TxoResults> {
+    from ?: string,
+  ) : Promise<TxoResults> {
     const dbkey = lookup.toQueryKey();
     const start = from || dbkey;
-    const query: IDBKeyRange = IDBKeyRange.bound(
+    const query : IDBKeyRange = IDBKeyRange.bound(
       start,
       dbkey + "\uffff",
       true,
       false,
     );
     const indexName = lookup.id ? "events" : "tags";
-    const results: TxoResults = { txos: [] };
+    const results : TxoResults = { txos: [] };
     const index = this.db.transaction("txos").store.index(indexName);
     for await (const cursor of index.iterate(query)) {
       const txo = hydrateTxo(cursor.value);
@@ -210,16 +210,16 @@ export class TxoStorageIDB implements TxoStorage {
     return results;
   }
 
-  async getState(key: string): Promise<string | undefined> {
+  async getState(key : string) : Promise<string | undefined> {
     const state = await this.db.get("state", key);
     return state?.value;
   }
 
-  async setState(key: string, value: string): Promise<void> {
+  async setState(key : string, value : string) : Promise<void> {
     await this.db.put("state", { key, value });
   }
 
-  async getQueueLength(): Promise<number> {
+  async getQueueLength() : Promise<number> {
     const queueLength = await this.db.countFromIndex(
       "ingestQueue",
       "status",
@@ -232,11 +232,11 @@ export class TxoStorageIDB implements TxoStorage {
   }
 
   async getIngests(
-    status: IngestStatus,
-    limit: number,
-    start: number = 0,
-    stop: number = 0,
-  ): Promise<Ingest[]> {
+    status : IngestStatus,
+    limit : number,
+    start : number = 0,
+    stop : number = 0,
+  ) : Promise<Ingest[]> {
     const query = IDBKeyRange.bound(
       [status, start],
       [status, stop || Number.MAX_SAFE_INTEGER],
@@ -250,11 +250,11 @@ export class TxoStorageIDB implements TxoStorage {
     return ingests;
   }
 
-  async putIngest(ingest: Ingest): Promise<void> {
+  async putIngest(ingest : Ingest) : Promise<void> {
     await this.db.put("ingestQueue", ingest);
   }
 
-  async putIngests(ingests: Ingest[]): Promise<void> {
+  async putIngests(ingests : Ingest[]) : Promise<void> {
     if (!ingests.length) return;
     const t = this.db.transaction("ingestQueue", "readwrite");
     for (const ingest of ingests) {
@@ -263,14 +263,14 @@ export class TxoStorageIDB implements TxoStorage {
     await t.done;
   }
 
-  async getInv(owner: string, txid: string): Promise<TxLog | undefined> {
+  async getInv(owner : string, txid : string) : Promise<TxLog | undefined> {
     return this.db.get("txLog", [owner, txid]);
   }
 
   async getInvs(
-    owner: string,
-    txids: string[],
-  ): Promise<(TxLog | undefined)[]> {
+    owner : string,
+    txids : string[],
+  ) : Promise<(TxLog | undefined)[]> {
     const t = this.db.transaction("txLog", "readonly");
     const txLogs = await Promise.all(
       txids.map((txid) => t.store.get([owner, txid]).catch(() => undefined)),
@@ -279,18 +279,18 @@ export class TxoStorageIDB implements TxoStorage {
     return txLogs;
   }
 
-  async putInv(txLog: TxLog): Promise<void> {
+  async putInv(txLog : TxLog) : Promise<void> {
     await this.db.put("txLog", txLog);
   }
 
-  async putInvs(txLogs: TxLog[]): Promise<void> {
+  async putInvs(txLogs : TxLog[]) : Promise<void> {
     if (!txLogs.length) return;
     const t = this.db.transaction("txLog", "readwrite");
     await Promise.all(txLogs.map((log) => t.store.put(log)));
     await t.done;
   }
 
-  async getSynced(owner: string): Promise<TxLog | undefined> {
+  async getSynced(owner : string) : Promise<TxLog | undefined> {
     const t = this.db.transaction("txLog", "readonly");
     const cursor = await t.store
       .index("height")

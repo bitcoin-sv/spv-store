@@ -13,12 +13,15 @@ const PREFIX = Buffer.from(lockPrefix, "hex");
 const SUFFIX = Buffer.from(lockSuffix, "hex");
 
 export class Lock {
-  constructor(public until = 0) {}
+  constructor(public until = 0) { }
 }
 
 export class LockIndexer extends Indexer {
   tag = "lock";
-  parse(ctx: IndexContext, vout: number): IndexData | undefined {
+  async parse(
+    ctx : IndexContext,
+    vout : number
+  ) : Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     const script = Buffer.from(txo.script);
     const prefixIdx = script.indexOf(PREFIX);
@@ -35,26 +38,39 @@ export class LockIndexer extends Indexer {
       16,
     );
     txo.owner = Utils.toBase58Check(dataScript.chunks[0].data!);
-    const events: Event[] = [];
+    const events : Event[] = [];
     if (txo.owner && this.owners.has(txo.owner)) {
       events.push({ id: "until", value: until.toString().padStart(7, "0") });
       events.push({ id: "address", value: txo.owner });
     }
-    return new IndexData(new Lock(until), [], events);
+    return new IndexData(new Lock(until), events);
   }
 
-  async sync(txoStore: TxoStore): Promise<number> {
+  async preSave(ctx : IndexContext) : Promise<void> {
+    const locksIn = ctx.spends.reduce((acc, spends) => {
+      return acc + (spends.data[this.tag] ? spends.satoshis : 0n);
+    }, 0n)
+    const locksOut = ctx.txos.reduce((acc, txo) => {
+      return acc + (txo.data[this.tag] ? txo.satoshis : 0n);
+    }, 0n);
+    const balance = locksIn - locksOut;
+    if (balance != 0n) {
+      ctx.summary[this.tag] = balance.toString();
+    }
+  }
+
+  async sync(txoStore : TxoStore) : Promise<number> {
     const limit = 10000;
     let lastHeight = 0;
     for await (const owner of this.owners) {
       let offset = 0;
-      let utxos: Ordinal[] = [];
+      let utxos : Ordinal[] = [];
       do {
         const resp = await fetch(
           `https://ordinals.gorillapool.io/api/locks/address/${owner}/unspent?limit=${limit}&offset=${offset}`,
         );
         utxos = ((await resp.json()) as Ordinal[]) || [];
-        const txos: Txo[] = [];
+        const txos : Txo[] = [];
         for (const u of utxos) {
           if (!u.data?.lock || !u.data.lock.until) continue;
           const txo = new Txo(
@@ -68,12 +84,8 @@ export class LockIndexer extends Indexer {
           }
           txo.data[this.tag] = new IndexData(
             new Lock(u.data.lock.until),
-            [],
             [
-              {
-                id: "until",
-                value: u.data.lock.until.toString().padStart(7, "0"),
-              },
+              { id: "until", value: u.data.lock.until.toString().padStart(7, "0") },
               { id: "address", value: owner },
             ],
           );

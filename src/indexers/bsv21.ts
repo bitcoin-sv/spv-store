@@ -1,9 +1,8 @@
-/* eslint-disable no-case-declarations */
+
 import type { IndexContext } from "../models/index-context";
 import { IndexData } from "../models/index-data";
 import { Indexer, IndexMode } from "../models/indexer";
 import { Txo, TxoStatus } from "../models/txo";
-import { Ord } from "./ord";
 import { Utils } from "@bsv/sdk";
 import { TxoStore } from "../stores/txo-store";
 import { Outpoint, type Ingest } from "../models";
@@ -17,22 +16,22 @@ export enum Bsv21Status {
 
 export class Bsv21 {
   status = Bsv21Status.Pending;
-  public id: Outpoint;
+  public id : Outpoint;
   public op = "";
   public amt = 0n;
   public dec = 0;
-  public sym?: string;
-  public icon?: string;
-  public supply?: bigint;
-  public contract?: string;
-  public reason?: string;
+  public sym ? : string;
+  public icon ? : string;
+  public supply ? : bigint;
+  public contract ? : string;
+  public reason ? : string;
 
-  constructor(props: Bsv21) {
+  constructor(props : Bsv21) {
     this.id = props.id || "";
     Object.assign(this, props);
   }
 
-  static fromJSON(obj: any): Bsv21 {
+  static fromJSON(obj : any) : Bsv21 {
     // if (typeof obj.id != "string" && !Array.isArray(obj.id)) return;
     const bsv21 = new Bsv21({
       id: new Outpoint(obj.id as string),
@@ -46,15 +45,13 @@ export class Bsv21 {
 export class Bsv21Indexer extends Indexer {
   tag = "bsv21";
 
-  parse(ctx: IndexContext, vout: number): IndexData | undefined {
+  async parse(ctx : IndexContext, vout : number) : Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
-    const ordIdxData = txo.data.ord as IndexData | undefined;
-    if (!ordIdxData) return;
-    const ord = ordIdxData.data as Ord;
-    if (!ord || ord.insc?.file.type !== "application/bsv-20") return;
-    let bsv21: Bsv21;
+    if (!txo.data.insc?.data) return;
+    if (txo.data.insc?.data.file.type !== "application/bsv-20") return;
+    let bsv21 : Bsv21;
     try {
-      bsv21 = Bsv21.fromJSON(JSON.parse(ord.insc!.file.text!));
+      bsv21 = Bsv21.fromJSON(JSON.parse(txo.data.insc?.data.file.text));
     } catch (e) {
       return;
     }
@@ -87,9 +84,9 @@ export class Bsv21Indexer extends Indexer {
     return data;
   }
 
-  preSave(ctx: IndexContext) {
-    const balance: { [id: string]: bigint } = {};
-    const tokensIn: { [id: string]: Txo[] } = {};
+  async preSave(ctx : IndexContext) {
+    const balance : { [id : string] : bigint } = {};
+    const tokensIn : { [id : string] : Txo[] } = {};
     for (const spend of ctx.spends) {
       const bsv21 = spend.data.bsv21;
       if (!bsv21) continue;
@@ -102,15 +99,15 @@ export class Bsv21Indexer extends Indexer {
           (balance[bsv21.data!.id] || 0n) + bsv21.data.amt;
       }
     }
-    const tokensOut: { [id: string]: Txo[] } = {};
-    const reasons: { [id: string]: string } = {};
+    const tokensOut : { [id : string] : Txo[] } = {};
+    const reasons : { [id : string] : string } = {};
     for (const txo of ctx.txos) {
       const bsv21 = txo.data?.bsv21;
       if (!bsv21 || !["transfer", "burn"].includes(bsv21.data.op)) continue;
-      let token: Bsv21 | undefined;
+      let token : Bsv21 | undefined;
       for (const spend of tokensIn[bsv21.data.id] || []) {
         token = spend.data.bsv21.data;
-        bsv21.deps.push(spend.outpoint.toString());
+        bsv21.deps.push(spend.outpoint);
       }
       if ((balance[bsv21.data.id] || 0n) < bsv21.data.amt) {
         reasons[bsv21.data.id] = "Insufficient inputs";
@@ -142,7 +139,7 @@ export class Bsv21Indexer extends Indexer {
     }
   }
 
-  async sync(txoStore: TxoStore): Promise<number> {
+  async sync(txoStore : TxoStore) : Promise<number> {
     const limit = 100;
     let lastHeight = 0;
     for await (const owner of this.owners) {
@@ -155,13 +152,13 @@ export class Bsv21Indexer extends Indexer {
         console.log("importing", token.id);
         // try {
         let offset = 0;
-        let utxos: RemoteBsv20[] = [];
+        let utxos : RemoteBsv20[] = [];
         do {
           resp = await fetch(
             `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}?limit=${limit}&offset=${offset}&includePending=true`,
           );
           utxos = ((await resp.json()) as RemoteBsv20[]) || [];
-          const txos: Txo[] = [];
+          const txos : Txo[] = [];
           for (const u of utxos) {
             const txo = new Txo(
               new Outpoint(u.txid, u.vout),
@@ -182,23 +179,22 @@ export class Bsv21Indexer extends Indexer {
                 status: u.status,
                 icon: token.icon,
               }),
-              undefined, //deps[u.txid] || [],
               [
                 { id: "address", value: owner },
                 { id: "id", value: token.id!.toString() },
               ],
             );
             if (u.listing && u.payout && u.price) {
+              const price = BigInt(u.price);
               txo.data.list = new IndexData(
                 {
                   payout: Utils.toArray(u.payout, "base64"),
-                  price: BigInt(u.price),
+                  price,
                 },
-                undefined,
                 [
                   {
                     id: "price",
-                    value: BigInt(u.price).toString(16).padStart(16, "0"),
+                    value: price.toString(16).padStart(16, "0"),
                   },
                 ],
               );
@@ -207,18 +203,13 @@ export class Bsv21Indexer extends Indexer {
             txos.push(txo);
           }
           await txoStore.storage.putMany(txos);
-          await txoStore.queue(
-            txos.map(
-              (t) =>
-                ({
-                  txid: t.outpoint.txid,
-                  height: t.block.height,
-                  idx: Number(t.block.idx),
-                  checkSpends: true,
-                  downloadOnly: this.mode === IndexMode.Trust,
-                }) as Ingest,
-            ),
-          );
+          await txoStore.queue(txos.map((t) => ({
+            txid: t.outpoint.txid,
+            height: t.block.height,
+            idx: Number(t.block.idx),
+            checkSpends: true,
+            downloadOnly: this.mode === IndexMode.Trust,
+          }) as Ingest));
           offset += limit;
           // if (this.syncMode !== TxoStatus.TRUSTED) {
           //   resp = await fetch(

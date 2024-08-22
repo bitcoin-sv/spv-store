@@ -12,12 +12,12 @@ export enum BroadcastStatus {
 }
 
 export interface BroadcastStatusResponse {
-  status: BroadcastStatus;
-  proof?: number[];
-  message?: string;
+  status : BroadcastStatus;
+  proof ?: number[];
+  message ?: string;
 }
 
 export interface BroadcastService {
-  broadcast(tx: Transaction): Promise<BroadcastResponse | BroadcastFailure>;
-  status(txid: string): Promise<BroadcastStatusResponse | undefined>;
+  broadcast(tx : Transaction) : Promise<BroadcastResponse | BroadcastFailure>;
+  status(txid : string) : Promise<BroadcastStatusResponse | undefined>;
 }

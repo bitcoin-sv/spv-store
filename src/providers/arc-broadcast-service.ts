@@ -12,14 +12,14 @@ import {
 
 export class ArcSatBroadcastProvider implements BroadcastService {
   constructor(
-    public baseUrl: string,
-    public apiKey?: string,
-  ) {}
+    public baseUrl : string,
+    public apiKey ?: string,
+  ) { }
   async broadcast(
-    tx: Transaction,
-  ): Promise<BroadcastResponse | BroadcastFailure> {
+    tx : Transaction,
+  ) : Promise<BroadcastResponse | BroadcastFailure> {
     console.log("Broadcasting", tx.id("hex"), tx.toHex());
-    let txBuf: Buffer | undefined;
+    let txBuf : Buffer | undefined;
     try {
       txBuf = Buffer.from(tx.toEF());
     } catch {
@@ -35,7 +35,7 @@ export class ArcSatBroadcastProvider implements BroadcastService {
     return resp.json();
   }
 
-  async status(txid: string): Promise<BroadcastStatusResponse | undefined> {
+  async status(txid : string) : Promise<BroadcastStatusResponse | undefined> {
     const resp = await fetch(`${this.baseUrl}/v1/tx/${txid}`);
     if (resp.status > 200) {
       return undefined;
@@ -59,11 +59,11 @@ export class ArcSatBroadcastProvider implements BroadcastService {
     }
   }
 
-  async fetch(txid: string): Promise<Transaction> {
+  async fetch(txid : string) : Promise<Transaction> {
     throw new Error("Method not implemented.");
   }
 
-  async batchFetch(txids: string[]): Promise<Transaction[]> {
+  async batchFetch(txids : string[]) : Promise<Transaction[]> {
     throw new Error("Method not implemented.");
   }
 }

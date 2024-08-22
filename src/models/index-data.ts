@@ -1,11 +1,12 @@
 import type { Event } from "./event";
+import type { Outpoint } from "./outpoint";
 
 export class IndexData {
-  tag?: string;
+  tag ? : string;
 
   constructor(
-    public data?: any,
-    public deps: string[] = [],
-    public events: Event[] = [],
-  ) {}
+    public data ?: any,
+    public events : Event[] = [],
+    public deps : Outpoint[] = [],
+  ) { }
 }
