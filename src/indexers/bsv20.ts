@@ -8,10 +8,10 @@ export class Bsv20 {
   public op = "";
   public amt = 0n;
   public dec = 0;
-  public reason ? : string;
+  public reason?: string;
   public fundAddress = "";
 
-  static fromJSON(obj : any) : Bsv20 {
+  static fromJSON(obj: any): Bsv20 {
     const bsv20 = new Bsv20();
     Object.assign(bsv20, {
       ...obj,
@@ -24,11 +24,11 @@ export class Bsv20 {
 export class Bsv20Indexer extends Indexer {
   tag = "bsv20";
 
-  async parse(ctx : IndexContext, vout : number) : Promise<IndexData | undefined> {
+  async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     if (!txo.data.insc?.data) return;
     if (txo.data.insc?.data.file.type !== "application/bsv-20") return;
-    let bsv20 : Bsv20;
+    let bsv20: Bsv20;
     try {
       bsv20 = Bsv20.fromJSON(JSON.parse(txo.data.insc?.data.file.text));
       const data = new IndexData(bsv20);

@@ -13,23 +13,23 @@ export abstract class Indexer {
 
   constructor(
     public owners = new Set<string>(),
-    public mode : IndexMode,
-    public network : Network = "mainnet",
+    public mode: IndexMode,
+    public network: Network = "mainnet",
   ) { }
 
   async parse(
-    ctx : IndexContext,
-    vout : number,
+    ctx: IndexContext,
+    vout: number,
     previewOnly = false,
-  ) : Promise<IndexData | undefined> {
+  ): Promise<IndexData | undefined> {
     return;
   }
 
-  async preSave(ctx : IndexContext) : Promise<void> {
+  async preSave(ctx: IndexContext): Promise<void> {
     return;
   }
 
-  static parseEvent(event : string) {
+  static parseEvent(event: string) {
     const [tag, id, value, spent, sort, idx, vout, satoshis] = event.split(":");
     return {
       tag,
@@ -43,7 +43,7 @@ export abstract class Indexer {
     };
   }
 
-  async sync(txoStore : TxoStore) : Promise<number> {
+  async sync(txoStore: TxoStore): Promise<number> {
     return 0;
   }
 }

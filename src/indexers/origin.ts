@@ -1,5 +1,5 @@
 import { P2PKH, Utils } from "@bsv/sdk";
-import type { IndexContext } from "../models/index-context";
+import type { IndexContext, IndexQueue } from "../models/index-context";
 import { TxoStore } from "../stores/txo-store";
 import {
   Block,
@@ -16,9 +16,10 @@ import { OneSatProvider } from "../providers/1sat-provider";
 import type { Inscription } from "./insc";
 import type { Ordinal } from "./remote-types";
 import { Listing } from "./ordlock";
+import type { TxLog } from "../services";
 
 export interface Origin {
-  outpoint : Outpoint;
+  outpoint : string;
   nonce ?: number;
   insc ?: Inscription;
 }
@@ -52,7 +53,7 @@ export class OriginIndexer extends Indexer {
           const remote = await provider.getTxo(spend.outpoint);
           if (remote?.origin?.data?.insc) {
             origin = {
-              outpoint: new Outpoint(remote.origin.outpoint),
+              outpoint: remote.origin.outpoint,
               insc: { file: remote.origin.data.insc.file },
               nonce: 0,
             };
@@ -60,8 +61,8 @@ export class OriginIndexer extends Indexer {
               const ancestors = await this.fetchAncestors(txo.owner || "", [
                 txo.outpoint,
               ]);
-              for (const [txid, block] of ancestors.entries()) {
-                ctx.queue.set(txid, block);
+              for (const [txid, block] of Object.entries(ancestors)) {
+                ctx.queue[txid] = block;
               }
             }
           }
@@ -74,7 +75,7 @@ export class OriginIndexer extends Indexer {
     }
     if (!origin) {
       origin = {
-        outpoint: txo.outpoint,
+        outpoint: txo.outpoint.toString(),
         insc: txo.data.insc?.data,
         nonce: 0,
       };
@@ -115,7 +116,7 @@ export class OriginIndexer extends Indexer {
             txo.block = new Block(u.height, BigInt(u.idx || 0));
           }
           const origin : Origin = {
-            outpoint: new Outpoint(u.origin.outpoint),
+            outpoint: u.origin.outpoint,
             insc: { file: u.origin.data.insc.file },
           };
           txo.data[this.tag] = new IndexData(origin, [
@@ -145,33 +146,34 @@ export class OriginIndexer extends Indexer {
             txos.map((t) => t.outpoint),
           );
           await txoStore.queue(
-            [...ancestors.entries()].map(([txid, block]) => ({
+            [...Object.entries(ancestors)].map(([txid, block]) => ({
               txid,
               height: block.height,
               idx: Number(block.idx),
               isDepOnly: true,
             }))
           );
-          await txoStore.queue(
-            txos.map(
-              (t) =>
-                ({
-                  txid: t.outpoint.txid,
-                  height: t.block.height,
-                  idx: Number(t.block.idx),
-                  checkSpends: true,
-                  downloadOnly: this.mode === IndexMode.Trust,
-                }) as Ingest,
-            ),
-          );
+          await txoStore.queue(txos.map((t) => ({
+            txid: t.outpoint.txid,
+            height: t.block.height,
+            idx: Number(t.block.idx),
+            checkSpends: true,
+            downloadOnly: this.mode === IndexMode.Trust,
+          })));
         }
+        await txoStore.storage.putInvs(txos.map((t) => ({
+          owner,
+          txid: t.outpoint.txid,
+          height: t.block.height,
+          idx: Number(t.block.idx),
+        })))
         offset += limit;
       } while (utxos.length == limit);
     }
     return lastHeight;
   }
 
-  async fetchAncestors(owner : string, outpoints : Outpoint[]) : Promise<Map<string, Block>> {
+  async fetchAncestors(owner : string, outpoints : Outpoint[]) : Promise<IndexQueue> {
     const resp = await fetch(
       `https://ordinals.gorillapool.io/api/inscriptions/ancestors`,
       {
@@ -186,9 +188,9 @@ export class OriginIndexer extends Indexer {
       height ?: number;
     }[];
 
-    return ancestors.reduce((map, u) => {
-      map.set(u.txid, new Block(u.height || Date.now(), BigInt(u.idx || 0)));
-      return map;
-    }, new Map<string, Block>());
+    return ancestors.reduce((queue, u) => {
+      queue[u.txid] =new Block(u.height || Date.now(), BigInt(u.idx || 0));
+      return queue;
+    }, {} as IndexQueue);
   }
 }

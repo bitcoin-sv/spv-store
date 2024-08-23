@@ -9,20 +9,20 @@ import { Outpoint } from "../models/outpoint";
 import type { TxLog } from "../services/inv-service";
 import type { Services, Stores } from "../casemod-spv";
 import type { EventEmitter } from "../lib/event-emitter";
-import type { TxoLookup, TxoResults } from "../models";
+import { TxoSort, type TxoLookup, type TxoResults } from "../models";
 import { BroadcastStatus } from "../services";
 
 export class TxoStore {
   queueLength = 0;
-  private syncRunning : Promise<void> | undefined;
+  private syncRunning: Promise<void> | undefined;
   private stopSync = false;
   constructor(
-    public storage : TxoStorage,
-    public services : Services,
-    public stores : Stores,
-    public indexers : Indexer[],
-    public owners : Set<string>,
-    public events ?: EventEmitter,
+    public storage: TxoStorage,
+    public services: Services,
+    public stores: Stores,
+    public indexers: Indexer[],
+    public owners: Set<string>,
+    public events?: EventEmitter,
   ) { }
 
   async destroy() {
@@ -31,7 +31,7 @@ export class TxoStore {
     await this.storage.destroy();
   }
 
-  private async updateSpends(outpoints : Outpoint[]) {
+  private async updateSpends(outpoints: Outpoint[]) {
     const spends = await this.services.spends.getSpends(outpoints);
     for (const [i, outpoint] of outpoints.entries()) {
       if (!spends[i]) continue;
@@ -40,21 +40,20 @@ export class TxoStore {
   }
 
   public async search(
-    lookup : TxoLookup,
+    lookup: TxoLookup,
+    sort = TxoSort.DESC,
     limit = 100,
-    from ?: string,
-  ) : Promise<TxoResults> {
-    return this.storage.search(lookup, limit, from);
+    from?: string,
+  ): Promise<TxoResults> {
+    return this.storage.search(lookup, sort, limit, from);
   }
 
   async parse(
-    tx : Transaction,
+    tx: Transaction,
     previewOnly = true,
     fromRemote = false,
-  ) : Promise<IndexContext> {
+  ): Promise<IndexContext> {
     const ctx = new IndexContext(tx)
-    console.log("Ingesting", ctx.txid);
-
     for (const input of tx.inputs) {
       if (!input.sourceTXID) {
         if (!input.sourceTransaction) {
@@ -108,6 +107,7 @@ export class TxoStore {
           TxoStatus.Unindexed,
         );
       }
+      ctx.txos.push(txo);
       for (const i of this.indexers) {
         try {
           const data = i.parse && (await i.parse(ctx, vout, previewOnly));
@@ -125,22 +125,20 @@ export class TxoStore {
   }
 
   async ingest(
-    tx : Transaction,
+    tx: Transaction,
     fromRemote = false,
     isDepOnly = false,
     checkSpends = false,
-  ) : Promise<IndexContext> {
-    const txid = tx.id("hex") as string;
-    console.log("Ingesting", txid);
-    const block : Block = { height: Date.now(), idx: 0n };
+  ): Promise<IndexContext> {
+    const ctx = await this.parse(tx, false, fromRemote);
+    console.log("Ingesting", ctx.txid);
+    const block: Block = { height: Date.now(), idx: 0n };
     if (tx.merklePath) {
       block.height = tx.merklePath.blockHeight;
       block.idx = BigInt(
-        tx.merklePath.path[0].find((p) => p.hash == txid)?.offset || 0,
+        tx.merklePath.path[0].find((p) => p.hash == ctx.txid)?.offset || 0,
       );
     }
-
-    const ctx = await this.parse(tx, false, fromRemote);
 
     ctx.txos.forEach((txo) => {
       txo.block = block;
@@ -153,21 +151,28 @@ export class TxoStore {
     });
     await this.storage.putMany(ctx.spends);
     await this.storage.putMany(ctx.txos);
-    // await this.stores.txns!.saveTx(tx);
+    if(!isDepOnly) {
+      this.storage.putTxLog({
+        txid: ctx.txid,
+        height: block.height,
+        idx: Number(block.idx),
+        summary: ctx.summary,
+      });
+    }
     if (checkSpends) {
       await this.updateSpends(ctx.txos.map((t) => t.outpoint));
     }
-    for (const txo of ctx.txos) {
-      for (const [tag, idxData] of Object.entries(txo.data)) {
-        for (const e of idxData.events) {
-          this.events?.emit(
-            `evt:${tag}:${e.id}`,
-            e.value,
-            txo.outpoint.toString(),
-          );
-        }
-      }
-    }
+    // for (const txo of ctx.txos) {
+    //   for (const [tag, idxData] of Object.entries(txo.data)) {
+    //     for (const e of idxData.events) {
+    //       this.events?.emit(
+    //         `evt:${tag}:${e.id}`,
+    //         e.value,
+    //         txo.outpoint.toString(),
+    //       );
+    //     }
+    //   }
+    // }
     return ctx;
   }
 
@@ -175,7 +180,7 @@ export class TxoStore {
     const queueLength = await this.storage.getQueueLength();
     this.events?.emit("queueStats", { length: queueLength });
   }
-  async queue(ingests : Ingest[]) {
+  async queue(ingests: Ingest[]) {
     ingests.forEach((i) => (i.status = i.status || IngestStatus.QUEUED));
     await this.storage.putIngests(ingests);
   }
@@ -191,7 +196,7 @@ export class TxoStore {
     ]).then(() => { });
   }
 
-  async processDownloads() : Promise<void> {
+  async processDownloads(): Promise<void> {
     try {
       const ingests = await this.storage.getIngests(IngestStatus.QUEUED, 25);
       if (ingests.length) {
@@ -216,7 +221,7 @@ export class TxoStore {
     return this.processDownloads();
   }
 
-  async processIngests() : Promise<void> {
+  async processIngests(): Promise<void> {
     try {
       const ingests = await this.storage.getIngests(
         IngestStatus.DOWNLOADED,
@@ -248,7 +253,7 @@ export class TxoStore {
     return this.processIngests();
   }
 
-  async processConfirms() : Promise<void> {
+  async processConfirms(): Promise<void> {
     try {
       const ingests = await this.storage.getIngests(
         IngestStatus.INGESTED,
@@ -296,7 +301,7 @@ export class TxoStore {
     return this.processConfirms();
   }
 
-  async processImmutable() : Promise<void> {
+  async processImmutable(): Promise<void> {
     try {
       const chaintip = await this.stores.blocks!.storage.getSynced();
       if (!chaintip) {
@@ -352,23 +357,20 @@ export class TxoStore {
         newLogs.map((log) => log.txid),
       );
       const puts = newLogs.reduce((puts, log, i) => {
-        if (
-          !oldLogs[i] ||
-          oldLogs[i]!.height != log.height ||
-          (log.idx && oldLogs[i]?.idx != log.idx)
+        if (!oldLogs[i] ||oldLogs[i]!.height != log.height ||
+          (log.idx < 50000000 && oldLogs[i]?.idx != log.idx)
         ) {
           log.owner = owner;
           puts.push(log);
         }
         return puts;
       }, [] as TxLog[]);
-      await this.queue(
-        puts.map((p) => ({
-          txid: p.txid,
-          height: Number(p.height),
-          idx: Number(p.idx || 0),
-        })),
-      );
+      console.log("Queueing new logs for", owner, puts);
+      await this.queue(puts.map((p) => ({
+        txid: p.txid,
+        height: Number(p.height),
+        idx: Number(p.idx || 0),
+      })));
     }
   }
 }

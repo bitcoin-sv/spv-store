@@ -10,31 +10,31 @@ import {
 } from "../models";
 
 export interface File {
-  hash : string;
-  size : number;
-  type : string;
-  text ?: string;
-  json ?: { [key : string] : any };
+  hash: string;
+  size: number;
+  type: string;
+  text?: string;
+  json?: { [key: string]: any };
 }
 
 export interface Inscription {
-  file ?: File;
-  fields ?: { [key : string] : any };
-  parent ?: string;
+  file?: File;
+  fields?: { [key: string]: any };
+  parent?: string;
 }
 
-export class OrdIndexer extends Indexer {
+export class InscriptionIndexer extends Indexer {
   tag = "insc";
 
   async parse(
-    ctx : IndexContext,
-    vout : number,
+    ctx: IndexContext,
+    vout: number,
     previewOnly = false,
-  ) : Promise<IndexData | undefined> {
+  ): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     if (txo.satoshis != 1n) return;
     const script = ctx.tx.outputs[vout].lockingScript;
-    let fromPos : number | undefined;
+    let fromPos: number | undefined;
     for (let i = 0; i < script.chunks.length; i++) {
       const chunk = script.chunks[i];
       if (
@@ -83,22 +83,22 @@ export class OrdIndexer extends Indexer {
       }
       switch (fieldNo) {
         case 0:
-          insc.file.size = value.data?.length || 0;
+          insc.file!.size = value.data?.length || 0;
           if (!value.data?.length) break;
-          insc.file.hash = Utils.toHex(Hash.sha256(value.data));
+          insc.file!.hash = Utils.toHex(Hash.sha256(value.data));
           if (value.data?.length <= 1024) {
             try {
-              const text = new TextDecoder("utf8", {
+              insc.file!.text = new TextDecoder("utf8", {
                 fatal: true,
               }).decode(Buffer.from(value.data));
-              // insc.file.json = JSON.parse(text);
+              insc.file!.json = JSON.parse(insc.file!.text);
             } catch {
               console.log("Error parsing text");
             }
           }
           break;
         case 1:
-          insc.file.type = Buffer.from(value.data || []).toString();
+          insc.file!.type = Buffer.from(value.data || []).toString();
           break;
         case 3:
           if (!value.data || value.data.length != 36) break;
@@ -122,7 +122,7 @@ export class OrdIndexer extends Indexer {
       }
     }
 
-    const events : Event[] = [];
+    const events: Event[] = [];
     if (!previewOnly && txo.owner && this.owners.has(txo.owner)) {
       events.push({ id: "address", value: txo.owner });
     }

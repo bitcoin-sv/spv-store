@@ -6,7 +6,7 @@ import type { Inscription } from "./insc";
 export class OpNSIndexer extends Indexer {
   tag = "opns";
 
-  async parse(ctx : IndexContext, vout : number) : Promise<IndexData | undefined> {
+  async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     const insc = txo.data.insc?.data as Inscription;
     if (insc?.file?.type !== "application/op-ns") return;

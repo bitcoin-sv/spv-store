@@ -10,17 +10,17 @@ export enum TxoStatus {
 }
 
 export class Txo {
-  spend ? : string;
-  data : { [tag : string] : IndexData } = {};
-  events : string[] = [];
-  owner ? : string;
-  tags : string[] = [];
+  spend?: string;
+  data: { [tag: string]: IndexData } = {};
+  events: string[] = [];
+  owner?: string;
+  tags: string[] = [];
 
   constructor(
-    public outpoint : Outpoint,
-    public satoshis : bigint,
-    public script : number[],
-    public status : TxoStatus,
+    public outpoint: Outpoint,
+    public satoshis: bigint,
+    public script: number[],
+    public status: TxoStatus,
     public block = new Block(),
   ) { }
 }

@@ -1,9 +1,9 @@
 import { Utils } from "@bsv/sdk";
 export class Outpoint {
-  txid : string;
-  vout : number;
+  txid: string;
+  vout: number;
 
-  constructor(txidOrOutpoint : string | number[] | Outpoint, vout ?: number) {
+  constructor(txidOrOutpoint: string | number[] | Outpoint, vout?: number) {
     if (vout !== undefined) {
       this.vout = vout;
       if (typeof txidOrOutpoint == "string") {
@@ -29,18 +29,18 @@ export class Outpoint {
     }
   }
 
-  toString() : string {
+  toString(): string {
     return `${this.txid}_${this.vout}`;
   }
 
-  toBinary() : number[] {
+  toBinary(): number[] {
     const writer = new Utils.Writer();
     writer.write(Utils.toArray(this.txid, "hex").reverse());
     writer.writeUInt32LE(this.vout);
     return writer.toArray();
   }
 
-  toJSON() : string {
+  toJSON(): string {
     return this.toString();
   }
 }

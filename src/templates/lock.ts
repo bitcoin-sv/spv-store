@@ -28,7 +28,7 @@ export class LockTemplate {
    * @param {number} until - Block height when unlockable
    * @returns {LockingScript} - A P2PKH locking script.
    */
-  lock(address : string, until : number) : Script {
+  lock(address: string, until: number): Script {
     const pkh = Utils.fromBase58Check(address).data as number[];
 
     return new Script()
@@ -39,17 +39,17 @@ export class LockTemplate {
   }
 
   unlock(
-    privateKey : PrivateKey,
-    signOutputs : "all" | "none" | "single" = "all",
+    privateKey: PrivateKey,
+    signOutputs: "all" | "none" | "single" = "all",
     anyoneCanPay = false,
-    sourceSatoshis ?: number,
-    lockingScript ?: Script,
-  ) : {
-    sign : (tx : Transaction, inputIndex : number) => Promise<UnlockingScript>;
-    estimateLength : (tx : Transaction, inputIndex : number) => Promise<number>;
+    sourceSatoshis?: number,
+    lockingScript?: Script,
+  ): {
+    sign: (tx: Transaction, inputIndex: number) => Promise<UnlockingScript>;
+    estimateLength: (tx: Transaction, inputIndex: number) => Promise<number>;
   } {
     const unlock = {
-      sign: async (tx : Transaction, inputIndex : number) => {
+      sign: async (tx: Transaction, inputIndex: number) => {
         const input = tx.inputs[inputIndex];
         let sourceSats = sourceSatoshis as number;
         if (!sourceSats && input.sourceTransaction) {
@@ -92,7 +92,7 @@ export class LockTemplate {
         );
         return (await p2pkh.sign(tx, inputIndex)).writeBin(preimage);
       },
-      estimateLength: async (tx : Transaction, inputIndex : number) => {
+      estimateLength: async (tx: Transaction, inputIndex: number) => {
         return (await unlock.sign(tx, inputIndex)).toBinary().length;
       },
     };

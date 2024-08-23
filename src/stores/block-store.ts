@@ -7,12 +7,12 @@ import type { BlockHeader } from "../models";
 const PAGE_SIZE = 10000;
 
 export class BlockStore implements ChainTracker {
-  private syncRunning : Promise<void> | undefined;
+  private syncRunning: Promise<void> | undefined;
   private stopSync = false;
   constructor(
-    public storage : BlockStorage,
-    public services : Services,
-    public emitter ?: EventEmitter,
+    public storage: BlockStorage,
+    public services: Services,
+    public emitter?: EventEmitter,
   ) { }
 
   async destroy() {
@@ -21,7 +21,7 @@ export class BlockStore implements ChainTracker {
     await this.storage.destroy();
   }
 
-  async sync(returnOnChaintip = true) : Promise<void> {
+  async sync(returnOnChaintip = true): Promise<void> {
     if (this.syncRunning) return;
     // const doSync = async (returnOnChaintip: boolean) =>
     this.syncRunning = this.doSync(returnOnChaintip);
@@ -31,7 +31,7 @@ export class BlockStore implements ChainTracker {
     }
   }
 
-  private async doSync(returnOnChaintip = true) : Promise<void> {
+  private async doSync(returnOnChaintip = true): Promise<void> {
     let lastHeight = 1;
     const syncedBlock = await this.storage.getSynced();
     if (syncedBlock) {
@@ -68,7 +68,7 @@ export class BlockStore implements ChainTracker {
     return this.doSync(returnOnChaintip);
   }
 
-  async isValidRootForHeight(root : string, height : number) : Promise<boolean> {
+  async isValidRootForHeight(root: string, height: number): Promise<boolean> {
     const block = await this.storage.getByHeight(height);
     return block?.merkleroot == root;
   }

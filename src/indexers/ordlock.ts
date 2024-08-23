@@ -15,7 +15,7 @@ const SUFFIX = Buffer.from(
 
 export class Listing {
   constructor(
-    public payout : number[] = [],
+    public payout: number[] = [],
     public price = 0n,
   ) { }
 }
@@ -24,10 +24,10 @@ export class OrdLockIndexer extends Indexer {
   tag = "list";
 
   async parse(
-    ctx : IndexContext,
-    vout : number,
+    ctx: IndexContext,
+    vout: number,
     previewOnly = false,
-  ) : Promise<IndexData | undefined> {
+  ): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     const a = Uint8Array.from(txo.script);
     const script = Buffer.from(txo.script);
@@ -47,7 +47,7 @@ export class OrdLockIndexer extends Indexer {
     txo.owner =
       dataScript.chunks[0]?.data &&
       Utils.toBase58Check(Array.from(dataScript.chunks[0]!.data!));
-    const events : Event[] = [];
+    const events: Event[] = [];
     if (txo.owner && this.owners.has(txo.owner)) {
       events.push({
         id: "price",

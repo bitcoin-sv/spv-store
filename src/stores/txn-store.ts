@@ -18,10 +18,10 @@ export enum TxnStatus {
 
 export class TxnStore {
   constructor(
-    public storage : TxnStorage,
-    public services : Services,
-    public stores : Stores,
-    public events ?: EventEmitter,
+    public storage: TxnStorage,
+    public services: Services,
+    public stores: Stores,
+    public events?: EventEmitter,
   ) { }
 
   async destroy() {
@@ -29,8 +29,8 @@ export class TxnStore {
   }
 
   async broadcast(
-    tx : Transaction,
-  ) : Promise<BroadcastResponse | BroadcastFailure> {
+    tx: Transaction,
+  ): Promise<BroadcastResponse | BroadcastFailure> {
     const resp = await this.services.broadcast.broadcast(tx);
     if (isBroadcastResponse(resp)) {
       this.events?.emit("broadcastSuccess", tx);
@@ -41,9 +41,9 @@ export class TxnStore {
   }
 
   async loadTx(
-    txid : string,
+    txid: string,
     fromRemote = false,
-  ) : Promise<Transaction | undefined> {
+  ): Promise<Transaction | undefined> {
     let tx = await this.storage.get(txid);
     if (!tx && fromRemote) {
       tx = await this.services.txns.fetch(txid);
@@ -52,7 +52,7 @@ export class TxnStore {
     return tx;
   }
 
-  async saveTx(tx : Transaction) {
+  async saveTx(tx: Transaction) {
     if (tx.merklePath) {
       try {
         if (!(await tx.merklePath.verify(tx.id("hex"), this.stores.blocks!))) {
@@ -65,10 +65,10 @@ export class TxnStore {
     await this.storage.put(tx);
   }
 
-  async ensureTxns(txids : string[]) {
+  async ensureTxns(txids: string[]) {
     console.log("Downloading", txids.length, "txs");
     const exists = await this.storage.exists(txids);
-    const missing : { [txid : string] : boolean } = {};
+    const missing: { [txid: string]: boolean } = {};
     for (const [i, txid] of txids.entries()) {
       if (!exists[i]) missing[txid] = true;
     }

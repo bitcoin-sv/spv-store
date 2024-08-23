@@ -17,12 +17,12 @@ import type { Ordinal } from "./remote-types";
 export class FundIndexer extends Indexer {
   tag = "fund";
 
-  async parse(ctx : IndexContext, vout : number) : Promise<IndexData | undefined> {
+  async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     const script = ctx.tx.outputs[vout].lockingScript;
     const address = parseAddress(script, 0);
     if (txo.satoshis < 2n) return;
-    const events : Event[] = [];
+    const events: Event[] = [];
     if (address && this.owners.has(address)) {
       txo.owner = address;
       events.push({ id: "address", value: address });
@@ -30,35 +30,37 @@ export class FundIndexer extends Indexer {
     return new IndexData(address, events);
   }
 
-  async preSave(ctx : IndexContext) : Promise<void> {
+  async preSave(ctx: IndexContext): Promise<void> {
     let satsIn = ctx.spends.reduce((acc, spends) => {
+      if (!spends.data[this.tag]) return acc;
       return acc + (spends.owner && this.owners.has(spends.owner) ?
         spends.satoshis :
         0n);
     }, 0n);
     let satsOut = ctx.txos.reduce((acc, txo) => {
+      if (!txo.data[this.tag]) return acc;
       return acc + (txo.owner && this.owners.has(txo.owner) ?
         txo.satoshis :
         0n);
     }, 0n);
     const balance = satsIn - satsOut;
     if (balance != 0n) {
-      ctx.summary[this.tag] = balance.toString();
+      ctx.summary[this.tag] = balance;
     }
   }
 
-  async sync(txoStore : TxoStore) : Promise<number> {
+  async sync(txoStore: TxoStore): Promise<number> {
     const limit = 10000;
     let lastHeight = 0;
     for await (const owner of this.owners) {
       let offset = 0;
-      let utxos : Ordinal[] = [];
+      let utxos: Ordinal[] = [];
       do {
         const resp = await fetch(
           `https://ordinals.gorillapool.io/api/txos/address/${owner}/unspent?limit=${limit}&offset=${offset}`,
         );
         utxos = ((await resp.json()) as Ordinal[]) || [];
-        const txos : Txo[] = [];
+        const txos: Txo[] = [];
         for (const u of utxos) {
           if (u.satoshis < 2) continue;
           const txo = new Txo(
@@ -90,6 +92,12 @@ export class FundIndexer extends Indexer {
             downloadOnly: this.mode === IndexMode.Trust,
           }) as Ingest));
         }
+        await txoStore.storage.putInvs(txos.map((t) => ({
+          owner,
+          txid: t.outpoint.txid,
+          height: t.block.height,
+          idx: Number(t.block.idx),
+        })))
         offset += limit;
       } while (utxos.length == 100);
     }

@@ -19,9 +19,9 @@ export class Lock {
 export class LockIndexer extends Indexer {
   tag = "lock";
   async parse(
-    ctx : IndexContext,
-    vout : number
-  ) : Promise<IndexData | undefined> {
+    ctx: IndexContext,
+    vout: number
+  ): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     const script = Buffer.from(txo.script);
     const prefixIdx = script.indexOf(PREFIX);
@@ -38,7 +38,7 @@ export class LockIndexer extends Indexer {
       16,
     );
     txo.owner = Utils.toBase58Check(dataScript.chunks[0].data!);
-    const events : Event[] = [];
+    const events: Event[] = [];
     if (txo.owner && this.owners.has(txo.owner)) {
       events.push({ id: "until", value: until.toString().padStart(7, "0") });
       events.push({ id: "address", value: txo.owner });
@@ -46,31 +46,33 @@ export class LockIndexer extends Indexer {
     return new IndexData(new Lock(until), events);
   }
 
-  async preSave(ctx : IndexContext) : Promise<void> {
+  async preSave(ctx: IndexContext): Promise<void> {
     const locksIn = ctx.spends.reduce((acc, spends) => {
-      return acc + (spends.data[this.tag] ? spends.satoshis : 0n);
+      if (!spends.data[this.tag]) return acc;
+      return acc + spends.satoshis;
     }, 0n)
     const locksOut = ctx.txos.reduce((acc, txo) => {
-      return acc + (txo.data[this.tag] ? txo.satoshis : 0n);
+      if (!txo.data[this.tag]) return acc;
+      return acc + txo.satoshis;
     }, 0n);
     const balance = locksIn - locksOut;
     if (balance != 0n) {
-      ctx.summary[this.tag] = balance.toString();
+      ctx.summary[this.tag] = balance;
     }
   }
 
-  async sync(txoStore : TxoStore) : Promise<number> {
+  async sync(txoStore: TxoStore): Promise<number> {
     const limit = 10000;
     let lastHeight = 0;
     for await (const owner of this.owners) {
       let offset = 0;
-      let utxos : Ordinal[] = [];
+      let utxos: Ordinal[] = [];
       do {
         const resp = await fetch(
           `https://ordinals.gorillapool.io/api/locks/address/${owner}/unspent?limit=${limit}&offset=${offset}`,
         );
         utxos = ((await resp.json()) as Ordinal[]) || [];
-        const txos : Txo[] = [];
+        const txos: Txo[] = [];
         for (const u of utxos) {
           if (!u.data?.lock || !u.data.lock.until) continue;
           const txo = new Txo(
@@ -79,6 +81,9 @@ export class LockIndexer extends Indexer {
             new LockTemplate().lock(owner, u.data.lock.until).toBinary(),
             TxoStatus.Trusted,
           );
+          txos.push(txo);
+          if (this.mode === IndexMode.Verify) continue;
+          txo.owner = owner;
           if (u.height) {
             txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
           }
@@ -92,19 +97,24 @@ export class LockIndexer extends Indexer {
           lastHeight = Math.max(lastHeight, u.height || 0);
           txos.push(txo);
         }
-        await txoStore.storage.putMany(txos);
-        await txoStore.queue(
-          txos.map(
-            (t) =>
-              ({
-                txid: t.outpoint.txid,
-                height: t.block.height,
-                idx: Number(t.block.idx),
-                checkSpends: true,
-                downloadOnly: this.mode === IndexMode.Trust,
-              }) as Ingest,
-          ),
-        );
+        if (this.mode !== IndexMode.Verify) {
+          await txoStore.storage.putMany(txos);
+        }
+        if (this.mode != IndexMode.Trust) {
+          await txoStore.queue(txos.map((t) => ({
+            txid: t.outpoint.txid,
+            height: t.block.height,
+            idx: Number(t.block.idx),
+            checkSpends: true,
+            downloadOnly: this.mode === IndexMode.Trust,
+          }) as Ingest));
+        }
+        await txoStore.storage.putInvs(txos.map((t) => ({
+          owner,
+          txid: t.outpoint.txid,
+          height: t.block.height,
+          idx: Number(t.block.idx),
+        })))
         offset += limit;
       } while (utxos.length == 100);
     }

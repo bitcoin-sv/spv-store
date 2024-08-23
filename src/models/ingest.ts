@@ -8,11 +8,11 @@ export enum IngestStatus {
 }
 
 export interface Ingest {
-  txid : string;
-  height : number;
-  idx : number;
-  isDepOnly ?: boolean;
-  checkSpends ?: boolean;
-  downloadOnly ?: boolean;
-  status ?: IngestStatus;
+  txid: string;
+  height: number;
+  idx: number;
+  isDepOnly?: boolean;
+  checkSpends?: boolean;
+  downloadOnly?: boolean;
+  status?: IngestStatus;
 }

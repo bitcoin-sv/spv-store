@@ -12,24 +12,24 @@ import { EventEmitter } from "../lib/event-emitter";
 
 export class OneSatWebSPV extends CaseModSPV {
   private constructor(
-    public services : Services,
-    public stores : Stores,
-    public events : EventEmitter,
+    public services: Services,
+    public stores: Stores,
+    public events: EventEmitter,
     startSync = false,
   ) {
     super(services, stores, events, startSync);
   }
 
   static async init(
-    accountId : string,
-    indexers : Indexer[],
+    accountId: string,
+    indexers: Indexer[],
     owners = new Set<string>(),
     startSync = false,
-    network : Network = "mainnet",
+    network: Network = "mainnet",
   ) {
     const oneSatService = new OneSatProvider(network);
     const emitter = new EventEmitter();
-    const services : Services = {
+    const services: Services = {
       blocks: oneSatService,
       txns: oneSatService,
       broadcast: oneSatService,
@@ -42,7 +42,7 @@ export class OneSatWebSPV extends CaseModSPV {
       TxoStorageIDB.init(accountId, indexers, network),
     ]);
 
-    const stores : Stores = {};
+    const stores: Stores = {};
     stores.blocks = new BlockStore(blockStorage, services, emitter);
     stores.txns = new TxnStore(txnStorage, services, stores, emitter);
     stores.txos = new TxoStore(

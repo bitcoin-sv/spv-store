@@ -16,22 +16,22 @@ export enum Bsv21Status {
 
 export class Bsv21 {
   status = Bsv21Status.Pending;
-  public id : Outpoint;
+  public id: string;
   public op = "";
   public amt = 0n;
   public dec = 0;
-  public sym ? : string;
-  public icon ? : string;
-  public supply ? : bigint;
-  public contract ? : string;
-  public reason ? : string;
+  public sym?: string;
+  public icon?: string;
+  public supply?: bigint;
+  public contract?: string;
+  public reason?: string;
 
-  constructor(props : Bsv21) {
+  constructor(props: Bsv21) {
     this.id = props.id || "";
     Object.assign(this, props);
   }
 
-  static fromJSON(obj : any) : Bsv21 {
+  static fromJSON(obj: any): Bsv21 {
     // if (typeof obj.id != "string" && !Array.isArray(obj.id)) return;
     const bsv21 = new Bsv21({
       id: new Outpoint(obj.id as string),
@@ -45,11 +45,11 @@ export class Bsv21 {
 export class Bsv21Indexer extends Indexer {
   tag = "bsv21";
 
-  async parse(ctx : IndexContext, vout : number) : Promise<IndexData | undefined> {
+  async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     if (!txo.data.insc?.data) return;
     if (txo.data.insc?.data.file.type !== "application/bsv-20") return;
-    let bsv21 : Bsv21;
+    let bsv21: Bsv21;
     try {
       bsv21 = Bsv21.fromJSON(JSON.parse(txo.data.insc?.data.file.text));
     } catch (e) {
@@ -60,7 +60,7 @@ export class Bsv21Indexer extends Indexer {
     switch (bsv21.op) {
       case "deploy+mint":
         if (bsv21.dec > 18) return;
-        bsv21.id = txo.outpoint;
+        bsv21.id = txo.outpoint.toString();
         bsv21.supply = bsv21.amt;
         bsv21.status = Bsv21Status.Valid;
         break;
@@ -84,9 +84,9 @@ export class Bsv21Indexer extends Indexer {
     return data;
   }
 
-  async preSave(ctx : IndexContext) {
-    const balance : { [id : string] : bigint } = {};
-    const tokensIn : { [id : string] : Txo[] } = {};
+  async preSave(ctx: IndexContext) {
+    const balance: { [id: string]: bigint } = {};
+    const tokensIn: { [id: string]: Txo[] } = {};
     for (const spend of ctx.spends) {
       const bsv21 = spend.data.bsv21;
       if (!bsv21) continue;
@@ -99,12 +99,12 @@ export class Bsv21Indexer extends Indexer {
           (balance[bsv21.data!.id] || 0n) + bsv21.data.amt;
       }
     }
-    const tokensOut : { [id : string] : Txo[] } = {};
-    const reasons : { [id : string] : string } = {};
+    const tokensOut: { [id: string]: Txo[] } = {};
+    const reasons: { [id: string]: string } = {};
     for (const txo of ctx.txos) {
       const bsv21 = txo.data?.bsv21;
       if (!bsv21 || !["transfer", "burn"].includes(bsv21.data.op)) continue;
-      let token : Bsv21 | undefined;
+      let token: Bsv21 | undefined;
       for (const spend of tokensIn[bsv21.data.id] || []) {
         token = spend.data.bsv21.data;
         bsv21.deps.push(spend.outpoint);
@@ -139,7 +139,7 @@ export class Bsv21Indexer extends Indexer {
     }
   }
 
-  async sync(txoStore : TxoStore) : Promise<number> {
+  async sync(txoStore: TxoStore): Promise<number> {
     const limit = 100;
     let lastHeight = 0;
     for await (const owner of this.owners) {
@@ -152,13 +152,13 @@ export class Bsv21Indexer extends Indexer {
         console.log("importing", token.id);
         // try {
         let offset = 0;
-        let utxos : RemoteBsv20[] = [];
+        let utxos: RemoteBsv20[] = [];
         do {
           resp = await fetch(
             `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}?limit=${limit}&offset=${offset}&includePending=true`,
           );
           utxos = ((await resp.json()) as RemoteBsv20[]) || [];
-          const txos : Txo[] = [];
+          const txos: Txo[] = [];
           for (const u of utxos) {
             const txo = new Txo(
               new Outpoint(u.txid, u.vout),

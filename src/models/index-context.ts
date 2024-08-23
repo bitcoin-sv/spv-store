@@ -2,15 +2,15 @@ import type { Transaction } from "@bsv/sdk";
 import type { Txo } from "./txo";
 import { Block } from "./block";
 
-type Queue = { [txid : string] : Block };
-type Summary = { [tag : string] : string };
+export type IndexQueue = { [txid: string]: Block };
+export type IndexSummary = { [tag: string]: bigint };
 export class IndexContext {
-  txid : string;
-  spends : Txo[] = [];
-  txos : Txo[] = [];
-  queue : Queue = {};
-  summary : Summary = {}
-  constructor(public tx : Transaction, public block = new Block()) {
+  txid: string;
+  spends: Txo[] = [];
+  txos: Txo[] = [];
+  queue: IndexQueue = {};
+  summary: IndexSummary = {}
+  constructor(public tx: Transaction, public block = new Block()) {
     this.txid = tx.id('hex')
   }
 }

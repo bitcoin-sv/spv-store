@@ -6,19 +6,19 @@ import type { Network } from "../../casemod-spv";
 const BLOCK_DB_VERSION = 1;
 
 export interface BlockSchema extends DBSchema {
-  blocks : {
-    key : number;
-    value : BlockHeader;
-    indexes : {
-      hash : string;
+  blocks: {
+    key: number;
+    value: BlockHeader;
+    indexes: {
+      hash: string;
     };
   };
 }
 
 export class BlockStorageIDB implements BlockStorage {
-  private constructor(public db : IDBPDatabase<BlockSchema>) { }
+  private constructor(public db: IDBPDatabase<BlockSchema>) { }
 
-  static async init(network : Network) : Promise<BlockStorageIDB> {
+  static async init(network: Network): Promise<BlockStorageIDB> {
     const db = await openDB<BlockSchema>(
       `blocks-${network}`,
       BLOCK_DB_VERSION,
@@ -43,11 +43,11 @@ export class BlockStorageIDB implements BlockStorage {
     await destroyed;
   }
 
-  async put(block : BlockHeader) : Promise<void> {
+  async put(block: BlockHeader): Promise<void> {
     await this.db.put("blocks", block);
   }
 
-  async putMany(blocks : BlockHeader[]) : Promise<void> {
+  async putMany(blocks: BlockHeader[]): Promise<void> {
     if (!blocks.length) return;
     const t = this.db.transaction("blocks", "readwrite");
     for (const block of blocks) {
@@ -56,15 +56,15 @@ export class BlockStorageIDB implements BlockStorage {
     await t.done;
   }
 
-  async getByHash(hash : string) : Promise<BlockHeader | undefined> {
+  async getByHash(hash: string): Promise<BlockHeader | undefined> {
     return this.db.getFromIndex("blocks", "hash", hash).catch(() => undefined);
   }
 
-  async getByHeight(height : number) : Promise<BlockHeader | undefined> {
+  async getByHeight(height: number): Promise<BlockHeader | undefined> {
     return this.db.get("blocks", height).catch(() => undefined);
   }
 
-  async getSynced() : Promise<BlockHeader | undefined> {
+  async getSynced(): Promise<BlockHeader | undefined> {
     const db = await this.db;
     const t = db.transaction("blocks", "readonly");
     const cursor = await t.store.openCursor(null, "prev");
