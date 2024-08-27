@@ -5,9 +5,9 @@ import { Block } from "./block";
 export type IndexQueue = { [txid: string]: Block };
 
 export type IndexSummary = { [tag: string]: {
-  label: string;
-  amount: bigint;
-  icon: string;
+  id?: string;
+  amount?: bigint;
+  icon?: string;
 } };
 export class IndexContext {
   txid: string;

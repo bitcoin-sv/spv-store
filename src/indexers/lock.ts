@@ -57,7 +57,9 @@ export class LockIndexer extends Indexer {
     }, 0n);
     const balance = locksIn - locksOut;
     if (balance != 0n) {
-      ctx.summary[this.tag] = balance;
+      ctx.summary[this.tag] = {
+        amount: balance,
+      };
     }
   }
 
