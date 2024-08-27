@@ -72,4 +72,8 @@ export class BlockStore implements ChainTracker {
     const block = await this.storage.getByHeight(height);
     return block?.merkleroot == root;
   }
+
+  async getChaintip(): Promise<BlockHeader | undefined> {
+    return this.storage.getSynced();
+  }
 }

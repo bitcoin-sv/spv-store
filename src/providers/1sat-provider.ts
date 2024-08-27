@@ -1,7 +1,6 @@
 import {
   type BroadcastFailure,
   type BroadcastResponse,
-  MerklePath,
   Transaction,
   Utils,
 } from "@bsv/sdk";
@@ -18,6 +17,7 @@ import type { BlockHeader } from "../models/block-header";
 import type { Network } from "../casemod-spv";
 import type { Outpoint } from "../models/outpoint";
 import type { Ordinal } from "../indexers/remote-types";
+import type { Txn } from "../stores";
 
 const APIS = {
   mainnet: "https://ordinals.gorillapool.io",
@@ -77,16 +77,31 @@ export class OneSatProvider
     }
   }
 
-  async fetch(txid: string): Promise<Transaction> {
+  async fetchTxn(txid: string): Promise<Txn> {
     const resp = await fetch(`${APIS[this.network]}/api/tx/${txid}`);
     console.log("Fetching", txid);
     if (resp.status !== 200)
       throw new Error(`${resp.status} - Failed to fetch tx ${txid}`);
-    const beef = await resp.arrayBuffer();
-    return Transaction.fromBEEF([...Buffer.from(beef)]);
+    const data = await resp.arrayBuffer();
+    const reader = new Utils.Reader([...Buffer.from(data)]);
+    let len = reader.readVarIntNum();
+    const txn = {
+      rawtx: reader.read(len)
+    } as Txn;
+    len = reader.readVarIntNum();
+    if (len) txn.proof = reader.read(len);
+    return txn;
   }
 
-  async batchFetch(txids: string[]): Promise<Transaction[]> {
+  async fetchProof(txid: string): Promise<number[] | undefined> {
+    const resp = await fetch(`${APIS[this.network]}/api/tx/${txid}/proof`);
+    console.log("Fetching", txid);
+    if (resp.status !== 200) return
+    const proof = await resp.arrayBuffer();
+    return [...Buffer.from(proof)];
+  }
+
+  async fetchTxns(txids: string[]): Promise<Txn[]> {
     const resp = await fetch(`${APIS[this.network]}/api/tx/batch`, {
       method: "POST",
       headers: {
@@ -100,16 +115,17 @@ export class OneSatProvider
       );
     const data = await resp.arrayBuffer();
     const reader = new Utils.Reader([...Buffer.from(data)]);
-    const txs: Transaction[] = [];
+    const txns: Txn[] = [];
     while (reader.pos < data.byteLength) {
       let len = reader.readVarIntNum();
-      const rawtx = reader.read(len);
-      const tx = Transaction.fromBinary(rawtx);
+      const txn = {
+        rawtx: reader.read(len)
+      } as Txn;
       len = reader.readVarIntNum();
-      if (len) tx.merklePath = MerklePath.fromBinary(reader.read(len));
-      txs.push(tx);
+      if (len) txn.proof = reader.read(len);
+      txns.push(txn);
     }
-    return txs;
+    return txns;
   }
 
   async pollTxLogs(owner: string, fromHeight = 0): Promise<TxLog[]> {

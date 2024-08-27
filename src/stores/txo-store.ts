@@ -13,7 +13,6 @@ import { TxoSort, type TxoLookup, type TxoResults } from "../models";
 import { BroadcastStatus } from "../services";
 
 export class TxoStore {
-  queueLength = 0;
   private syncRunning: Promise<void> | undefined;
   private stopSync = false;
   constructor(
@@ -126,6 +125,7 @@ export class TxoStore {
 
   async ingest(
     tx: Transaction,
+    source: string = "",
     fromRemote = false,
     isDepOnly = false,
     checkSpends = false,
@@ -235,7 +235,7 @@ export class TxoStore {
             console.error("Failed to get tx", ingest.txid);
             continue;
           }
-          await this.ingest(tx, true, ingest.isDepOnly, ingest.checkSpends);
+          await this.ingest(tx, ingest.source, true, ingest.isDepOnly, ingest.checkSpends);
           ingest.status = IngestStatus.INGESTED;
           await this.storage.putIngest(ingest);
           await this.updateQueueStats();
@@ -281,7 +281,7 @@ export class TxoStore {
             }
           }
           if (tx.merklePath) {
-            const ctx = await this.ingest(tx, true, ingest.isDepOnly);
+            const ctx = await this.ingest(tx,ingest.source,  true, ingest.isDepOnly);
             ingest.status = IngestStatus.CONFIRMED;
             ingest.height = ctx.block.height;
             ingest.idx = Number(ctx.block.idx);
@@ -370,6 +370,7 @@ export class TxoStore {
         txid: p.txid,
         height: Number(p.height),
         idx: Number(p.idx || 0),
+        source: ""
       })));
     }
   }

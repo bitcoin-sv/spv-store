@@ -3,7 +3,12 @@ import type { Txo } from "./txo";
 import { Block } from "./block";
 
 export type IndexQueue = { [txid: string]: Block };
-export type IndexSummary = { [tag: string]: bigint };
+
+export type IndexSummary = { [tag: string]: {
+  label: string;
+  amount: bigint;
+  icon: string;
+} };
 export class IndexContext {
   txid: string;
   spends: Txo[] = [];

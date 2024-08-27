@@ -8,6 +8,7 @@ export enum IndexMode {
   Verify = 2,
   TrustAndVerify = 3,
 }
+
 export abstract class Indexer {
   tag = "";
 

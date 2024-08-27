@@ -84,6 +84,7 @@ export class CaseModSPV {
       this.events.emit("txosSynced");
     }
     this.stores.blocks!.sync();
+    this.stores.txns!.processQueue();
     this.stores.txos!.processQueue();
     await this.stores.txos!.syncTxLogs();
     if (this.interval) clearInterval(this.interval);

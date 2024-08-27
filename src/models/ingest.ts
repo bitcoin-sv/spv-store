@@ -11,6 +11,7 @@ export interface Ingest {
   txid: string;
   height: number;
   idx: number;
+  source: string;
   isDepOnly?: boolean;
   checkSpends?: boolean;
   downloadOnly?: boolean;

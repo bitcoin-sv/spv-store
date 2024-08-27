@@ -20,14 +20,13 @@ export class FundIndexer extends Indexer {
   async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     const script = ctx.tx.outputs[vout].lockingScript;
-    const address = parseAddress(script, 0);
+    txo.owner = parseAddress(script, 0);
     if (txo.satoshis < 2n) return;
     const events: Event[] = [];
-    if (address && this.owners.has(address)) {
-      txo.owner = address;
-      events.push({ id: "address", value: address });
+    if (txo.owner && this.owners.has(txo.owner)) {
+      events.push({ id: "address", value: txo.owner });
     }
-    return new IndexData(address, events);
+    return new IndexData(txo.owner, events);
   }
 
   async preSave(ctx: IndexContext): Promise<void> {
@@ -87,6 +86,7 @@ export class FundIndexer extends Indexer {
           await txoStore.queue(txos.map((t) => ({
             txid: t.outpoint.txid,
             height: t.block.height,
+            source: "https://ordinals.gorillapool.io",
             idx: Number(t.block.idx),
             checkSpends: true,
             downloadOnly: this.mode === IndexMode.Trust,

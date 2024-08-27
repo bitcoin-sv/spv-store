@@ -149,6 +149,7 @@ export class OriginIndexer extends Indexer {
             [...Object.entries(ancestors)].map(([txid, block]) => ({
               txid,
               height: block.height,
+              source: "https://ordinals.gorillapool.io",
               idx: Number(block.idx),
               isDepOnly: true,
             }))
@@ -156,6 +157,7 @@ export class OriginIndexer extends Indexer {
           await txoStore.queue(txos.map((t) => ({
             txid: t.outpoint.txid,
             height: t.block.height,
+            source: "https://ordinals.gorillapool.io",
             idx: Number(t.block.idx),
             checkSpends: true,
             downloadOnly: this.mode === IndexMode.Trust,

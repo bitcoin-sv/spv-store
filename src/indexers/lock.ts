@@ -104,6 +104,7 @@ export class LockIndexer extends Indexer {
           await txoStore.queue(txos.map((t) => ({
             txid: t.outpoint.txid,
             height: t.block.height,
+            source: "https://ordinals.gorillapool.io",
             idx: Number(t.block.idx),
             checkSpends: true,
             downloadOnly: this.mode === IndexMode.Trust,

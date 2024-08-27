@@ -85,6 +85,9 @@ export class Bsv21Indexer extends Indexer {
   }
 
   async preSave(ctx: IndexContext) {
+    if (this.mode !== IndexMode.Trust) {
+      return;
+    }
     const balance: { [id: string]: bigint } = {};
     const tokensIn: { [id: string]: Txo[] } = {};
     for (const spend of ctx.spends) {
@@ -178,6 +181,7 @@ export class Bsv21Indexer extends Indexer {
                 op: u.op!,
                 status: u.status,
                 icon: token.icon,
+                // contract: token.contract
               }),
               [
                 { id: "address", value: owner },
@@ -203,14 +207,16 @@ export class Bsv21Indexer extends Indexer {
             txos.push(txo);
           }
           await txoStore.storage.putMany(txos);
-          await txoStore.queue(txos.map((t) => ({
-            txid: t.outpoint.txid,
-            height: t.block.height,
-            idx: Number(t.block.idx),
-            checkSpends: true,
-            downloadOnly: this.mode === IndexMode.Trust,
-          }) as Ingest));
-          offset += limit;
+          if (this.mode !== IndexMode.Trust) {
+            await txoStore.queue(txos.map((t) => ({
+              txid: t.outpoint.txid,
+              height: t.block.height,
+              source: "https://ordinals.gorillapool.io",
+              idx: Number(t.block.idx),
+              checkSpends: true,
+              downloadOnly: this.mode === IndexMode.Trust,
+            }) as Ingest));
+          }
           // if (this.syncMode !== TxoStatus.TRUSTED) {
           //   resp = await fetch(
           //     `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}/ancestors`,
@@ -228,6 +234,7 @@ export class Bsv21Indexer extends Indexer {
           //     })
           //   );
           // }
+          offset += limit;
         } while (utxos.length == limit);
       }
     }
