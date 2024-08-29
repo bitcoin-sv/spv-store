@@ -7,6 +7,7 @@ import { Utils } from "@bsv/sdk";
 import { TxoStore } from "../stores/txo-store";
 import { Outpoint, type Ingest } from "../models";
 import type { RemoteBsv20 } from "./remote-types";
+import type { CaseModSPV } from "../casemod-spv";
 
 export enum Bsv21Status {
   Invalid = -1,
@@ -142,9 +143,9 @@ export class Bsv21Indexer extends Indexer {
     }
   }
 
-  async sync(txoStore: TxoStore): Promise<number> {
+  async sync(casemod: CaseModSPV) {
     const limit = 100;
-    let lastHeight = 0;
+    const tip = await casemod.getSyncedBlock();
     for await (const owner of this.owners) {
       let resp = await fetch(
         `https://ordinals.gorillapool.io/api/bsv20/${owner}/balance`,
@@ -203,12 +204,11 @@ export class Bsv21Indexer extends Indexer {
                 ],
               );
             }
-            lastHeight = Math.max(lastHeight, u.height || 0);
             txos.push(txo);
           }
-          await txoStore.storage.putMany(txos);
+          await casemod.stores.txos!.storage.putMany(txos);
           if (this.mode !== IndexMode.Trust) {
-            await txoStore.queue(txos.map((t) => ({
+            await casemod.stores.txos!.queue(txos.map((t) => ({
               txid: t.outpoint.txid,
               height: t.block.height,
               source: "https://ordinals.gorillapool.io",
@@ -234,10 +234,25 @@ export class Bsv21Indexer extends Indexer {
           //     })
           //   );
           // }
+          await casemod.stores.txos!.storage.putInvs([
+            ...txos.map((t) => ({
+              txid: t.outpoint.txid,
+              height: t.block.height,
+              idx: Number(t.block.idx),
+              owner,
+              source: "https://ordinals.gorillapool.io",
+            })),
+            {
+              txid: "",
+              height: tip!.height,
+              idx: 0,
+              owner,
+              source: "https://ordinals.gorillapool.io",
+            },
+          ]);
           offset += limit;
         } while (utxos.length == limit);
       }
     }
-    return lastHeight;
   }
 }

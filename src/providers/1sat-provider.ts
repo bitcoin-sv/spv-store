@@ -38,14 +38,14 @@ export class OneSatProvider
     console.log("Broadcasting", tx.id("hex"), tx.toHex());
     const url = owner
       ? `${APIS[this.network]}/api/tx/address/${owner}/${tx.id("hex")}`
-      : `${APIS[this.network]}/api/tx`;
+      : `${APIS[this.network]}/api/tx/bin`;
 
     const resp = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/octet-stream",
       },
-      body: Uint8Array.from(tx.toBinary()),
+      body: Buffer.from(tx.toBinary()),
     });
     const body = (await resp.json()) as string | { message: string };
     if (resp.status !== 200) {

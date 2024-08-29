@@ -50,38 +50,55 @@ export class LockTemplate {
   } {
     const unlock = {
       sign: async (tx: Transaction, inputIndex: number) => {
-        const input = tx.inputs[inputIndex];
-        let sourceSats = sourceSatoshis as number;
-        if (!sourceSats && input.sourceTransaction) {
-          sourceSats = input.sourceTransaction.outputs[input.sourceOutputIndex]
-            .satoshis as number;
-        } else if (!sourceSatoshis) {
-          throw new Error("sourceTransaction or sourceSatoshis is required");
+        let signatureScope = TransactionSignature.SIGHASH_FORKID
+        if (signOutputs === 'all') {
+          signatureScope |= TransactionSignature.SIGHASH_ALL
+        }
+        if (signOutputs === 'none') {
+          signatureScope |= TransactionSignature.SIGHASH_NONE
+        }
+        if (signOutputs === 'single') {
+          signatureScope |= TransactionSignature.SIGHASH_SINGLE
+        }
+        if (anyoneCanPay) {
+          signatureScope |= TransactionSignature.SIGHASH_ANYONECANPAY
+        }
+        const input = tx.inputs[inputIndex]
+
+        // const otherInputs = tx.inputs.filter((_, index) => index !== inputIndex)
+
+        const sourceTXID = input.sourceTXID ? input.sourceTXID : input.sourceTransaction?.id('hex')
+        if (!sourceTXID) {
+          throw new Error(
+            'The input sourceTXID or sourceTransaction is required for transaction signing.'
+          )
+        }
+        sourceSatoshis ||= input.sourceTransaction?.outputs[input.sourceOutputIndex].satoshis
+        if (!sourceSatoshis) {
+          throw new Error(
+            'The sourceSatoshis or input sourceTransaction is required for transaction signing.'
+          )
+        }
+        lockingScript ||= input.sourceTransaction?.outputs[input.sourceOutputIndex].lockingScript
+        if (!lockingScript) {
+          throw new Error(
+            'The lockingScript or input sourceTransaction is required for transaction signing.'
+          )
         }
 
-        const sourceTXID = (input.sourceTXID ||
-          input.sourceTransaction?.id("hex")) as string;
-        let subscript = lockingScript as LockingScript;
-        if (!subscript) {
-          subscript = input.sourceTransaction?.outputs[input.sourceOutputIndex]
-            .lockingScript as LockingScript;
-        }
         const preimage = TransactionSignature.format({
           sourceTXID,
           sourceOutputIndex: input.sourceOutputIndex,
-          sourceSatoshis: sourceSats,
+          sourceSatoshis,
           transactionVersion: tx.version,
           otherInputs: [],
           inputIndex,
           outputs: tx.outputs,
           inputSequence: input.sequence,
-          subscript,
+          subscript: lockingScript,
           lockTime: tx.lockTime,
-          scope:
-            TransactionSignature.SIGHASH_ALL |
-            TransactionSignature.SIGHASH_ANYONECANPAY |
-            TransactionSignature.SIGHASH_FORKID,
-        });
+          scope: signatureScope
+        })
 
         const p2pkh = new P2PKH().unlock(
           privateKey,

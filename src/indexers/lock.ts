@@ -8,6 +8,8 @@ import type { Event } from "../models/event";
 import { TxoStore } from "../stores/txo-store";
 import type { Ordinal } from "./remote-types";
 import { Outpoint, type Ingest } from "../models";
+import { TxLog } from "../services";
+import type { CaseModSPV } from "../casemod-spv";
 
 const PREFIX = Buffer.from(lockPrefix, "hex");
 const SUFFIX = Buffer.from(lockSuffix, "hex");
@@ -63,15 +65,15 @@ export class LockIndexer extends Indexer {
     }
   }
 
-  async sync(txoStore: TxoStore): Promise<number> {
+  async sync(casemod: CaseModSPV) {
     const limit = 10000;
-    let lastHeight = 0;
+    const tip = await casemod.getSyncedBlock();
     for await (const owner of this.owners) {
       let offset = 0;
       let utxos: Ordinal[] = [];
       do {
         const resp = await fetch(
-          `https://ordinals.gorillapool.io/api/locks/address/${owner}/unspent?limit=${limit}&offset=${offset}`,
+          `https://ordinals.gorillapool.io/api/locks/address/${owner}/unspent?tag=lock&origins=false&limit=${limit}&offset=${offset}`,
         );
         utxos = ((await resp.json()) as Ordinal[]) || [];
         const txos: Txo[] = [];
@@ -96,14 +98,13 @@ export class LockIndexer extends Indexer {
               { id: "address", value: owner },
             ],
           );
-          lastHeight = Math.max(lastHeight, u.height || 0);
           txos.push(txo);
         }
         if (this.mode !== IndexMode.Verify) {
-          await txoStore.storage.putMany(txos);
+          await casemod.stores.txos!.storage.putMany(txos);
         }
         if (this.mode != IndexMode.Trust) {
-          await txoStore.queue(txos.map((t) => ({
+          await casemod.stores.txos!.queue(txos.map((t) => ({
             txid: t.outpoint.txid,
             height: t.block.height,
             source: "https://ordinals.gorillapool.io",
@@ -112,15 +113,24 @@ export class LockIndexer extends Indexer {
             downloadOnly: this.mode === IndexMode.Trust,
           }) as Ingest));
         }
-        await txoStore.storage.putInvs(txos.map((t) => ({
-          owner,
-          txid: t.outpoint.txid,
-          height: t.block.height,
-          idx: Number(t.block.idx),
-        })))
+        await casemod.stores.txos!.storage.putInvs([
+          ...txos.map((t) => ({
+            txid: t.outpoint.txid,
+            height: t.block.height,
+            idx: Number(t.block.idx),
+            owner,
+            source: "https://ordinals.gorillapool.io",
+          })),
+          {
+            txid: "",
+            height: tip!.height,
+            idx: 0,
+            owner,
+            source: "https://ordinals.gorillapool.io",
+          },
+        ]);
         offset += limit;
       } while (utxos.length == 100);
     }
-    return lastHeight;
   }
 }

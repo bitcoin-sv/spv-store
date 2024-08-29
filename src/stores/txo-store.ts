@@ -151,28 +151,18 @@ export class TxoStore {
     });
     await this.storage.putMany(ctx.spends);
     await this.storage.putMany(ctx.txos);
-    if(!isDepOnly) {
+    if (!isDepOnly) {
       this.storage.putTxLog({
         txid: ctx.txid,
         height: block.height,
         idx: Number(block.idx),
         summary: ctx.summary,
+        source,
       });
     }
     if (checkSpends) {
       await this.updateSpends(ctx.txos.map((t) => t.outpoint));
     }
-    // for (const txo of ctx.txos) {
-    //   for (const [tag, idxData] of Object.entries(txo.data)) {
-    //     for (const e of idxData.events) {
-    //       this.events?.emit(
-    //         `evt:${tag}:${e.id}`,
-    //         e.value,
-    //         txo.outpoint.toString(),
-    //       );
-    //     }
-    //   }
-    // }
     return ctx;
   }
 
@@ -269,19 +259,9 @@ export class TxoStore {
             continue;
           }
           if (!tx.merklePath) {
-            const status = await this.services.broadcast.status(ingest.txid);
-            if (
-              !status ||
-              status.status == BroadcastStatus.MEMPOOL ||
-              !status.proof
-            ) {
               ingest.height = Date.now();
-            } else {
-              tx.merklePath = MerklePath.fromBinary(status.proof);
-            }
-          }
-          if (tx.merklePath) {
-            const ctx = await this.ingest(tx,ingest.source,  true, ingest.isDepOnly);
+          } else {
+            const ctx = await this.ingest(tx, ingest.source, true, ingest.isDepOnly);
             ingest.status = IngestStatus.CONFIRMED;
             ingest.height = ctx.block.height;
             ingest.idx = Number(ctx.block.idx);
@@ -357,8 +337,8 @@ export class TxoStore {
         newLogs.map((log) => log.txid),
       );
       const puts = newLogs.reduce((puts, log, i) => {
-        if (!oldLogs[i] ||oldLogs[i]!.height != log.height ||
-          (log.idx < 50000000 && oldLogs[i]?.idx != log.idx)
+        if (!oldLogs[i] || oldLogs[i]!.height != log.height ||
+          (log.height < 50000000 && oldLogs[i]?.idx != log.idx)
         ) {
           log.owner = owner;
           puts.push(log);

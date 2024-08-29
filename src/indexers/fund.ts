@@ -13,6 +13,8 @@ import {
   IndexMode,
 } from "../models";
 import type { Ordinal } from "./remote-types";
+import { TxLog } from "../services";
+import type { CaseModSPV } from "../casemod-spv";
 
 export class FundIndexer extends Indexer {
   tag = "fund";
@@ -50,9 +52,9 @@ export class FundIndexer extends Indexer {
     }
   }
 
-  async sync(txoStore: TxoStore): Promise<number> {
+  async sync(casemod: CaseModSPV) {
     const limit = 10000;
-    let lastHeight = 0;
+    const tip = await casemod.getSyncedBlock();
     for await (const owner of this.owners) {
       let offset = 0;
       let utxos: Ordinal[] = [];
@@ -79,13 +81,12 @@ export class FundIndexer extends Indexer {
           txo.data[this.tag] = new IndexData(owner, [
             { id: "address", value: owner },
           ]);
-          lastHeight = Math.max(lastHeight, u.height || 0);
         }
         if (this.mode !== IndexMode.Verify) {
-          await txoStore.storage.putMany(txos);
+          await casemod.stores.txos!.storage.putMany(txos);
         }
         if (this.mode != IndexMode.Trust) {
-          await txoStore.queue(txos.map((t) => ({
+          await casemod.stores.txos!.queue(txos.map((t) => ({
             txid: t.outpoint.txid,
             height: t.block.height,
             source: "https://ordinals.gorillapool.io",
@@ -94,15 +95,25 @@ export class FundIndexer extends Indexer {
             downloadOnly: this.mode === IndexMode.Trust,
           }) as Ingest));
         }
-        await txoStore.storage.putInvs(txos.map((t) => ({
-          owner,
-          txid: t.outpoint.txid,
-          height: t.block.height,
-          idx: Number(t.block.idx),
-        })))
+        await casemod.stores.txos!.storage.putInvs([
+          ...txos.map((t) => ({
+            txid: t.outpoint.txid,
+            height: t.block.height,
+            idx: Number(t.block.idx),
+            owner,
+            source: "https://ordinals.gorillapool.io",
+          })),
+          {
+            txid: "",
+            height: tip!.height,
+            idx: 0,
+            owner,
+            source: "https://ordinals.gorillapool.io",
+          },
+        ]);
         offset += limit;
       } while (utxos.length == 100);
+
     }
-    return lastHeight;
   }
 }

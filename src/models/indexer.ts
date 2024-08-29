@@ -1,4 +1,4 @@
-import type { Network } from "../casemod-spv";
+import type { CaseModSPV, Network } from "../casemod-spv";
 import type { TxoStore } from "../stores";
 import type { IndexContext } from "./index-context";
 import { IndexData } from "./index-data";
@@ -44,7 +44,5 @@ export abstract class Indexer {
     };
   }
 
-  async sync(txoStore: TxoStore): Promise<number> {
-    return 0;
-  }
+  async sync(casemod: CaseModSPV): Promise<void> {}
 }

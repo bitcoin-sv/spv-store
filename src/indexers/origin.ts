@@ -16,18 +16,20 @@ import { OneSatProvider } from "../providers/1sat-provider";
 import type { Inscription } from "./insc";
 import type { Ordinal } from "./remote-types";
 import { Listing } from "./ordlock";
-import type { TxLog } from "../services";
+import { TxLog } from "../services";
+import type { CaseModSPV } from "../casemod-spv";
 
 export interface Origin {
-  outpoint : string;
-  nonce ?: number;
-  insc ?: Inscription;
+  outpoint: string;
+  nonce?: number;
+  insc?: Inscription;
+  map?: { [key: string]: any };
 }
 
 export class OriginIndexer extends Indexer {
   tag = "origin";
 
-  async parse(ctx : IndexContext, vout : number, previewOnly = false) : Promise<IndexData | undefined> {
+  async parse(ctx: IndexContext, vout: number, previewOnly = false): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     if (txo.satoshis != 1n) return;
 
@@ -36,8 +38,8 @@ export class OriginIndexer extends Indexer {
       outSat += ctx.txos[i].satoshis;
     }
     let inSat = 0n;
-    let origin : Origin | undefined;
-    const deps : Outpoint[] = [];
+    let origin: Origin | undefined;
+    const deps: Outpoint[] = [];
     for (const spend of ctx.spends) {
       if (inSat == outSat && spend.satoshis == 1n) {
         if (spend.data.origin?.data) {
@@ -81,26 +83,26 @@ export class OriginIndexer extends Indexer {
       };
     }
 
-    const events : Event[] = [];
+    const events: Event[] = [];
     if (origin && txo.owner && this.owners.has(txo.owner)) {
       events.push({ id: "outpoint", value: origin.outpoint.toString() });
     }
     return new IndexData(origin, events, deps);
   }
 
-  async sync(txoStore : TxoStore) : Promise<number> {
+  async sync(casemod: CaseModSPV) {
     const limit = 100;
-    let lastHeight = 0;
+    const tip = await casemod.getSyncedBlock();
     for await (const owner of this.owners) {
       let offset = 0;
-      let utxos : Ordinal[] = [];
+      let utxos: Ordinal[] = [];
       offset = 0;
 
       do {
         const url = `https://ordinals.gorillapool.io/api/txos/address/${owner}/unspent?limit=${limit}&offset=${offset}&bsv20=false`;
         const resp = await fetch(url);
         utxos = ((await resp.json()) as Ordinal[]) || [];
-        const txos : Txo[] = [];
+        const txos: Txo[] = [];
         for (const u of utxos) {
           if (!u.origin?.data?.insc || u.origin?.data?.bsv20) continue;
           const txo = new Txo(
@@ -115,9 +117,10 @@ export class OriginIndexer extends Indexer {
           if (u.height) {
             txo.block = new Block(u.height, BigInt(u.idx || 0));
           }
-          const origin : Origin = {
+          const origin: Origin = {
             outpoint: u.origin.outpoint,
             insc: { file: u.origin.data.insc.file },
+            map: u.origin.data.map,
           };
           txo.data[this.tag] = new IndexData(origin, [
             { id: "outpoint", value: origin.outpoint.toString() },
@@ -125,6 +128,9 @@ export class OriginIndexer extends Indexer {
 
           if (u.data?.insc) {
             txo.data.insc = new IndexData(u.data.insc);
+          }
+          if (u.data?.map) {
+            txo.data.map = new IndexData(u.data.map);
           }
 
           if (u.data?.list) {
@@ -134,10 +140,9 @@ export class OriginIndexer extends Indexer {
               [{ id: "price", value: price.toString(16).padStart(16, "0") }],
             );
           }
-          lastHeight = Math.max(lastHeight, u.height || 0);
         }
         if (this.mode !== IndexMode.Verify) {
-          await txoStore.storage.putMany(txos);
+          await casemod.stores.txos!.storage.putMany(txos);
         }
 
         if (this.mode !== IndexMode.Trust) {
@@ -145,7 +150,7 @@ export class OriginIndexer extends Indexer {
             owner,
             txos.map((t) => t.outpoint),
           );
-          await txoStore.queue(
+          await casemod.stores.txos!.queue(
             [...Object.entries(ancestors)].map(([txid, block]) => ({
               txid,
               height: block.height,
@@ -154,7 +159,7 @@ export class OriginIndexer extends Indexer {
               isDepOnly: true,
             }))
           );
-          await txoStore.queue(txos.map((t) => ({
+          await casemod.stores.txos!.queue(txos.map((t) => ({
             txid: t.outpoint.txid,
             height: t.block.height,
             source: "https://ordinals.gorillapool.io",
@@ -163,19 +168,28 @@ export class OriginIndexer extends Indexer {
             downloadOnly: this.mode === IndexMode.Trust,
           })));
         }
-        await txoStore.storage.putInvs(txos.map((t) => ({
-          owner,
-          txid: t.outpoint.txid,
-          height: t.block.height,
-          idx: Number(t.block.idx),
-        })))
+        await casemod.stores.txos!.storage.putInvs([
+          ...txos.map((t) => ({
+            txid: t.outpoint.txid,
+            height: t.block.height,
+            idx: Number(t.block.idx),
+            owner,
+            source: "https://ordinals.gorillapool.io",
+          })),
+          {
+            txid: "",
+            height: tip!.height,
+            idx: 0,
+            owner,
+            source: "https://ordinals.gorillapool.io",
+          },
+        ]);
         offset += limit;
       } while (utxos.length == limit);
     }
-    return lastHeight;
   }
 
-  async fetchAncestors(owner : string, outpoints : Outpoint[]) : Promise<IndexQueue> {
+  async fetchAncestors(owner: string, outpoints: Outpoint[]): Promise<IndexQueue> {
     const resp = await fetch(
       `https://ordinals.gorillapool.io/api/inscriptions/ancestors`,
       {
@@ -185,13 +199,13 @@ export class OriginIndexer extends Indexer {
       },
     );
     const ancestors = (await resp.json()) as {
-      txid : string;
-      idx : string;
-      height ?: number;
+      txid: string;
+      idx: string;
+      height?: number;
     }[];
 
     return ancestors.reduce((queue, u) => {
-      queue[u.txid] =new Block(u.height || Date.now(), BigInt(u.idx || 0));
+      queue[u.txid] = new Block(u.height || Date.now(), BigInt(u.idx || 0));
       return queue;
     }, {} as IndexQueue);
   }

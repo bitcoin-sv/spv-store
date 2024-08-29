@@ -75,7 +75,7 @@ export class CaseModSPV {
     const isSynced = await this.stores.txos!.storage.getState("isSynced");
     if (!isSynced) {
       for (const indexer of this.stores.txos!.indexers) {
-        await indexer.sync(this.stores.txos!);
+        await indexer.sync(this);
       }
       await this.stores.txos!.storage.setState(
         "isSynced",
@@ -88,10 +88,10 @@ export class CaseModSPV {
     this.stores.txos!.processQueue();
     await this.stores.txos!.syncTxLogs();
     if (this.interval) clearInterval(this.interval);
-    // this.interval = setInterval(
-    //   () => this.stores.txos!.syncTxLogs(),
-    //   60 * 1000
-    // );
+    this.interval = setInterval(
+      () => this.stores.txos!.syncTxLogs(),
+      60 * 1000
+    );
   }
 
   async search(
