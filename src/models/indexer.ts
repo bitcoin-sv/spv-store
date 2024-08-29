@@ -44,5 +44,5 @@ export abstract class Indexer {
     };
   }
 
-  async sync(casemod: CaseModSPV): Promise<void> {}
+  async sync(casemod: CaseModSPV): Promise<void> { }
 }

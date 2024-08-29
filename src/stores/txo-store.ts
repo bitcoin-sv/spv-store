@@ -259,7 +259,7 @@ export class TxoStore {
             continue;
           }
           if (!tx.merklePath) {
-              ingest.height = Date.now();
+            ingest.height = Date.now();
           } else {
             const ctx = await this.ingest(tx, ingest.source, true, ingest.isDepOnly);
             ingest.status = IngestStatus.CONFIRMED;
