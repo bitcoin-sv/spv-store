@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run clean && microbundle --globals @bsv/sdk=bsv",
+    "build": "npm run clean && microbundle --globals @bsv/sdk=bsv && npm pack",
     "clean": "rimraf -rf dist",
     "format": "tsfmt -r",
     "test": "jest"
@@ -29,7 +29,7 @@
     "rollup-plugin-polyfill-node": "github:FredKSchott/rollup-plugin-polyfill-node"
   },
   "peerDependencies": {
-    "@bsv/sdk": "^1.1.12"
+    "@bsv/sdk": "^1.1.19"
   },
   "devDependencies": {
     "@types/bun": "latest",
