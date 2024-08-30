@@ -137,7 +137,7 @@ export class CaseModSPV {
     return this.stores.blocks!.storage.getByHeight(height);
   }
 
-  async getAll(min: number, max: number): Promise<BlockHeader[]> {
+  async getAllBlocks(): Promise<BlockHeader[]> {
     return this.stores.blocks!.storage.getAll();
   }
 
