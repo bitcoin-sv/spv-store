@@ -40,13 +40,6 @@ export class TxnStorageIDB implements TxnStorage {
 
   async get(txid: string): Promise<Txn | undefined> {
     return this.db.get("txns", txid).catch(() => undefined);
-    // if (txn) {
-    //   const tx = Transaction.fromBinary(txn.rawtx);
-    //   if (txn.proof) {
-    //     tx.merklePath = MerklePath.fromBinary(Array.from(txn.proof));
-    //   }
-    //   return tx;
-    // }
   }
 
   async getMany(txids: string[]): Promise<(Txn | undefined)[]> {
@@ -60,25 +53,15 @@ export class TxnStorageIDB implements TxnStorage {
     await this.db.put("txns", txn);
   }
 
+  async getTxids(): Promise<string[]> {
+    return this.db.getAllKeys("txns");
+  }
+
   async putMany(txns: Txn[]): Promise<void> {
     if (!txns.length) return;
     const t = this.db.transaction("txns", "readwrite");
     await Promise.all(
       txns.map((txn) => {
-        // const txn: Txn = {
-        //   txid: tx.id("hex"),
-        //   rawtx: tx.toBinary(),
-        //   block: { height: Date.now(), idx: BigInt(0) },
-        //   status: TxnStatus.PENDING,
-        // };
-        // if (tx.merklePath) {
-        //   txn.block.height = tx.merklePath.blockHeight;
-        //   txn.block.idx = BigInt(
-        //     tx.merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0,
-        //   );
-        //   txn.proof = tx.merklePath.toBinary();
-        //   txn.status = TxnStatus.CONFIRMED;
-        // }
         return t.store.put(txn);
       }),
     );

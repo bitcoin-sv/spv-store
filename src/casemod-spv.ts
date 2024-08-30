@@ -111,6 +111,10 @@ export class CaseModSPV {
     return this.stores.txos!.storage.getMany(outpoints);
   }
 
+  async getTxids(): Promise<string[]> {
+    return this.stores.txns!.storage.getTxids();
+  }
+
   async getTx(
     txid: string,
     fromRemote = false,
