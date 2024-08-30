@@ -6,5 +6,6 @@ export interface BlockStorage {
   putMany(blocks: BlockHeader[]): Promise<void>;
   getByHash(hash: string): Promise<BlockHeader | undefined>;
   getByHeight(height: number): Promise<BlockHeader | undefined>;
+  getAll(): Promise<BlockHeader[]>;
   getSynced(): Promise<BlockHeader | undefined>;
 }

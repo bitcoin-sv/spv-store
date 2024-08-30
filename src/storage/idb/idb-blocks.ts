@@ -72,4 +72,8 @@ export class BlockStorageIDB implements BlockStorage {
     await t.done;
     return block;
   }
+
+  async getAll(): Promise<BlockHeader[]> {
+    return this.db.getAll("blocks");
+  }
 }
