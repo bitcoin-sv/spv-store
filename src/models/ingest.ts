@@ -16,4 +16,5 @@ export interface Ingest {
   checkSpends?: boolean;
   downloadOnly?: boolean;
   status?: IngestStatus;
+  outputs?: number[];
 }

@@ -14,7 +14,7 @@ import type {
   TxnService,
 } from "./services";
 import type { BlockStore, TxnStore, TxoStore } from "./stores";
-import { Txo, TxoSort, type BlockHeader, type IndexContext, type Outpoint } from "./models";
+import { Txo, TxoSort, type BlockHeader, type IndexContext, type Ingest, type Outpoint } from "./models";
 import { EventEmitter } from "./lib/event-emitter";
 
 export type Network = "mainnet" | "testnet";
@@ -72,14 +72,17 @@ export class CaseModSPV {
   async sync(): Promise<void> {
     await this.stores.blocks!.sync(true);
     this.events.emit("blocksSynced");
-    const isSynced = await this.stores.txos!.storage.getState("isSynced");
+    const isSynced = await this.stores.txos!.storage.getState("syncHeight");
     if (!isSynced) {
+      const ingestQueue: { [txid: string]: Ingest } = {};
       for (const indexer of this.stores.txos!.indexers) {
-        await indexer.sync(this);
+        await indexer.sync(this.stores.txos!, ingestQueue);
       }
+      this.stores.txos?.queue(Object.values(ingestQueue));
+      const tip = await this.getSyncedBlock();
       await this.stores.txos!.storage.setState(
-        "isSynced",
-        Date.now().toString(),
+        "syncHeight",
+        tip!.height.toString(),
       );
       this.events.emit("txosSynced");
     }

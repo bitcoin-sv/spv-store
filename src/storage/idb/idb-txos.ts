@@ -262,15 +262,32 @@ export class TxoStorageIDB implements TxoStorage {
   }
 
   async putIngest(ingest: Ingest): Promise<void> {
+    const t = this.db.transaction("ingestQueue", "readwrite");
+    const prev = await t.store.get(ingest.txid).catch(() => undefined);
+    if (prev?.outputs) {
+      const outputs = new Set<number>(prev.outputs);
+      for (const idx of ingest.outputs || []) {
+        outputs.add(idx);
+      }
+      ingest.outputs = Array.from(outputs);
+    }
     await this.db.put("ingestQueue", ingest);
   }
 
   async putIngests(ingests: Ingest[]): Promise<void> {
     if (!ingests.length) return;
     const t = this.db.transaction("ingestQueue", "readwrite");
-    for (const ingest of ingests) {
-      await t.store.put(ingest);
-    }
+    await Promise.all(ingests.map(async (ingest) => {
+      const prev = await t.store.get(ingest.txid).catch(() => undefined);
+      if (prev?.outputs) {
+        const outputs = new Set<number>(prev.outputs);
+        for (const idx of ingest.outputs || []) {
+          outputs.add(idx);
+        }
+        ingest.outputs = Array.from(outputs);
+      }
+      t.store.put(ingest)
+    }));
     await t.done;
   }
 

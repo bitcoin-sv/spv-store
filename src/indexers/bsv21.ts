@@ -7,7 +7,6 @@ import { Utils } from "@bsv/sdk";
 import { TxoStore } from "../stores/txo-store";
 import { Outpoint, type Ingest } from "../models";
 import type { RemoteBsv20 } from "./remote-types";
-import type { CaseModSPV } from "../casemod-spv";
 
 export enum Bsv21Status {
   Invalid = -1,
@@ -143,9 +142,8 @@ export class Bsv21Indexer extends Indexer {
     }
   }
 
-  async sync(casemod: CaseModSPV) {
+  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<void>  {
     const limit = 100;
-    const tip = await casemod.getSyncedBlock();
     for await (const owner of this.owners) {
       let resp = await fetch(
         `https://ordinals.gorillapool.io/api/bsv20/${owner}/balance`,
@@ -206,16 +204,25 @@ export class Bsv21Indexer extends Indexer {
             }
             txos.push(txo);
           }
-          await casemod.stores.txos!.storage.putMany(txos);
-          if (this.mode !== IndexMode.Trust) {
-            await casemod.stores.txos!.queue(txos.map((t) => ({
-              txid: t.outpoint.txid,
-              height: t.block.height,
-              source: "https://ordinals.gorillapool.io",
-              idx: Number(t.block.idx),
-              checkSpends: true,
-              downloadOnly: this.mode === IndexMode.Trust,
-            }) as Ingest));
+          if (this.mode !== IndexMode.Verify) {
+            await txoStore.storage.putMany(txos);
+          }
+  
+          for (const t of txos) {
+            let ingest = ingestQueue[t.outpoint.txid];
+            if (!ingest) {
+              ingest = {
+                txid: t.outpoint.txid,
+                height: t.block.height,
+                source: "sync",
+                idx: Number(t.block.idx),
+                outputs: [t.outpoint.vout],
+                downloadOnly: this.mode === IndexMode.Trust,
+              };
+              ingestQueue[t.outpoint.txid] = ingest;
+            } else {
+              ingest.outputs!.push(t.outpoint.vout);
+            }
           }
           // if (this.syncMode !== TxoStatus.TRUSTED) {
           //   resp = await fetch(
@@ -234,22 +241,13 @@ export class Bsv21Indexer extends Indexer {
           //     })
           //   );
           // }
-          await casemod.stores.txos!.storage.putInvs([
-            ...txos.map((t) => ({
-              txid: t.outpoint.txid,
-              height: t.block.height,
-              idx: Number(t.block.idx),
-              owner,
-              source: "https://ordinals.gorillapool.io",
-            })),
-            {
-              txid: "",
-              height: tip!.height,
-              idx: 0,
-              owner,
-              source: "https://ordinals.gorillapool.io",
-            },
-          ]);
+          await txoStore.storage.putInvs(txos.map((t) => ({
+            txid: t.outpoint.txid,
+            height: t.block.height,
+            idx: Number(t.block.idx),
+            owner,
+            source: "sync",
+          })));
           offset += limit;
         } while (utxos.length == limit);
       }

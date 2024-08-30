@@ -2,6 +2,7 @@ import type { CaseModSPV, Network } from "../casemod-spv";
 import type { TxoStore } from "../stores";
 import type { IndexContext } from "./index-context";
 import { IndexData } from "./index-data";
+import type { Ingest } from "./ingest";
 
 export enum IndexMode {
   Trust = 1,
@@ -44,5 +45,5 @@ export abstract class Indexer {
     };
   }
 
-  async sync(casemod: CaseModSPV): Promise<void> { }
+  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<void> { }
 }

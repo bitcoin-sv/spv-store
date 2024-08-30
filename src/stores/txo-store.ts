@@ -50,6 +50,7 @@ export class TxoStore {
   async parse(
     tx: Transaction,
     previewOnly = true,
+    outputs?: number[],
     fromRemote = false,
   ): Promise<IndexContext> {
     const ctx = new IndexContext(tx)
@@ -107,6 +108,9 @@ export class TxoStore {
         );
       }
       ctx.txos.push(txo);
+      if (outputs && !outputs.includes(vout)) {
+        continue;
+      }
       for (const i of this.indexers) {
         try {
           const data = i.parse && (await i.parse(ctx, vout, previewOnly));
@@ -128,9 +132,9 @@ export class TxoStore {
     source: string = "",
     fromRemote = false,
     isDepOnly = false,
-    checkSpends = false,
+    outputs?: number[],
   ): Promise<IndexContext> {
-    const ctx = await this.parse(tx, false, fromRemote);
+    const ctx = await this.parse(tx, false, outputs, fromRemote);
     console.log("Ingesting", ctx.txid);
     const block: Block = { height: Date.now(), idx: 0n };
     if (tx.merklePath) {
@@ -150,7 +154,11 @@ export class TxoStore {
       }
     });
     await this.storage.putMany(ctx.spends);
-    await this.storage.putMany(ctx.txos);
+    if(outputs) {
+      await this.storage.putMany(outputs.map((i) => ctx.txos[i]));
+    } else {
+      await this.storage.putMany(ctx.txos);
+    }
     if (!isDepOnly) {
       this.storage.putTxLog({
         txid: ctx.txid,
@@ -159,12 +167,6 @@ export class TxoStore {
         summary: ctx.summary,
         source,
       });
-    }
-    if (checkSpends) {
-      await this.updateSpends(ctx.txos
-        .filter(t => t.owner && this.owners.has(t.owner))
-        .map((t) => t.outpoint)
-      );
     }
     return ctx;
   }
@@ -228,7 +230,7 @@ export class TxoStore {
             console.error("Failed to get tx", ingest.txid);
             continue;
           }
-          await this.ingest(tx, ingest.source, true, ingest.isDepOnly, ingest.checkSpends);
+          await this.ingest(tx, ingest.source, true, ingest.isDepOnly, ingest.outputs);
           ingest.status = IngestStatus.INGESTED;
           await this.storage.putIngest(ingest);
           await this.updateQueueStats();
@@ -264,7 +266,7 @@ export class TxoStore {
           if (!tx.merklePath) {
             ingest.height = Date.now();
           } else {
-            const ctx = await this.ingest(tx, ingest.source, true, ingest.isDepOnly);
+            const ctx = await this.ingest(tx, ingest.source, true, ingest.isDepOnly, ingest.outputs);
             ingest.status = IngestStatus.CONFIRMED;
             ingest.height = ctx.block.height;
             ingest.idx = Number(ctx.block.idx);
@@ -329,11 +331,18 @@ export class TxoStore {
   }
 
   async syncTxLogs() {
+    const syncedState = await this.storage.getState("syncHeight");
+    if(!syncedState) return
+    let syncHeight = Number(syncedState);
     for (const owner of this.owners) {
       const latestLog = await this.storage.getSynced(owner);
+      if (latestLog && latestLog.height > syncHeight) {
+        syncHeight = latestLog.height;
+      }
+      console.log("Syncing logs for", owner, syncHeight);
       const newLogs = await this.services.inv.pollTxLogs(
         owner,
-        latestLog?.height || 0,
+        syncHeight,
       );
       const oldLogs = await this.storage.getInvs(
         owner,

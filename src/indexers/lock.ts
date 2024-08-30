@@ -9,7 +9,6 @@ import { TxoStore } from "../stores/txo-store";
 import type { Ordinal } from "./remote-types";
 import { Outpoint, type Ingest } from "../models";
 import { TxLog } from "../services";
-import type { CaseModSPV } from "../casemod-spv";
 
 const PREFIX = Buffer.from(lockPrefix, "hex");
 const SUFFIX = Buffer.from(lockSuffix, "hex");
@@ -65,9 +64,8 @@ export class LockIndexer extends Indexer {
     }
   }
 
-  async sync(casemod: CaseModSPV) {
+  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<void>  {
     const limit = 10000;
-    const tip = await casemod.getSyncedBlock();
     for await (const owner of this.owners) {
       let offset = 0;
       let utxos: Ordinal[] = [];
@@ -100,35 +98,35 @@ export class LockIndexer extends Indexer {
           );
           txos.push(txo);
         }
+
         if (this.mode !== IndexMode.Verify) {
-          await casemod.stores.txos!.storage.putMany(txos);
+          await txoStore.storage.putMany(txos);
         }
-        if (this.mode != IndexMode.Trust) {
-          await casemod.stores.txos!.queue(txos.map((t) => ({
-            txid: t.outpoint.txid,
-            height: t.block.height,
-            source: "https://ordinals.gorillapool.io",
-            idx: Number(t.block.idx),
-            checkSpends: true,
-            downloadOnly: this.mode === IndexMode.Trust,
-          }) as Ingest));
+
+        for (const t of txos) {
+          let ingest = ingestQueue[t.outpoint.txid];
+          if (!ingest) {
+            ingest = {
+              txid: t.outpoint.txid,
+              height: t.block.height,
+              source: "sync",
+              idx: Number(t.block.idx),
+              outputs: [t.outpoint.vout],
+              downloadOnly: this.mode === IndexMode.Trust,
+            };
+            ingestQueue[t.outpoint.txid] = ingest;
+          } else {
+            ingest.outputs!.push(t.outpoint.vout);
+          }
         }
-        await casemod.stores.txos!.storage.putInvs([
-          ...txos.map((t) => ({
-            txid: t.outpoint.txid,
-            height: t.block.height,
-            idx: Number(t.block.idx),
-            owner,
-            source: "https://ordinals.gorillapool.io",
-          })),
-          {
-            txid: "",
-            height: tip!.height,
-            idx: 0,
-            owner,
-            source: "https://ordinals.gorillapool.io",
-          },
-        ]);
+
+        await txoStore.storage.putInvs(txos.map((t) => ({
+          txid: t.outpoint.txid,
+          height: t.block.height,
+          idx: Number(t.block.idx),
+          owner,
+          source: "sync",
+        })));
         offset += limit;
       } while (utxos.length == 100);
     }

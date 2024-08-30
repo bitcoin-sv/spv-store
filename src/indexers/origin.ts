@@ -1,6 +1,5 @@
 import { P2PKH, Utils } from "@bsv/sdk";
 import type { IndexContext, IndexQueue } from "../models/index-context";
-import { TxoStore } from "../stores/txo-store";
 import {
   Block,
   IndexData,
@@ -16,8 +15,7 @@ import { OneSatProvider } from "../providers/1sat-provider";
 import type { Inscription } from "./insc";
 import type { Ordinal } from "./remote-types";
 import { Listing } from "./ordlock";
-import { TxLog } from "../services";
-import type { CaseModSPV } from "../casemod-spv";
+import type { TxoStore } from "../stores";
 
 export interface Origin {
   outpoint: string;
@@ -90,9 +88,8 @@ export class OriginIndexer extends Indexer {
     return new IndexData(origin, events, deps);
   }
 
-  async sync(casemod: CaseModSPV) {
+  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<void>  {
     const limit = 100;
-    const tip = await casemod.getSyncedBlock();
     for await (const owner of this.owners) {
       let offset = 0;
       let utxos: Ordinal[] = [];
@@ -141,49 +138,51 @@ export class OriginIndexer extends Indexer {
             );
           }
         }
+
         if (this.mode !== IndexMode.Verify) {
-          await casemod.stores.txos!.storage.putMany(txos);
+          await txoStore.storage.putMany(txos);
         }
 
+        for (const t of txos) {
+          let ingest = ingestQueue[t.outpoint.txid];
+          if (!ingest) {
+            ingest = {
+              txid: t.outpoint.txid,
+              height: t.block.height,
+              source: "sync",
+              idx: Number(t.block.idx),
+              outputs: [t.outpoint.vout],
+              downloadOnly: this.mode === IndexMode.Trust,
+            };
+            ingestQueue[t.outpoint.txid] = ingest;
+          } else {
+            ingest.outputs!.push(t.outpoint.vout);
+          }
+        }
         if (this.mode !== IndexMode.Trust) {
           const ancestors = await this.fetchAncestors(
             owner,
             txos.map((t) => t.outpoint),
           );
-          await casemod.stores.txos!.queue(
-            [...Object.entries(ancestors)].map(([txid, block]) => ({
+          for (const [txid, block] of Object.entries(ancestors)) {
+            if (ingestQueue[txid]) continue
+            ingestQueue[txid] = {
               txid,
               height: block.height,
-              source: "https://ordinals.gorillapool.io",
+              source: "sync",
               idx: Number(block.idx),
               isDepOnly: true,
-            }))
-          );
-          await casemod.stores.txos!.queue(txos.map((t) => ({
-            txid: t.outpoint.txid,
-            height: t.block.height,
-            source: "https://ordinals.gorillapool.io",
-            idx: Number(t.block.idx),
-            checkSpends: true,
-            downloadOnly: this.mode === IndexMode.Trust,
-          })));
+            };
+          }
         }
-        await casemod.stores.txos!.storage.putInvs([
-          ...txos.map((t) => ({
-            txid: t.outpoint.txid,
-            height: t.block.height,
-            idx: Number(t.block.idx),
-            owner,
-            source: "https://ordinals.gorillapool.io",
-          })),
-          {
-            txid: "",
-            height: tip!.height,
-            idx: 0,
-            owner,
-            source: "https://ordinals.gorillapool.io",
-          },
-        ]);
+
+        await txoStore.storage.putInvs(txos.map((t) => ({
+          txid: t.outpoint.txid,
+          height: t.block.height,
+          idx: Number(t.block.idx),
+          owner,
+          source: "sync",
+        })));
         offset += limit;
       } while (utxos.length == limit);
     }
