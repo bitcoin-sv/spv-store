@@ -133,6 +133,10 @@ export class CaseModSPV {
     return this.stores.blocks!.storage.getSynced();
   }
 
+  async getBlock(height: number): Promise<BlockHeader | undefined> {
+    return this.stores.blocks!.storage.getByHeight(height);
+  }
+
   async getChaintip(): Promise<BlockHeader | undefined> {
     return this.services.blocks!.getChaintip();
   }
