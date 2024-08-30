@@ -161,7 +161,10 @@ export class TxoStore {
       });
     }
     if (checkSpends) {
-      await this.updateSpends(ctx.txos.map((t) => t.outpoint));
+      await this.updateSpends(ctx.txos
+        .filter(t => t.owner && this.owners.has(t.owner))
+        .map((t) => t.outpoint)
+      );
     }
     return ctx;
   }
