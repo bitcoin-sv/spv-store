@@ -10,11 +10,13 @@ export enum TxoStatus {
 }
 
 export class Txo {
-  spend?: string;
+  spend: string = '';
   data: { [tag: string]: IndexData } = {};
-  events: string[] = [];
   owner?: string;
+  events: string[] = [];
   tags: string[] = [];
+  deps: string[] = [];
+  hasEvents = 0;
 
   constructor(
     public outpoint: Outpoint,

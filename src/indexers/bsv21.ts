@@ -214,7 +214,7 @@ export class Bsv21Indexer extends Indexer {
               ingest = {
                 txid: t.outpoint.txid,
                 height: t.block.height,
-                source: "sync",
+                source: "bsv21",
                 idx: Number(t.block.idx),
                 outputs: [t.outpoint.vout],
                 downloadOnly: this.mode === IndexMode.Trust,
@@ -236,18 +236,12 @@ export class Bsv21Indexer extends Indexer {
           //         txid,
           //         height: Number(height || Date.now()),
           //         idx: Number(idx || 0),
-          //         isDepOnly: true
+          //         isDep: true
           //       } as Ingest
           //     })
           //   );
           // }
-          await txoStore.storage.putInvs(txos.map((t) => ({
-            txid: t.outpoint.txid,
-            height: t.block.height,
-            idx: Number(t.block.idx),
-            owner,
-            source: "sync",
-          })));
+
           offset += limit;
         } while (utxos.length == limit);
       }

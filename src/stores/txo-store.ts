@@ -1,4 +1,4 @@
-import { MerklePath, Transaction } from "@bsv/sdk";
+import { Transaction } from "@bsv/sdk";
 import type { Indexer } from "../models/indexer";
 import { IndexContext } from "../models/index-context";
 import { Txo, TxoStatus } from "../models/txo";
@@ -10,7 +10,6 @@ import type { TxLog } from "../services/inv-service";
 import type { Services, Stores } from "../casemod-spv";
 import type { EventEmitter } from "../lib/event-emitter";
 import { TxoSort, type TxoLookup, type TxoResults } from "../models";
-import { BroadcastStatus } from "../services";
 
 export class TxoStore {
   private syncRunning: Promise<void> | undefined;
@@ -30,14 +29,6 @@ export class TxoStore {
     await this.storage.destroy();
   }
 
-  private async updateSpends(outpoints: Outpoint[]) {
-    const spends = await this.services.spends.getSpends(outpoints);
-    for (const [i, outpoint] of outpoints.entries()) {
-      if (!spends[i]) continue;
-      await this.storage.setSpend(outpoint, spends[i]);
-    }
-  }
-
   public async search(
     lookup: TxoLookup,
     sort = TxoSort.DESC,
@@ -54,6 +45,13 @@ export class TxoStore {
     fromRemote = false,
   ): Promise<IndexContext> {
     const ctx = new IndexContext(tx)
+    if (tx.merklePath) {
+      if (!tx.merklePath.verify(ctx.txid, this.stores.blocks!)) {
+        throw new Error("Failed to verify merkle path");
+      }
+      ctx.block.height = tx.merklePath.blockHeight;
+      ctx.block.idx = BigInt(tx.merklePath.path[0].find((p) => p.hash == ctx.txid)!.offset)
+    }
     for (const input of tx.inputs) {
       if (!input.sourceTXID) {
         if (!input.sourceTransaction) {
@@ -131,7 +129,7 @@ export class TxoStore {
     tx: Transaction,
     source: string = "",
     fromRemote = false,
-    isDepOnly = false,
+    isDep = false,
     outputs?: number[],
   ): Promise<IndexContext> {
     const ctx = await this.parse(tx, false, outputs, fromRemote);
@@ -150,16 +148,16 @@ export class TxoStore {
         txo.status == TxoStatus.Unindexed ||
         txo.status == TxoStatus.Dependency
       ) {
-        txo.status = isDepOnly ? TxoStatus.Dependency : TxoStatus.Confirmed;
+        txo.status = isDep ? TxoStatus.Dependency : TxoStatus.Confirmed;
       }
     });
     await this.storage.putMany(ctx.spends);
-    if(outputs) {
+    if (outputs) {
       await this.storage.putMany(outputs.map((i) => ctx.txos[i]));
     } else {
       await this.storage.putMany(ctx.txos);
     }
-    if (!isDepOnly) {
+    if (!isDep) {
       this.storage.putTxLog({
         txid: ctx.txid,
         height: block.height,
@@ -196,12 +194,23 @@ export class TxoStore {
       const ingests = await this.storage.getIngests(IngestStatus.QUEUED, 25);
       if (ingests.length) {
         await this.stores.txns!.ensureTxns(ingests.map((i) => i.txid));
-        ingests.forEach((i) => {
-          i.status = i.downloadOnly
-            ? IngestStatus.CONFIRMED
-            : IngestStatus.DOWNLOADED;
-        });
-        await this.storage.putIngests(ingests);
+
+        const dels: string[] = []
+        const updates: Ingest[] = []
+        for (const ingest of ingests) {
+          if (ingest.downloadOnly) {
+            dels.push(ingest.txid)
+          } else {
+            ingest.status = IngestStatus.DOWNLOADED;
+            updates.push(ingest)
+          }
+        }
+        if (dels.length) {
+          await this.storage.delIngests(dels)
+        }
+        if (updates.length) {
+          await this.storage.putIngests(updates);
+        }
         await this.updateQueueStats();
       } else {
         await new Promise((r) => setTimeout(r, 1000));
@@ -230,7 +239,7 @@ export class TxoStore {
             console.error("Failed to get tx", ingest.txid);
             continue;
           }
-          await this.ingest(tx, ingest.source, true, ingest.isDepOnly, ingest.outputs);
+          await this.ingest(tx, ingest.source, true, ingest.isDep, ingest.outputs);
           ingest.status = IngestStatus.INGESTED;
           await this.storage.putIngest(ingest);
           await this.updateQueueStats();
@@ -266,7 +275,7 @@ export class TxoStore {
           if (!tx.merklePath) {
             ingest.height = Date.now();
           } else {
-            const ctx = await this.ingest(tx, ingest.source, true, ingest.isDepOnly, ingest.outputs);
+            const ctx = await this.ingest(tx, ingest.source, true, ingest.isDep, ingest.outputs);
             ingest.status = IngestStatus.CONFIRMED;
             ingest.height = ctx.block.height;
             ingest.idx = Number(ctx.block.idx);
@@ -309,13 +318,11 @@ export class TxoStore {
             continue;
           }
           if (!tx.merklePath.verify(ingest.txid, this.stores.blocks!)) {
-            // TODO: Refresh merkle path in case of reorg
-            // ingest.height = ctx.block.height;
-            // ingest.idx = ctx.block.idx;
             continue;
           }
-          ingest.status = IngestStatus.IMMUTABLE;
-          await this.storage.putIngest(ingest);
+          // ingest.status = IngestStatus.IMMUTABLE;
+          // await this.storage.putIngest(ingest);
+          await this.storage.delIngest(ingest.txid);
         }
       } else {
         await new Promise((r) => setTimeout(r, 1000));
@@ -331,29 +338,25 @@ export class TxoStore {
   }
 
   async syncTxLogs() {
-    const syncedState = await this.storage.getState("syncHeight");
-    if(!syncedState) return
-    let syncHeight = Number(syncedState);
+    let syncedState = await this.storage.getState("syncHeight");
+    if (!syncedState) return
     for (const owner of this.owners) {
-      const latestLog = await this.storage.getSynced(owner);
-      if (latestLog && latestLog.height > syncHeight) {
-        syncHeight = latestLog.height;
-      }
+      syncedState = await this.storage.getState(`sync-${owner}`);
+      let syncHeight = Number(syncedState);
       console.log("Syncing logs for", owner, syncHeight);
       const newLogs = await this.services.inv.pollTxLogs(
         owner,
         syncHeight,
       );
-      const oldLogs = await this.storage.getInvs(
-        owner,
+      const oldLogs = await this.storage.getTxLogs(
         newLogs.map((log) => log.txid),
       );
       const puts = newLogs.reduce((puts, log, i) => {
         if (!oldLogs[i] || oldLogs[i]!.height != log.height ||
           (log.height < 50000000 && oldLogs[i]?.idx != log.idx)
         ) {
-          log.owner = owner;
           puts.push(log);
+          syncHeight = Math.max(syncHeight, log.height);
         }
         return puts;
       }, [] as TxLog[]);
@@ -362,7 +365,7 @@ export class TxoStore {
         txid: p.txid,
         height: Number(p.height),
         idx: Number(p.idx || 0),
-        source: ""
+        source: "sync"
       })));
     }
   }

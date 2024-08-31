@@ -15,10 +15,10 @@ export interface TxoSchema extends DBSchema {
     key: [string, number];
     value: Txo;
     indexes: {
-      spend: string;
+      spend: [string, number];
       events: string;
       tags: string;
-      // owner: string;
+      deps: string
     };
   };
   ingestQueue: {
@@ -28,15 +28,8 @@ export interface TxoSchema extends DBSchema {
       status: [number, number, number];
     };
   };
-  syncLog: {
-    key: [string, string];
-    value: TxLog;
-    indexes: {
-      height: [string, number, number];
-    };
-  };
   txLog: {
-    key: [string, string];
+    key: string;
     value: TxLog;
     indexes: {
       height: [number, number];
@@ -54,68 +47,61 @@ export interface TxoSchema extends DBSchema {
 function hydrateTxo(obj: Txo) {
   obj.outpoint = new Outpoint(obj.outpoint.txid, obj.outpoint.vout);
   return obj;
-  // const txo = new Txo(
-  //   obj.outpoint,
-  //   obj.satoshis,
-  //   obj.script,
-  //   obj.status,
-  // );
-  // Object.assign(txo, obj);
-  // return txo;
 }
 
 function buildTxoIndex(txo: Txo) {
   txo.tags = [];
   txo.events = [];
+  txo.deps = [];
   const blockStr = txo.block.height.toString(10).padStart(7, "0");
   const idxStr = txo.block.idx.toString(10).padStart(9, "0");
   const sort = `${blockStr}.${idxStr}`;
-  if (!txo.spend && txo.status !== TxoStatus.Dependency) {
-    for (const [tag, data] of Object.entries(txo.data)) {
-      if (data.events.length) txo.tags.push(`${tag}:${sort}`);
-      for (const e of data.events) {
-        txo.events.push(`${tag}:${e.id}:${e.value}:${sort}`);
-      }
+  const deps = new Set<string>();
+  for (const [tag, data] of Object.entries(txo.data)) {
+    for(const dep of data.deps) {
+      deps.add(dep.toString());
+    }
+    if (txo.spend || txo.status == TxoStatus.Dependency) continue;
+    if (data.events.length) txo.tags.push(`${tag}:${sort}`);
+    for (const e of data.events) {
+      txo.events.push(`${tag}:${e.id}:${e.value}:${sort}`);
     }
   }
+  txo.deps = Array.from(deps);
+  txo.hasEvents = txo.events.length;
 }
 
 export class TxoStorageIDB implements TxoStorage {
   private constructor(
     public db: IDBPDatabase<TxoSchema>,
-    public indexers: Indexer[] = [],
   ) { }
   static async init(
     accountId: string,
-    indexers: Indexer[] = [],
     network: Network,
   ): Promise<TxoStorageIDB> {
     const db = await openDB<TxoSchema>(
-      `txostore-${accountId}-${network}`,
+      `txos-${accountId}-${network}`,
       TXO_DB_VERSION,
       {
         upgrade(db) {
           const txos = db.createObjectStore("txos", {
             keyPath: ["outpoint.txid", "outpoint.vout"],
           });
-          txos.createIndex("spend", "spend");
+          txos.createIndex("spend", ["spend", "hasEvents"]);
           txos.createIndex("events", "events", { multiEntry: true });
           txos.createIndex("tags", "tags", { multiEntry: true });
+          txos.createIndex("deps", "deps", { multiEntry: true });
           const ingestQueue = db.createObjectStore("ingestQueue", {
             keyPath: "txid",
           });
           ingestQueue.createIndex("status", ["status", "height", "idx"]);
           db.createObjectStore("state", { keyPath: "key" });
-          db.createObjectStore("syncLog", {
-            keyPath: ["owner", "txid"],
-          }).createIndex("height", ["owner", "height", "idx"]);
-          db.createObjectStore("txLog", {
-            keyPath: "txid",
-          }).createIndex("height", ["height", "idx"]);
+          const txLog = db.createObjectStore("txLog", { keyPath: "txid" })
+          txLog.createIndex("height", ["height", "idx"]);
         },
       },
     );
-    return new TxoStorageIDB(db, indexers);
+    return new TxoStorageIDB(db);
   }
 
   async destroy() {
@@ -140,8 +126,8 @@ export class TxoStorageIDB implements TxoStorage {
     return txos.map((txo) => txo && hydrateTxo(txo));
   }
 
-  async getBySpend(txid: string): Promise<(Txo | undefined)[]> {
-    const txos = await this.db.getAllFromIndex("txos", "spend", txid);
+  async getBySpend(txid: string): Promise<Txo[]> {
+    const txos = await this.db.getAllFromIndex("txos", "spend", IDBKeyRange.bound([txid], [txid, Number.MAX_SAFE_INTEGER], ));
     return txos.map((txo) => hydrateTxo(txo));
   }
 
@@ -161,35 +147,6 @@ export class TxoStorageIDB implements TxoStorage {
     );
     await t.done;
   }
-
-  async setSpend(outpoint: Outpoint, spendTxid: string): Promise<Txo> {
-    const t = this.db.transaction("txos", "readwrite");
-    const txo = await t.store.get([outpoint.txid, outpoint.vout]);
-    if (!txo) throw new Error("Txo not found");
-    txo.spend = spendTxid;
-    buildTxoIndex(txo);
-    await t.store.put(txo);
-    await t.done;
-    return hydrateTxo(txo);
-  }
-
-  // async setSpends(outpoints : Outpoint[], spendTxid : string) : Promise<Txo[]> {
-  //   const t = this.db.transaction("txos", "readwrite");
-  //   const txos = await Promise.all([
-  //     ...outpoints.map(async (outpoint) => {
-  //       let txo = await t.store.get([outpoint.txid, outpoint.vout]);
-  //       if (!txo) {
-  //         txo = new Txo(outpoint, 0n, []);
-  //       }
-  //       txo.spend = spendTxid;
-  //       buildTxoIndex(txo);
-  //       await t.store.put(txo);
-  //       return hydrateTxo(txo);
-  //     }),
-  //   ]);
-  //   await t.done;
-  //   return txos;
-  // }
 
   async search(
     lookup: TxoLookup,
@@ -291,38 +248,34 @@ export class TxoStorageIDB implements TxoStorage {
     await t.done;
   }
 
-  async getInv(owner: string, txid: string): Promise<TxLog | undefined> {
-    return this.db.get("syncLog", [owner, txid]);
+  async delIngest(txid: string): Promise<void> {
+    await this.db.delete("ingestQueue", txid);
   }
 
-  async getInvs(
-    owner: string,
-    txids: string[],
-  ): Promise<(TxLog | undefined)[]> {
-    const t = this.db.transaction("syncLog", "readonly");
-    const syncLogs = await Promise.all(
-      txids.map((txid) => t.store.get([owner, txid]).catch(() => undefined)),
+  async delIngests(txids: string[]): Promise<void> {
+    const t = this.db.transaction("ingestQueue", "readwrite");
+    await Promise.all(txids.map((txid) => t.store.delete(txid)));
+    await t.done;
+  }
+
+  async getTxLog(txid: string): Promise<TxLog | undefined> {
+    return this.db.get("txLog", txid);
+  }
+
+  async getTxLogs(txids: string[]): Promise<(TxLog | undefined)[]> {
+    const t = this.db.transaction("txLog");
+    const logs = await Promise.all(
+      txids.map((txid) => t.store.get(txid).catch(() => undefined)),
     );
     await t.done;
-    return syncLogs;
-  }
-
-  async putInv(syncLog: TxLog): Promise<void> {
-    await this.db.put("syncLog", syncLog);
-  }
-
-  async putInvs(syncLogs: TxLog[]): Promise<void> {
-    if (!syncLogs.length) return;
-    const t = this.db.transaction("syncLog", "readwrite");
-    await Promise.all(syncLogs.map((log) => t.store.put(log)));
-    await t.done;
+    return logs.filter((log) => log !== undefined);
   }
 
   async putTxLog(txLog: TxLog): Promise<void> {
     await this.db.put("txLog", txLog);
   }
 
-  async getTxLogs(limit = 100): Promise<TxLog[]> {
+  async getRecentTxLogs(limit = 100): Promise<TxLog[]> {
     const t = this.db.transaction("txLog");
     const idx = t.store.index("height");
     const logs: TxLog[] = [];
@@ -334,13 +287,67 @@ export class TxoStorageIDB implements TxoStorage {
     return logs;
   }
 
-  async getSynced(owner: string): Promise<TxLog | undefined> {
-    const t = this.db.transaction("syncLog", "readonly");
-    const cursor = await t.store
-      .index("height")
-      .openCursor(IDBKeyRange.upperBound([owner, 50000000]), "prev");
-    const syncLog = cursor?.value;
-    await t.done;
-    return syncLog;
+  async getBackupLogs(): Promise<Ingest[]> {
+    const ingests = new Map<string, DepLog>();
+    const t = this.db.transaction("txos");
+    const promises: Promise<void>[] = [];
+    for await (const cursor of t.store.index("spend").iterate(IDBKeyRange.bound(["", 1], ["", Number.MAX_SAFE_INTEGER]))) {
+      const u = cursor.value;
+      let ingest = ingests.get(u.outpoint.txid);
+      if (!ingest) {
+        ingests.set(u.outpoint.txid, {
+          txid: u.outpoint.txid,
+          height: u.block.height,
+          idx: Number(u.block.idx),
+          outputs: new Set<number>([u.outpoint.vout]),
+        });
+      } else {
+        ingest.outputs!.add(u.outpoint.vout);
+      }
+      promises.push(this.loadDeps(u.outpoint, ingests));
+    }
+
+    await Promise.all(promises);
+
+    return Array.from(ingests.values())
+      .sort((a, b) => a.height - b.height || a.idx - b.idx)
+      .map((ingest) => ({
+        ...ingest,
+        outputs: Array.from(ingest.outputs),
+      }));
   }
+
+  async loadDeps(op: Outpoint, deps: Map<string, DepLog>) {
+    const log = deps.get(op.txid);
+    if (log && !log.outputs!.has(op.vout)) {
+      log.outputs!.add(op.vout);
+      return;
+    }
+    const txo = await this.get(op);
+    if (!txo) throw new Error(`Missing dep: ${op.txid}:${op.vout}`);
+    if(!log) {
+      deps.set(op.txid, {
+        txid: op.txid,
+        height: txo.block.height,
+        idx: Number(txo.block.idx),
+        isDep: true,
+        outputs: new Set<number>([op.vout]),
+      });
+    }
+
+    for (const data of Object.values(txo.data)) {
+      for (const dep of data.deps) {
+        await this.loadDeps(dep, deps);
+      }
+    }
+  }
+};
+
+
+type DepLog = {
+  txid: string;
+  height: number;
+  idx: number;
+  isDep?: boolean
+  outputs: Set<number>;
 }

@@ -8,29 +8,26 @@ export interface TxoStorage {
   destroy(): Promise<void>;
   get(outpoint: Outpoint): Promise<Txo | undefined>;
   getMany(outpoints: Outpoint[]): Promise<(Txo | undefined)[]>;
-  getBySpend(txid: string): Promise<(Txo | undefined)[]>;
+  getBySpend(txid: string): Promise<Txo[]>;
   put(txo: Txo): Promise<void>;
   putMany(txos: Txo[]): Promise<void>;
-  setSpend(outpoint: Outpoint, spendTxid: string): Promise<Txo>;
-  // setSpends(outpoints : Outpoint[], spendTxid : string) : Promise<Txo[]>;
   search(lookup: TxoLookup, sort?: TxoSort, limit?: number, from?: string): Promise<TxoResults>;
   getState(key: string): Promise<string | undefined>;
   setState(key: string, value: string): Promise<void>;
   getQueueLength(): Promise<number>;
-  putIngest(ingest: Ingest): Promise<void>;
-  putIngests(ingests: Ingest[]): Promise<void>;
   getIngests(
     status: IngestStatus,
     limit: number,
     start?: number,
     stop?: number,
   ): Promise<Ingest[]>;
-  getInv(owner: string, txid: string): Promise<TxLog | undefined>;
-  getInvs(owner: string, txids: string[]): Promise<(TxLog | undefined)[]>;
-  putInv(syncLog: TxLog): Promise<void>;
-  putInvs(syncLog: TxLog[]): Promise<void>;
-  putTxLog(syncLog: TxLog): Promise<void>;
-  getTxLogs(limit?: number): Promise<TxLog[]>;
-  // putTxLogs(syncLog : TxLog[]) : Promise<void>;
-  getSynced(owner: string): Promise<TxLog | undefined>;
+  putIngest(ingest: Ingest): Promise<void>;
+  putIngests(ingests: Ingest[]): Promise<void>;
+  delIngest(txid: string): Promise<void>;
+  delIngests(txids: string[]): Promise<void>;
+  getTxLog(txid: string): Promise<TxLog | undefined>;
+  getTxLogs(txids: string[]): Promise<(TxLog | undefined)[]>;
+  getRecentTxLogs(limit?: number): Promise<TxLog[]>;
+  putTxLog(txLog: TxLog): Promise<void>;
+  getBackupLogs(): Promise<TxLog[]>;
 }

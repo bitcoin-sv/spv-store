@@ -19,6 +19,6 @@ export class IndexContext {
   queue: IndexQueue = {};
   summary: IndexSummary = {}
   constructor(public tx: Transaction, public block = new Block()) {
-    this.txid = tx.id('hex')
+    this.txid = tx.id('hex');
   }
 }

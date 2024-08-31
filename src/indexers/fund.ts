@@ -75,9 +75,7 @@ export class FundIndexer extends Indexer {
           if (u.height) {
             txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
           }
-          txo.data[this.tag] = new IndexData(owner, [
-            { id: "address", value: owner },
-          ]);
+          txo.data[this.tag] = new IndexData(owner, [{ id: "address", value: owner }]);
         }
 
         if (this.mode !== IndexMode.Verify) {
@@ -90,7 +88,7 @@ export class FundIndexer extends Indexer {
             ingest = {
               txid: t.outpoint.txid,
               height: t.block.height,
-              source: "sync",
+              source: "fund",
               idx: Number(t.block.idx),
               outputs: [t.outpoint.vout],
               downloadOnly: this.mode === IndexMode.Trust,
@@ -101,13 +99,6 @@ export class FundIndexer extends Indexer {
           }
         }
 
-        await txoStore.storage.putInvs(txos.map((t) => ({
-          txid: t.outpoint.txid,
-          height: t.block.height,
-          idx: Number(t.block.idx),
-          owner,
-          source: "sync",
-        })));
         offset += limit;
       } while (utxos.length == 100);
 

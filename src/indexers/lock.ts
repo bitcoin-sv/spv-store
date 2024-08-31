@@ -109,7 +109,7 @@ export class LockIndexer extends Indexer {
             ingest = {
               txid: t.outpoint.txid,
               height: t.block.height,
-              source: "sync",
+              source: "lock",
               idx: Number(t.block.idx),
               outputs: [t.outpoint.vout],
               downloadOnly: this.mode === IndexMode.Trust,
@@ -120,13 +120,6 @@ export class LockIndexer extends Indexer {
           }
         }
 
-        await txoStore.storage.putInvs(txos.map((t) => ({
-          txid: t.outpoint.txid,
-          height: t.block.height,
-          idx: Number(t.block.idx),
-          owner,
-          source: "sync",
-        })));
         offset += limit;
       } while (utxos.length == 100);
     }

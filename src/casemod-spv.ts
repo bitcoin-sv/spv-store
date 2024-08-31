@@ -1,20 +1,22 @@
 import {
   isBroadcastResponse,
+  MerklePath,
+  Transaction,
+  Utils,
   type BroadcastFailure,
   type BroadcastResponse,
-  type Transaction,
 } from "@bsv/sdk";
 import type { TxoLookup, TxoResults } from "./models/search";
-import type {
-  BlockHeaderService,
-  BroadcastService,
-  InventoryService,
-  SpendsService,
+import {
   TxLog,
-  TxnService,
+  type BlockHeaderService,
+  type BroadcastService,
+  type InventoryService,
+  type SpendsService,
+  type TxnService,
 } from "./services";
-import type { BlockStore, TxnStore, TxoStore } from "./stores";
-import { Txo, TxoSort, type BlockHeader, type IndexContext, type Ingest, type Outpoint } from "./models";
+import type { BlockStore, Txn, TxnStore, TxoStore } from "./stores";
+import { Outpoint, Txo, TxoSort, type BlockHeader, type IndexContext, type Ingest } from "./models";
 import { EventEmitter } from "./lib/event-emitter";
 
 export type Network = "mainnet" | "testnet";
@@ -72,6 +74,7 @@ export class CaseModSPV {
   async sync(): Promise<void> {
     await this.stores.blocks!.sync(true);
     this.events.emit("blocksSynced");
+    const tip = await this.getSyncedBlock();
     const isSynced = await this.stores.txos!.storage.getState("syncHeight");
     if (!isSynced) {
       const ingestQueue: { [txid: string]: Ingest } = {};
@@ -79,7 +82,12 @@ export class CaseModSPV {
         await indexer.sync(this.stores.txos!, ingestQueue);
       }
       this.stores.txos?.queue(Object.values(ingestQueue));
-      const tip = await this.getSyncedBlock();
+      for (const owner of this.stores.txos!.owners) {
+        await this.stores.txos!.storage.setState(
+          `sync-${owner}`,
+          tip!.height.toString(),
+        );
+      }
       await this.stores.txos!.storage.setState(
         "syncHeight",
         tip!.height.toString(),
@@ -126,8 +134,9 @@ export class CaseModSPV {
   }
 
   async getRecentTxs(): Promise<TxLog[]> {
-    return this.stores.txos!.storage.getTxLogs(10);
+    return this.stores.txos!.storage.getRecentTxLogs(10);
   }
+
   async parseTx(tx: Transaction): Promise<IndexContext> {
     return this.stores.txos!.parse(tx, true);
   }
@@ -147,4 +156,37 @@ export class CaseModSPV {
   async getChaintip(): Promise<BlockHeader | undefined> {
     return this.services.blocks!.getChaintip();
   }
+
+  async getBackupTx(txid: string): Promise<number[] | undefined> {
+    const txn = await this.stores.txns!.storage.get(txid);
+    if (!txn) return;
+    const writer = new Utils.Writer()
+    writer.writeUInt32LE(4022206465)
+    writer.writeVarIntNum(txn.proof ? 1 : 0)
+    writer.write(txn.proof || [])
+    writer.writeVarIntNum(txn.rawtx.length)
+    writer.write(txn.rawtx)
+    if (txn.proof) {
+      writer.writeUInt8(1)
+      writer.writeVarIntNum(0)
+    } else {
+      writer.writeUInt8(0)
+    }
+    return writer.toArray()
+  }
+
+  async restoreBackupTx(data: number[]): Promise<void> {
+    const tx = Transaction.fromBEEF(data);
+    await this.stores.txns!.saveTx(tx);
+  }
+
+  async getBackupLogs(): Promise<Ingest[]> {
+    return this.stores.txos!.storage.getBackupLogs();
+  }
+
+  async restoreBackupLogs(logs: Ingest[]): Promise<void> {
+    return this.stores.txos!.queue(logs);
+  }
 }
+
+

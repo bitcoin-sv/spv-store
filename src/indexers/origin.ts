@@ -38,7 +38,7 @@ export class OriginIndexer extends Indexer {
     let inSat = 0n;
     let origin: Origin | undefined;
     const deps: Outpoint[] = [];
-    for (const spend of ctx.spends) {
+    for (const [vin, spend] of ctx.spends.entries()) {
       if (inSat == outSat && spend.satoshis == 1n) {
         if (spend.data.origin?.data) {
           origin = {
@@ -47,7 +47,7 @@ export class OriginIndexer extends Indexer {
           if (origin?.nonce) {
             origin.nonce++;
           }
-          deps.push(spend.outpoint);
+          deps.push(...ctx.spends.slice(0, vin+1).map(s => s.outpoint));
         } else if (this.mode !== IndexMode.Verify) {
           const provider = new OneSatProvider(this.network);
           const remote = await provider.getTxo(spend.outpoint);
@@ -149,7 +149,7 @@ export class OriginIndexer extends Indexer {
             ingest = {
               txid: t.outpoint.txid,
               height: t.block.height,
-              source: "sync",
+              source: "origin",
               idx: Number(t.block.idx),
               outputs: [t.outpoint.vout],
               downloadOnly: this.mode === IndexMode.Trust,
@@ -169,20 +169,12 @@ export class OriginIndexer extends Indexer {
             ingestQueue[txid] = {
               txid,
               height: block.height,
-              source: "sync",
+              source: "ancestor",
               idx: Number(block.idx),
-              isDepOnly: true,
+              isDep: true,
             };
           }
         }
-
-        await txoStore.storage.putInvs(txos.map((t) => ({
-          txid: t.outpoint.txid,
-          height: t.block.height,
-          idx: Number(t.block.idx),
-          owner,
-          source: "sync",
-        })));
         offset += limit;
       } while (utxos.length == limit);
     }
@@ -204,7 +196,7 @@ export class OriginIndexer extends Indexer {
     }[];
 
     return ancestors.reduce((queue, u) => {
-      queue[u.txid] = new Block(u.height || Date.now(), BigInt(u.idx || 0));
+      queue[u.txid] = new Block(u.height || 0, BigInt(u.idx || 0));
       return queue;
     }, {} as IndexQueue);
   }

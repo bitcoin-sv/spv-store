@@ -39,7 +39,7 @@ export class OneSatWebSPV extends CaseModSPV {
     const [blockStorage, txnStorage, txoStorage] = await Promise.all([
       BlockStorageIDB.init(network),
       TxnStorageIDB.init(network),
-      TxoStorageIDB.init(accountId, indexers, network),
+      TxoStorageIDB.init(accountId, network),
     ]);
 
     const stores: Stores = {};
