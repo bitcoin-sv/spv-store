@@ -16,7 +16,14 @@ import {
   type TxnService,
 } from "./services";
 import type { BlockStore, Txn, TxnStore, TxoStore } from "./stores";
-import { Outpoint, Txo, TxoSort, type BlockHeader, type IndexContext, type Ingest } from "./models";
+import {
+  Outpoint,
+  Txo,
+  TxoSort,
+  type BlockHeader,
+  type IndexContext,
+  type Ingest,
+} from "./models";
 import { EventEmitter } from "./lib/event-emitter";
 
 export type Network = "mainnet" | "testnet";
@@ -41,7 +48,7 @@ export class CaseModSPV {
     public services: Services,
     public stores: Stores,
     public events = new EventEmitter(),
-    startSync = false,
+    startSync = false
   ) {
     if (startSync) this.sync();
   }
@@ -55,14 +62,14 @@ export class CaseModSPV {
 
     this.events.emit(
       "destroyed",
-      "The CaseModSPV instance has been destroyed!",
+      "The CaseModSPV instance has been destroyed!"
     );
 
     this.events.removeAllListeners();
   }
 
   async broadcast(
-    tx: Transaction,
+    tx: Transaction
   ): Promise<BroadcastResponse | BroadcastFailure> {
     const resp = await this.stores.txns!.broadcast(tx);
     if (isBroadcastResponse(resp)) {
@@ -85,12 +92,12 @@ export class CaseModSPV {
       for (const owner of this.stores.txos!.owners) {
         await this.stores.txos!.storage.setState(
           `sync-${owner}`,
-          tip!.height.toString(),
+          tip!.height.toString()
         );
       }
       await this.stores.txos!.storage.setState(
         "syncHeight",
-        tip!.height.toString(),
+        tip!.height.toString()
       );
       this.events.emit("txosSynced");
     }
@@ -109,7 +116,7 @@ export class CaseModSPV {
     lookup: TxoLookup,
     sort = TxoSort.DESC,
     limit = 100,
-    from?: string,
+    from?: string
   ): Promise<TxoResults> {
     return this.stores.txos!.search(lookup, sort, limit, from);
   }
@@ -128,7 +135,7 @@ export class CaseModSPV {
 
   async getTx(
     txid: string,
-    fromRemote = false,
+    fromRemote = false
   ): Promise<Transaction | undefined> {
     return this.stores.txns!.loadTx(txid, fromRemote);
   }
@@ -160,19 +167,23 @@ export class CaseModSPV {
   async getBackupTx(txid: string): Promise<number[] | undefined> {
     const txn = await this.stores.txns!.storage.get(txid);
     if (!txn) return;
-    const writer = new Utils.Writer()
-    writer.writeUInt32LE(4022206465)
-    writer.writeVarIntNum(txn.proof ? 1 : 0)
-    writer.write(txn.proof || [])
-    writer.writeVarIntNum(txn.rawtx.length)
-    writer.write(txn.rawtx)
+    const writer = new Utils.Writer();
+    writer.writeUInt32LE(4022206465);
+    writer.writeVarIntNum(txn.proof ? 1 : 0);
+    writer.write(txn.proof || []);
+    writer.writeVarIntNum(txn.rawtx.length);
+    writer.write(txn.rawtx);
     if (txn.proof) {
-      writer.writeUInt8(1)
-      writer.writeVarIntNum(0)
+      writer.writeUInt8(1);
+      writer.writeVarIntNum(0);
     } else {
-      writer.writeUInt8(0)
+      writer.writeUInt8(0);
     }
-    return writer.toArray()
+    return writer.toArray();
+  }
+
+  async restoreBlocks(headers: BlockHeader[]): Promise<void> {
+    await this.stores.blocks!.storage.putMany(headers);
   }
 
   async restoreBackupTx(data: number[]): Promise<void> {
@@ -188,5 +199,3 @@ export class CaseModSPV {
     return this.stores.txos!.queue(logs);
   }
 }
-
-
