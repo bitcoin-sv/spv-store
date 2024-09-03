@@ -43,6 +43,7 @@ export class TxoStore {
     previewOnly = true,
     outputs?: number[],
     fromRemote = false,
+    requireKnownInputs = false,
   ): Promise<IndexContext> {
     const ctx = new IndexContext(tx)
     if (tx.merklePath) {
@@ -60,14 +61,15 @@ export class TxoStore {
         input.sourceTXID = input.sourceTransaction.id("hex") as string;
       }
       if (input.sourceTransaction) {
-        await this.ingest(input.sourceTransaction);
+        await this.ingest(input.sourceTransaction, "beef", false, false, true);
       } else {
         input.sourceTransaction = await this.stores.txns!.loadTx(
           input.sourceTXID,
           fromRemote,
         );
-        if (!input.sourceTransaction)
+        if (!input.sourceTransaction && requireKnownInputs) {
           throw new Error(`Failed to get source tx ${input.sourceTXID}`);
+        }
       }
     }
 
@@ -80,11 +82,9 @@ export class TxoStore {
         spend = new Txo(
           new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
           BigInt(
-            input.sourceTransaction!.outputs[input.sourceOutputIndex].satoshis!,
+            input.sourceTransaction?.outputs[input.sourceOutputIndex].satoshis || 0,
           ),
-          input.sourceTransaction!.outputs[
-            input.sourceOutputIndex
-          ].lockingScript.toBinary(),
+          input.sourceTransaction?.outputs[input.sourceOutputIndex]?.lockingScript.toBinary() || [],
           TxoStatus.Unindexed,
         );
       }
@@ -129,10 +129,11 @@ export class TxoStore {
     tx: Transaction,
     source: string = "",
     fromRemote = false,
+    requireKnownInputs = false,
     isDep = false,
     outputs?: number[],
   ): Promise<IndexContext> {
-    const ctx = await this.parse(tx, false, outputs, fromRemote);
+    const ctx = await this.parse(tx, false, outputs, fromRemote, requireKnownInputs);
     console.log("Ingesting", ctx.txid);
     const block: Block = { height: Date.now(), idx: 0n };
     if (tx.merklePath) {
@@ -239,7 +240,7 @@ export class TxoStore {
             console.error("Failed to get tx", ingest.txid);
             continue;
           }
-          await this.ingest(tx, ingest.source, true, ingest.isDep, ingest.outputs);
+          await this.ingest(tx, ingest.source, true, true, ingest.isDep, ingest.outputs);
           ingest.status = IngestStatus.INGESTED;
           await this.storage.putIngest(ingest);
           await this.updateQueueStats();
@@ -275,7 +276,7 @@ export class TxoStore {
           if (!tx.merklePath) {
             ingest.height = Date.now();
           } else {
-            const ctx = await this.ingest(tx, ingest.source, true, ingest.isDep, ingest.outputs);
+            const ctx = await this.ingest(tx, ingest.source, true, true, ingest.isDep, ingest.outputs);
             ingest.status = IngestStatus.CONFIRMED;
             ingest.height = ctx.block.height;
             ingest.idx = Number(ctx.block.idx);
