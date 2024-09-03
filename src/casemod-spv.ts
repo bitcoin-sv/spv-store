@@ -196,6 +196,20 @@ export class CaseModSPV {
   }
 
   async restoreBackupLogs(logs: Ingest[]): Promise<void> {
-    return this.stores.txos!.queue(logs);
+    await this.stores.txos!.queue(logs);
+    const lastHeight = logs.reduce((maxHeight, log) => {
+      return Math.max(maxHeight, log.height);
+    }, 0);
+    for (const owner of this.stores.txos!.owners) {
+      await this.stores.txos!.storage.setState(
+        `sync-${owner}`,
+        lastHeight.toString()
+      );
+    }
+
+    await this.stores.txos!.storage.setState(
+      "syncHeight",
+      lastHeight.toString()
+    );
   }
 }
