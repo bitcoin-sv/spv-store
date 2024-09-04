@@ -38,7 +38,8 @@ export class OriginIndexer extends Indexer {
     let inSat = 0n;
     let origin: Origin | undefined;
     const deps: Outpoint[] = [];
-    for (const [vin, spend] of ctx.spends.entries()) {
+    for (const spend of ctx.spends.values()) {
+      deps.push(spend.outpoint);
       if (inSat == outSat && spend.satoshis == 1n) {
         if (spend.data.origin?.data) {
           origin = {
@@ -47,7 +48,6 @@ export class OriginIndexer extends Indexer {
           if (origin?.nonce) {
             origin.nonce++;
           }
-          deps.push(...ctx.spends.slice(0, vin+1).map(s => s.outpoint));
         } else if (this.mode !== IndexMode.Verify) {
           const provider = new OneSatProvider(this.network);
           const remote = await provider.getTxo(spend.outpoint);
@@ -171,6 +171,7 @@ export class OriginIndexer extends Indexer {
               height: block.height,
               source: "ancestor",
               idx: Number(block.idx),
+              validateInputs: true,
               isDep: true,
             };
           }
@@ -192,7 +193,7 @@ export class OriginIndexer extends Indexer {
     const ancestors = (await resp.json()) as {
       txid: string;
       idx: string;
-      height?: number;
+      height: number;
     }[];
 
     return ancestors.reduce((queue, u) => {

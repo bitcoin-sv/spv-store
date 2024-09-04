@@ -14,6 +14,7 @@ export interface Ingest {
   source?: string;
   isDep?: boolean;
   downloadOnly?: boolean;
+  validateInputs?: boolean;
   status?: IngestStatus;
   outputs?: number[];
 }

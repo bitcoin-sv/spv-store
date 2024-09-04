@@ -17,9 +17,12 @@ import {
 } from "./services";
 import type { BlockStore, Txn, TxnStore, TxoStore } from "./stores";
 import {
+  BLOCK_HEADER_SIZE,
+  blockHeaderFromReader,
   Outpoint,
   Txo,
   TxoSort,
+  writeBlockHeader,
   type BlockHeader,
   type IndexContext,
   type Ingest,
@@ -69,11 +72,12 @@ export class CaseModSPV {
   }
 
   async broadcast(
-    tx: Transaction
+    tx: Transaction,
+    source = '',
   ): Promise<BroadcastResponse | BroadcastFailure> {
     const resp = await this.stores.txns!.broadcast(tx);
     if (isBroadcastResponse(resp)) {
-      await this.stores.txos!.ingest(tx);
+      await this.stores.txos!.ingest(tx, source);
     }
     return resp;
   }
@@ -156,10 +160,6 @@ export class CaseModSPV {
     return this.stores.blocks!.storage.getByHeight(height);
   }
 
-  async getAllBlocks(): Promise<BlockHeader[]> {
-    return this.stores.blocks!.storage.getAll();
-  }
-
   async getChaintip(): Promise<BlockHeader | undefined> {
     return this.services.blocks!.getChaintip();
   }
@@ -168,27 +168,46 @@ export class CaseModSPV {
     const txn = await this.stores.txns!.storage.get(txid);
     if (!txn) return;
     const writer = new Utils.Writer();
-    writer.writeUInt32LE(4022206465);
-    writer.writeVarIntNum(txn.proof ? 1 : 0);
-    writer.write(txn.proof || []);
+    writer.writeInt8(Number(txn.status))
+    writer.writeUInt32LE(txn.block.height);
+    writer.writeUInt64LE(Number(txn.block.idx))
     writer.writeVarIntNum(txn.rawtx.length);
     writer.write(txn.rawtx);
+    writer.writeVarIntNum(txn.proof?.length || 0);
     if (txn.proof) {
-      writer.writeUInt8(1);
-      writer.writeVarIntNum(0);
-    } else {
-      writer.writeUInt8(0);
+      writer.write(txn.proof);
     }
     return writer.toArray();
   }
 
-  async restoreBlocks(headers: BlockHeader[]): Promise<void> {
+  async getBlocksBackup(): Promise<number[][]> {
+    return await this.stores.blocks!.storage.getBackup();
+  }
+
+  async restoreBlocks(data: number[]): Promise<void> {
+    const reader = new Utils.Reader(data);
+    let headers: BlockHeader[] = [];
+    while(reader.pos < data.length) {
+      headers.push(blockHeaderFromReader(reader));
+    }
     await this.stores.blocks!.storage.putMany(headers);
   }
 
-  async restoreBackupTx(data: number[]): Promise<void> {
-    const tx = Transaction.fromBEEF(data);
-    await this.stores.txns!.saveTx(tx);
+  async restoreBackupTx(txid: string, data: number[]): Promise<void> {
+    const reader = new Utils.Reader(data);
+    const status = reader.readInt8();
+    const height = reader.readUInt32LE();
+    const idx = reader.readUInt64LEBn();
+    let len = reader.readVarIntNum();
+    const txn: Txn = {
+      txid,
+      status: status as any,
+      block: { height, idx: BigInt(idx.toNumber()) },
+      rawtx: reader.read(len),
+    };
+    len = reader.readVarIntNum();
+    if (len) txn.proof = reader.read(len);
+    await this.stores.txns!.storage.put(txn);
   }
 
   async getBackupLogs(): Promise<Ingest[]> {
@@ -198,7 +217,7 @@ export class CaseModSPV {
   async restoreBackupLogs(logs: Ingest[]): Promise<void> {
     await this.stores.txos!.queue(logs);
     const lastHeight = logs.reduce((maxHeight, log) => {
-      return Math.max(maxHeight, log.height);
+      return Math.min(Math.max(maxHeight, log.height), 50000000);
     }, 0);
     for (const owner of this.stores.txos!.owners) {
       await this.stores.txos!.storage.setState(
@@ -206,7 +225,6 @@ export class CaseModSPV {
         lastHeight.toString()
       );
     }
-
     await this.stores.txos!.storage.setState(
       "syncHeight",
       lastHeight.toString()

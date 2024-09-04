@@ -3,7 +3,6 @@ import { Txo, TxoStatus } from "../../models/txo";
 import { IngestStatus, type Ingest } from "../../models/ingest";
 import type { TxoStorage } from "../txo-storage";
 import { Outpoint } from "../../models/outpoint";
-import type { Indexer } from "../../models/indexer";
 import { TxoSort, type TxoLookup, type TxoResults } from "../../models/search";
 import type { Network } from "../../casemod-spv";
 import type { TxLog } from "../../services/inv-service";
@@ -46,6 +45,9 @@ export interface TxoSchema extends DBSchema {
 
 function hydrateTxo(obj: Txo) {
   obj.outpoint = new Outpoint(obj.outpoint.txid, obj.outpoint.vout);
+  for(const data of Object.values(obj.data)) {
+    data.deps = data.deps.map((dep) => new Outpoint(dep));
+  }
   return obj;
 }
 

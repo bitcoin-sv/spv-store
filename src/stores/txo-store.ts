@@ -42,8 +42,6 @@ export class TxoStore {
     tx: Transaction,
     previewOnly = true,
     outputs?: number[],
-    fromRemote = false,
-    requireKnownInputs = false,
   ): Promise<IndexContext> {
     const ctx = new IndexContext(tx)
     if (tx.merklePath) {
@@ -52,25 +50,6 @@ export class TxoStore {
       }
       ctx.block.height = tx.merklePath.blockHeight;
       ctx.block.idx = BigInt(tx.merklePath.path[0].find((p) => p.hash == ctx.txid)!.offset)
-    }
-    for (const input of tx.inputs) {
-      if (!input.sourceTXID) {
-        if (!input.sourceTransaction) {
-          throw new Error("Input missing source transaction");
-        }
-        input.sourceTXID = input.sourceTransaction.id("hex") as string;
-      }
-      if (input.sourceTransaction) {
-        await this.ingest(input.sourceTransaction, "beef", false, false, true);
-      } else {
-        input.sourceTransaction = await this.stores.txns!.loadTx(
-          input.sourceTXID,
-          fromRemote,
-        );
-        if (!input.sourceTransaction && requireKnownInputs) {
-          throw new Error(`Failed to get source tx ${input.sourceTXID}`);
-        }
-      }
     }
 
     const spends = await this.storage.getMany(
@@ -129,11 +108,30 @@ export class TxoStore {
     tx: Transaction,
     source: string = "",
     fromRemote = false,
-    requireKnownInputs = false,
     isDep = false,
     outputs?: number[],
   ): Promise<IndexContext> {
-    const ctx = await this.parse(tx, false, outputs, fromRemote, requireKnownInputs);
+    for (const input of tx.inputs) {
+      if (!input.sourceTXID) {
+        if (!input.sourceTransaction) {
+          throw new Error("Input missing source transaction");
+        }
+        input.sourceTXID = input.sourceTransaction.id("hex") as string;
+      }
+      if (input.sourceTransaction) {
+        await this.ingest(input.sourceTransaction, "beef", fromRemote);
+      } else {
+        input.sourceTransaction = await this.stores.txns!.loadTx(
+          input.sourceTXID,
+          fromRemote,
+        );
+        if (!input.sourceTransaction && fromRemote) {
+          throw new Error(`Failed to get source tx ${input.sourceTXID}`);
+        }
+      }
+    }
+    
+    const ctx = await this.parse(tx, false, outputs);
     console.log("Ingesting", ctx.txid);
     const block: Block = { height: Date.now(), idx: 0n };
     if (tx.merklePath) {
@@ -149,7 +147,7 @@ export class TxoStore {
         txo.status == TxoStatus.Unindexed ||
         txo.status == TxoStatus.Dependency
       ) {
-        txo.status = isDep ? TxoStatus.Dependency : TxoStatus.Confirmed;
+        txo.status = isDep ? TxoStatus.Dependency : TxoStatus.Validated;
       }
     });
     await this.storage.putMany(ctx.spends);
@@ -185,8 +183,8 @@ export class TxoStore {
     this.syncRunning = Promise.all([
       this.processDownloads(),
       this.processIngests(),
-      this.processConfirms(),
-      this.processImmutable(),
+      // this.processConfirms(),
+      // this.processImmutable(),
     ]).then(() => { });
   }
 
@@ -240,7 +238,7 @@ export class TxoStore {
             console.error("Failed to get tx", ingest.txid);
             continue;
           }
-          await this.ingest(tx, ingest.source, true, true, ingest.isDep, ingest.outputs);
+          await this.ingest(tx, ingest.source, ingest.validateInputs, ingest.isDep, ingest.outputs);
           ingest.status = IngestStatus.INGESTED;
           await this.storage.putIngest(ingest);
           await this.updateQueueStats();
@@ -276,7 +274,7 @@ export class TxoStore {
           if (!tx.merklePath) {
             ingest.height = Date.now();
           } else {
-            const ctx = await this.ingest(tx, ingest.source, true, true, ingest.isDep, ingest.outputs);
+            const ctx = await this.ingest(tx, ingest.source, false, ingest.isDep, ingest.outputs);
             ingest.status = IngestStatus.CONFIRMED;
             ingest.height = ctx.block.height;
             ingest.idx = Number(ctx.block.idx);

@@ -1,7 +1,8 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "@tempfix/idb";
 import type { BlockStorage } from "../block-storage";
-import type { BlockHeader } from "../../models/block-header";
+import { writeBlockHeader, type BlockHeader } from "../../models/block-header";
 import type { Network } from "../../casemod-spv";
+import { Utils } from "@bsv/sdk";
 
 const BLOCK_DB_VERSION = 1;
 
@@ -75,5 +76,29 @@ export class BlockStorageIDB implements BlockStorage {
 
   async getAll(): Promise<BlockHeader[]> {
     return this.db.getAll("blocks");
+  }
+
+  async getBackup(): Promise<number[][]> {
+    let writer = new Utils.Writer();
+    const t = this.db.transaction("blocks", "readonly");
+    let headers: number[][] = [];
+    let count = 0;
+    let prevHash = "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f";
+    for await (const cursor of t.store.iterate()) {
+      const header = cursor.value;
+      header.prevHash = prevHash;
+      prevHash = header.hash;
+      writeBlockHeader(writer, cursor.value);
+      if(++count === 10000) {
+        headers.push(writer.toArray());
+        writer = new Utils.Writer();
+        count = 0;
+      }
+    }
+    await t.done;
+    if(count) {
+      headers.push(writer.toArray());
+    }
+    return headers;
   }
 }

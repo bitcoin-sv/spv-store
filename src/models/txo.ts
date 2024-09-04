@@ -6,7 +6,7 @@ export enum TxoStatus {
   Unindexed = -1,
   Trusted = 0,
   Dependency = 1,
-  Confirmed = 2,
+  Validated = 2,
 }
 
 export class Txo {

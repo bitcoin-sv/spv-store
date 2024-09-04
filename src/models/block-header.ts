@@ -7,17 +7,38 @@ export interface BlockHeader {
   time: number;
   version: number;
   merkleroot: string;
-  bits: number;
+  bits: string;
   nonce: number;
 }
 
+export const BLOCK_HEADER_SIZE = 116;
+
 export function blockHeaderBytes(header: BlockHeader): number[] {
   const writer = new Utils.Writer();
-  writer.writeInt32LE(header.version);
-  writer.write([...Buffer.from(header.prevHash, "hex").reverse()])
-  writer.write([...Buffer.from(header.merkleroot, "hex").reverse()]);
+  writeBlockHeader(writer, header);
+  return writer.toArray();
+}
+
+export function writeBlockHeader(writer: Utils.Writer, header: BlockHeader) {
+  writer.writeUInt32LE(header.height);
+  writer.write(Utils.toArray(header.hash, "hex"));
+  writer.writeUInt32LE(header.version);
+  writer.write(Utils.toArray(header.prevHash, "hex").reverse())
+  writer.write(Utils.toArray(header.merkleroot, "hex").reverse());
   writer.writeUInt32LE(header.time);
   writer.write(Utils.toArray(header.bits, "hex"));
   writer.writeUInt32LE(header.nonce);
-  return writer.toArray();
+}
+
+export function blockHeaderFromReader(reader: Utils.Reader): BlockHeader {
+  return {
+    height: reader.readUInt32LE(),
+    hash: Utils.toHex(reader.read(32)),
+    version: reader.readUInt32LE(),
+    prevHash: Utils.toHex(reader.read(32).reverse()),
+    merkleroot: Utils.toHex(reader.read(32).reverse()),
+    time: reader.readUInt32LE(),
+    bits: Utils.toHex(reader.read(4)),
+    nonce: reader.readUInt32LE(),
+  };
 }

@@ -83,7 +83,10 @@ export class TxnStore {
       block: new Block(),
       status: TxnStatus.BROADCASTED,
     };
-    if (await tx.merklePath?.verify(txn.txid, this.stores.blocks!)) {
+    if (tx.merklePath) {
+      if (!await tx.merklePath.verify(txn.txid, this.stores.blocks!)) {
+        throw new Error("Invalid merkle path");
+      }
       txn.proof = tx.merklePath!.toBinary();
       txn.block.height = tx.merklePath!.blockHeight;
       txn.block.idx = BigInt(
