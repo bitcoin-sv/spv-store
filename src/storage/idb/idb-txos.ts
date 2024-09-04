@@ -171,7 +171,8 @@ export class TxoStorageIDB implements TxoStorage {
     );
     const indexName = lookup.id ? "events" : "tags";
     const results: TxoResults = { txos: [] };
-    const index = this.db.transaction("txos").store.index(indexName);
+    const t = this.db.transaction("txos");
+    const index = t.store.index(indexName);
     for await (const cursor of index.iterate(
       query,
       sort == TxoSort.DESC ? "prev" : "next"
@@ -184,6 +185,7 @@ export class TxoStorageIDB implements TxoStorage {
         return results;
       }
     }
+    await t.done;
     delete results.nextPage;
     return results;
   }
@@ -238,6 +240,7 @@ export class TxoStorageIDB implements TxoStorage {
       }
       ingest.outputs = Array.from(outputs);
     }
+    await t.done;
     await this.db.put("ingestQueue", ingest);
   }
 
@@ -322,6 +325,7 @@ export class TxoStorageIDB implements TxoStorage {
     }
 
     await Promise.all(promises);
+    await t.done;
 
     return Array.from(ingests.values())
       .sort((a, b) => a.height - b.height || a.idx - b.idx)
