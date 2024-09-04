@@ -73,7 +73,7 @@ export class CaseModSPV {
 
   async broadcast(
     tx: Transaction,
-    source = '',
+    source = ""
   ): Promise<BroadcastResponse | BroadcastFailure> {
     const resp = await this.stores.txns!.broadcast(tx);
     if (isBroadcastResponse(resp)) {
@@ -168,9 +168,9 @@ export class CaseModSPV {
     const txn = await this.stores.txns!.storage.get(txid);
     if (!txn) return;
     const writer = new Utils.Writer();
-    writer.writeInt8(Number(txn.status))
+    writer.writeInt8(Number(txn.status));
     writer.writeUInt32LE(txn.block.height);
-    writer.writeUInt64LE(Number(txn.block.idx))
+    writer.writeUInt64LE(Number(txn.block.idx));
     writer.writeVarIntNum(txn.rawtx.length);
     writer.write(txn.rawtx);
     writer.writeVarIntNum(txn.proof?.length || 0);
@@ -187,7 +187,7 @@ export class CaseModSPV {
   async restoreBlocks(data: number[]): Promise<void> {
     const reader = new Utils.Reader(data);
     let headers: BlockHeader[] = [];
-    while(reader.pos < data.length) {
+    while (reader.pos < data.length) {
       headers.push(blockHeaderFromReader(reader));
     }
     await this.stores.blocks!.storage.putMany(headers);
@@ -216,9 +216,12 @@ export class CaseModSPV {
 
   async restoreBackupLogs(logs: Ingest[]): Promise<void> {
     await this.stores.txos!.queue(logs);
-    const lastHeight = logs.reduce((maxHeight, log) => {
-      return Math.min(Math.max(maxHeight, log.height), 50000000);
-    }, 0);
+    let lastHeight = 0;
+    for (const log of logs) {
+      if (log.height > lastHeight && log.height < 50000000) {
+        lastHeight = log.height;
+      }
+    }
     for (const owner of this.stores.txos!.owners) {
       await this.stores.txos!.storage.setState(
         `sync-${owner}`,

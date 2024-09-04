@@ -17,7 +17,7 @@ export interface BlockSchema extends DBSchema {
 }
 
 export class BlockStorageIDB implements BlockStorage {
-  private constructor(public db: IDBPDatabase<BlockSchema>) { }
+  private constructor(public db: IDBPDatabase<BlockSchema>) {}
 
   static async init(network: Network): Promise<BlockStorageIDB> {
     const db = await openDB<BlockSchema>(
@@ -27,21 +27,17 @@ export class BlockStorageIDB implements BlockStorage {
         upgrade(db) {
           db.createObjectStore("blocks", { keyPath: "height" }).createIndex(
             "hash",
-            "hash",
+            "hash"
           );
         },
-      },
+      }
     );
 
     return new BlockStorageIDB(db);
   }
 
   async destroy() {
-    const destroyed = new Promise(async (resolve) => {
-      this.db.onclose = resolve;
-    });
     this.db.close();
-    await destroyed;
   }
 
   async put(block: BlockHeader): Promise<void> {
@@ -83,20 +79,21 @@ export class BlockStorageIDB implements BlockStorage {
     const t = this.db.transaction("blocks", "readonly");
     let headers: number[][] = [];
     let count = 0;
-    let prevHash = "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f";
+    let prevHash =
+      "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f";
     for await (const cursor of t.store.iterate()) {
       const header = cursor.value;
       header.prevHash = prevHash;
       prevHash = header.hash;
       writeBlockHeader(writer, cursor.value);
-      if(++count === 10000) {
+      if (++count === 10000) {
         headers.push(writer.toArray());
         writer = new Utils.Writer();
         count = 0;
       }
     }
     await t.done;
-    if(count) {
+    if (count) {
       headers.push(writer.toArray());
     }
     return headers;

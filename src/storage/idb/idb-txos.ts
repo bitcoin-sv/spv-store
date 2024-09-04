@@ -105,14 +105,7 @@ export class TxoStorageIDB implements TxoStorage {
   }
 
   async destroy() {
-    const destroyed = new Promise(async (resolve) => {
-      this.db.addEventListener("close", () => {
-        console.log("Txo database connection closed");
-        resolve(true);
-      });
-      this.db.close();
-    });
-    await destroyed;
+    this.db.close();
   }
 
   async get(outpoint: Outpoint): Promise<Txo | undefined> {

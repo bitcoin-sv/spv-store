@@ -17,13 +17,15 @@ export interface TxnSchema extends DBSchema {
 }
 
 export class TxnStorageIDB implements TxnStorage {
-  private constructor(public db: IDBPDatabase<TxnSchema>) { }
+  private constructor(public db: IDBPDatabase<TxnSchema>) {}
 
   static async init(network: Network): Promise<TxnStorageIDB> {
     const db = await openDB<TxnSchema>(`txns-${network}`, TXN_DB_VERSION, {
       upgrade(db) {
-        db.createObjectStore("txns", { keyPath: "txid" })
-          .createIndex("status", ["status", "block.height"]);
+        db.createObjectStore("txns", { keyPath: "txid" }).createIndex(
+          "status",
+          ["status", "block.height"]
+        );
       },
     });
 
@@ -31,11 +33,7 @@ export class TxnStorageIDB implements TxnStorage {
   }
 
   async destroy() {
-    const destroyed = new Promise(async (resolve) => {
-      this.db.onclose = resolve;
-    });
     this.db.close();
-    await destroyed;
   }
 
   async get(txid: string): Promise<Txn | undefined> {
@@ -44,7 +42,9 @@ export class TxnStorageIDB implements TxnStorage {
 
   async getMany(txids: string[]): Promise<(Txn | undefined)[]> {
     const t = this.db.transaction("txns");
-    const txns = await Promise.all(txids.map((txid) => t.store.get(txid).catch(() => undefined)));
+    const txns = await Promise.all(
+      txids.map((txid) => t.store.get(txid).catch(() => undefined))
+    );
     await t.done;
     return txns;
   }
@@ -63,7 +63,7 @@ export class TxnStorageIDB implements TxnStorage {
     await Promise.all(
       txns.map((txn) => {
         return t.store.put(txn);
-      }),
+      })
     );
     await t.done;
   }
@@ -77,7 +77,11 @@ export class TxnStorageIDB implements TxnStorage {
     return foundTxids.map((txid) => !!txid);
   }
 
-  async getByStatus(status: TxnStatus, toBlock: number, limit = 25): Promise<Txn[]> {
+  async getByStatus(
+    status: TxnStatus,
+    toBlock: number,
+    limit = 25
+  ): Promise<Txn[]> {
     const t = this.db.transaction("txns");
     const idx = t.store.index("status");
     const query = IDBKeyRange.bound([status, 0], [status, toBlock]);
