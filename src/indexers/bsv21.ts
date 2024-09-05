@@ -171,7 +171,7 @@ export class Bsv21Indexer extends Indexer {
             if (u.height) {
               txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
             }
-            txo.data.bsv21 = new IndexData(
+            txo.data[this.tag] = new IndexData(
               Bsv21.fromJSON({
                 id: token.id,
                 amt: u.amt,

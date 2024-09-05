@@ -1,6 +1,10 @@
+import { Utils } from "@bsv/sdk";
+import { Outpoint, Txo, TxoStatus, type Ingest } from "../models";
 import type { IndexContext } from "../models/index-context";
 import { IndexData } from "../models/index-data";
-import { Indexer } from "../models/indexer";
+import { Indexer, IndexMode } from "../models/indexer";
+import type { TxoStore } from "../stores";
+import type { RemoteBsv20 } from "./remote-types";
 
 export class Bsv20 {
   status = 0;
@@ -52,6 +56,111 @@ export class Bsv20Indexer extends Indexer {
       return data;
     } catch (e) {
       return;
+    }
+  }
+
+  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<void>  {
+    const limit = 100;
+    for await (const owner of this.owners) {
+      let resp = await fetch(
+        `https://ordinals.gorillapool.io/api/bsv20/${owner}/balance`,
+      );
+      const balance = (await resp.json()) as RemoteBsv20[];
+      for await (const token of balance) {
+        if (!token.tick) continue;
+        console.log("importing", token.tick);
+        // try {
+        let offset = 0;
+        let utxos: RemoteBsv20[] = [];
+        do {
+          resp = await fetch(
+            `https://ordinals.gorillapool.io/api/bsv20/${owner}/tick/${token.tick}?limit=${limit}&offset=${offset}&includePending=true`,
+          );
+          utxos = ((await resp.json()) as RemoteBsv20[]) || [];
+          const txos: Txo[] = [];
+          for (const u of utxos) {
+            const txo = new Txo(
+              new Outpoint(u.txid, u.vout),
+              1n,
+              Utils.toArray(u.script, "base64"),
+              TxoStatus.Trusted,
+            );
+            if (u.height) {
+              txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
+            }
+            txo.data[this.tag] = new IndexData(
+              Bsv20.fromJSON({
+                tick: token.tick,
+                amt: u.amt,
+                dec: token.dec,
+                sym: token.sym,
+                op: u.op!,
+                status: u.status,
+                icon: token.icon,
+              }),
+              [
+                { id: "address", value: owner },
+                { id: "tick", value: token.tick },
+              ],
+            );
+            if (u.listing && u.payout && u.price) {
+              const price = BigInt(u.price);
+              txo.data.list = new IndexData(
+                {
+                  payout: Utils.toArray(u.payout, "base64"),
+                  price,
+                },
+                [
+                  {
+                    id: "price",
+                    value: price.toString(16).padStart(16, "0"),
+                  },
+                ],
+              );
+            }
+            txos.push(txo);
+          }
+          if (this.mode !== IndexMode.Verify) {
+            await txoStore.storage.putMany(txos);
+          }
+  
+          for (const t of txos) {
+            let ingest = ingestQueue[t.outpoint.txid];
+            if (!ingest) {
+              ingest = {
+                txid: t.outpoint.txid,
+                height: t.block.height,
+                source: "bsv20",
+                idx: Number(t.block.idx),
+                outputs: [t.outpoint.vout],
+                downloadOnly: true,
+              };
+              ingestQueue[t.outpoint.txid] = ingest;
+            } else {
+              ingest.outputs!.push(t.outpoint.vout);
+            }
+          }
+          // if (this.syncMode !== TxoStatus.TRUSTED) {
+          //   resp = await fetch(
+          //     `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}/ancestors`,
+          //   );
+          //   const txids = (await resp.json()) as { [score: string]: string };
+          //   await txoStore.queue(
+          //     Object.entries(txids).map(([score, txid]) => {
+          //       const [height, idx] = score.split(".");
+          //       return {
+          //         txid,
+          //         height: Number(height || Date.now()),
+          //         idx: Number(idx || 0),
+          //         isDep: true
+          //       } as Ingest
+          //     })
+          //   );
+          // }
+
+          offset += limit;
+        } while (utxos.length == limit);
+      }
     }
   }
 }

@@ -183,8 +183,8 @@ export class TxoStore {
     this.syncRunning = Promise.all([
       this.processDownloads(),
       this.processIngests(),
-      // this.processConfirms(),
-      // this.processImmutable(),
+      this.processConfirms(),
+      this.processImmutable(),
     ]).then(() => { });
   }
 
@@ -216,7 +216,7 @@ export class TxoStore {
       }
     } catch (e) {
       console.error("Failed to ingest txs", e);
-      await new Promise((r) => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 15000));
     }
     if (this.stopSync) {
       return;

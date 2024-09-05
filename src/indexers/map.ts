@@ -34,7 +34,7 @@ export class MapIndexer extends Indexer {
     if (!mapPos) return;
     for (let i = mapPos; i < script.chunks.length; i += 2) {
       const chunk = script.chunks[i];
-      if (chunk.op === OP.OP_RETURN || chunk.data?.length !== 1 || chunk.data[0] !== 0x7c) break;
+      if (chunk.op === OP.OP_RETURN || (chunk.data?.length == 1 && chunk.data[0] !== 0x7c)) break;
       const key = Utils.toUTF8(chunk.data || []);
       const value = Utils.toUTF8(script.chunks[++i]?.data || []);
       if (key == 'subTypeData') {
