@@ -3,16 +3,19 @@ import type { IndexContext } from "../models/index-context";
 import { IndexData } from "../models/index-data";
 import { Indexer, IndexMode } from "../models/indexer";
 import { Txo, TxoStatus } from "../models/txo";
-import { Utils } from "@bsv/sdk";
+import { Hash, HD, Utils } from "@bsv/sdk";
 import { TxoStore } from "../stores/txo-store";
 import { Outpoint, type Ingest } from "../models";
 import type { RemoteBsv20 } from "./remote-types";
+import { deriveFundAddress, FEE_XPUB } from "./bsv20";
 
 export enum Bsv21Status {
   Invalid = -1,
   Pending = 0,
   Valid = 1,
 }
+
+const hdKey = HD.fromString(FEE_XPUB);
 
 export class Bsv21 {
   status = Bsv21Status.Pending;
@@ -25,6 +28,7 @@ export class Bsv21 {
   public supply?: bigint;
   public contract?: string;
   public reason?: string;
+  public fundAddress = "";
 
   constructor(props: Bsv21) {
     this.id = props.id || "";
@@ -63,6 +67,7 @@ export class Bsv21Indexer extends Indexer {
         bsv21.id = txo.outpoint.toString();
         bsv21.supply = bsv21.amt;
         bsv21.status = Bsv21Status.Valid;
+        bsv21.fundAddress = deriveFundAddress(txo.outpoint.toBEBinary());
         break;
       case "transfer":
       case "burn":
@@ -180,6 +185,7 @@ export class Bsv21Indexer extends Indexer {
                 op: u.op!,
                 status: u.status,
                 icon: token.icon,
+                fundAddress: deriveFundAddress(new Outpoint(token.id).toBEBinary())
                 // contract: token.contract
               }),
               [

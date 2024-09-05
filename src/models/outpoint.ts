@@ -40,6 +40,13 @@ export class Outpoint {
     return writer.toArray();
   }
 
+  toBEBinary(): number[] {
+    const writer = new Utils.Writer();
+    writer.write(Utils.toArray(this.txid, "hex"));
+    writer.writeUInt32BE(this.vout);
+    return writer.toArray();
+  }
+
   toJSON(): string {
     return this.toString();
   }

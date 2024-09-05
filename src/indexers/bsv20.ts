@@ -1,4 +1,4 @@
-import { Utils } from "@bsv/sdk";
+import { Hash, HD, Utils } from "@bsv/sdk";
 import { Outpoint, Txo, TxoStatus, type Ingest } from "../models";
 import type { IndexContext } from "../models/index-context";
 import { IndexData } from "../models/index-data";
@@ -6,6 +6,8 @@ import { Indexer, IndexMode } from "../models/indexer";
 import type { TxoStore } from "../stores";
 import type { RemoteBsv20 } from "./remote-types";
 
+export const FEE_XPUB = 'xpub661MyMwAqRbcF221R74MPqdipLsgUevAAX4hZP2rywyEeShpbe3v2r9ciAvSGT6FB22TEmFLdUyeEDJL4ekG8s9H5WXbzDQPr6eW1zEYYy9'
+const hdKey = HD.fromString(FEE_XPUB);
 export class Bsv20 {
   status = 0;
   public tick = "";
@@ -52,6 +54,7 @@ export class Bsv20Indexer extends Indexer {
       if (!bsv20.tick) {
         return;
       }
+      bsv20.fundAddress = deriveFundAddress(bsv20.tick)
       data.events.push({ id: "tick", value: bsv20.tick });
       return data;
     } catch (e) {
@@ -88,6 +91,7 @@ export class Bsv20Indexer extends Indexer {
             if (u.height) {
               txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
             }
+            
             txo.data[this.tag] = new IndexData(
               Bsv20.fromJSON({
                 tick: token.tick,
@@ -97,6 +101,7 @@ export class Bsv20Indexer extends Indexer {
                 op: u.op!,
                 status: u.status,
                 icon: token.icon,
+                fundAddress: deriveFundAddress(token.tick)
               }),
               [
                 { id: "address", value: owner },
@@ -163,4 +168,13 @@ export class Bsv20Indexer extends Indexer {
       }
     }
   }
+}
+
+export function deriveFundAddress(idOrTick: string | number[]): string {
+  const hash = Hash.sha256(idOrTick);
+  const reader = new Utils.Reader(hash);
+  let path = `m/21/${reader.readUInt32BE()>>1}`;
+  reader.pos = 24;
+  path += `/${reader.readUInt32BE()>>1}`;
+  return hdKey.derive(path).pubKey.toAddress();
 }
