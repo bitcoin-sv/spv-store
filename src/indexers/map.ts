@@ -36,7 +36,7 @@ export class MapIndexer extends Indexer {
       const chunk = script.chunks[i];
       if (chunk.op === OP.OP_RETURN || (chunk.data?.length == 1 && chunk.data[0] !== 0x7c)) break;
       const key = Utils.toUTF8(chunk.data || []);
-      const value = Utils.toUTF8(script.chunks[++i]?.data || []);
+      const value = Utils.toUTF8(script.chunks[i+1]?.data || []);
       if (key == 'subTypeData') {
         map[key] = JSON.parse(value);
       } else {
