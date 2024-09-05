@@ -1,6 +1,5 @@
 import {
   isBroadcastResponse,
-  MerklePath,
   Transaction,
   Utils,
   type BroadcastFailure,
