@@ -16,12 +16,10 @@ import {
 } from "./services";
 import type { BlockStore, Txn, TxnStore, TxoStore } from "./stores";
 import {
-  BLOCK_HEADER_SIZE,
   blockHeaderFromReader,
   Outpoint,
   Txo,
   TxoSort,
-  writeBlockHeader,
   type BlockHeader,
   type IndexContext,
   type Ingest,
