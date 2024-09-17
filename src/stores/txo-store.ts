@@ -111,6 +111,7 @@ export class TxoStore {
     isDep = false,
     outputs?: number[],
   ): Promise<IndexContext> {
+    this.stores.txns!.saveTx(tx);
     for (const input of tx.inputs) {
       if (!input.sourceTXID) {
         if (!input.sourceTransaction) {
