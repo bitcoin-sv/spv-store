@@ -13,8 +13,7 @@ export interface File {
   hash: string;
   size: number;
   type: string;
-  text?: string;
-  json?: { [key: string]: any };
+  content: number[];
 }
 
 export interface Inscription {
@@ -86,16 +85,7 @@ export class InscriptionIndexer extends Indexer {
           insc.file!.size = value.data?.length || 0;
           if (!value.data?.length) break;
           insc.file!.hash = Utils.toHex(Hash.sha256(value.data));
-          if (value.data?.length <= 1024) {
-            try {
-              insc.file!.text = new TextDecoder("utf8", {
-                fatal: true,
-              }).decode(Buffer.from(value.data));
-              insc.file!.json = JSON.parse(insc.file!.text);
-            } catch {
-              console.log("Error parsing text");
-            }
-          }
+          insc.file!.content = value.data;
           break;
         case 1:
           insc.file!.type = Buffer.from(value.data || []).toString();

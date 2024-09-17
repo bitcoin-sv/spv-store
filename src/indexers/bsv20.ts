@@ -36,7 +36,7 @@ export class Bsv20Indexer extends Indexer {
     if (txo.data.insc?.data.file.type !== "application/bsv-20") return;
     let bsv20: Bsv20;
     try {
-      bsv20 = Bsv20.fromJSON(JSON.parse(txo.data.insc?.data.file.text));
+      bsv20 = Bsv20.fromJSON(JSON.parse(Utils.toUTF8(txo.data.insc?.data.file.content)));
       const data = new IndexData(bsv20);
       const amt = BigInt(bsv20.amt);
       if (amt <= 0n || amt > 2 ** 64 - 1) return;

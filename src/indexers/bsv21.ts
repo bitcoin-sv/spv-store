@@ -55,7 +55,7 @@ export class Bsv21Indexer extends Indexer {
     if (txo.data.insc?.data.file.type !== "application/bsv-20") return;
     let bsv21: Bsv21;
     try {
-      bsv21 = Bsv21.fromJSON(JSON.parse(txo.data.insc?.data.file.text));
+      bsv21 = Bsv21.fromJSON(JSON.parse(Utils.toUTF8(txo.data.insc?.data.file.content)));
     } catch (e) {
       return;
     }
