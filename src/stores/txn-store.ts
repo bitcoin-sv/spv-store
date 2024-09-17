@@ -6,7 +6,7 @@ import {
   type BroadcastFailure,
   type BroadcastResponse,
 } from "@bsv/sdk";
-import type { Services, Stores } from "../casemod-spv";
+import type { Services, Stores } from "../spv-store";
 import type { EventEmitter } from "../lib/event-emitter";
 import { Block } from "../models";
 

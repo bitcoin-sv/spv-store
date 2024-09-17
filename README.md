@@ -1,4 +1,4 @@
-# casemod-spv
+# spv-store
 
 To install dependencies:
 

@@ -7,7 +7,7 @@ import type { Block } from "../models/block";
 import type { TxoStorage } from "../storage/txo-storage";
 import { Outpoint } from "../models/outpoint";
 import type { TxLog } from "../services/inv-service";
-import type { Services, Stores } from "../casemod-spv";
+import type { Services, Stores } from "../spv-store";
 import type { EventEmitter } from "../lib/event-emitter";
 import { TxoSort, type TxoLookup, type TxoResults } from "../models";
 

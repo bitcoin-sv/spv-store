@@ -4,7 +4,7 @@ import { IngestStatus, type Ingest } from "../../models/ingest";
 import type { TxoStorage } from "../txo-storage";
 import { Outpoint } from "../../models/outpoint";
 import { TxoSort, type TxoLookup, type TxoResults } from "../../models/search";
-import type { Network } from "../../casemod-spv";
+import type { Network } from "../../spv-store";
 import type { TxLog } from "../../services/inv-service";
 
 const TXO_DB_VERSION = 1;

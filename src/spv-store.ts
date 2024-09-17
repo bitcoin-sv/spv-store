@@ -42,7 +42,7 @@ export interface Stores {
   txos?: TxoStore;
 }
 
-export class CaseModSPV {
+export class SPVStore {
   private interval: Timer | undefined;
   constructor(
     public services: Services,
@@ -62,7 +62,7 @@ export class CaseModSPV {
 
     this.events.emit(
       "destroyed",
-      "The CaseModSPV instance has been destroyed!"
+      "The SPVStore instance has been destroyed!"
     );
 
     this.events.removeAllListeners();

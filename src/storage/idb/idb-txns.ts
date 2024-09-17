@@ -2,7 +2,7 @@ import { openDB, type DBSchema, type IDBPDatabase } from "@tempfix/idb";
 import { MerklePath, Transaction } from "@bsv/sdk";
 import { TxnStatus, type Txn } from "../../stores/txn-store";
 import type { TxnStorage } from "../txn-storage";
-import type { Network } from "../../casemod-spv";
+import type { Network } from "../../spv-store";
 
 const TXN_DB_VERSION = 1;
 

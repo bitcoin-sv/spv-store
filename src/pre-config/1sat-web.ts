@@ -1,16 +1,16 @@
 import { OneSatProvider } from "../providers/1sat-provider";
 import {
-  CaseModSPV,
+  SPVStore,
   type Network,
   type Services,
   type Stores,
-} from "../casemod-spv";
+} from "../spv-store";
 import type { Indexer } from "../models/indexer";
 import { BlockStorageIDB, TxnStorageIDB, TxoStorageIDB } from "../storage/idb";
 import { BlockStore, TxnStore, TxoStore } from "../stores";
 import { EventEmitter } from "../lib/event-emitter";
 
-export class OneSatWebSPV extends CaseModSPV {
+export class OneSatWebSPV extends SPVStore {
   private constructor(
     public services: Services,
     public stores: Stores,
@@ -54,6 +54,6 @@ export class OneSatWebSPV extends CaseModSPV {
       emitter,
     );
 
-    return new CaseModSPV(services, stores, emitter, startSync);
+    return new SPVStore(services, stores, emitter, startSync);
   }
 }

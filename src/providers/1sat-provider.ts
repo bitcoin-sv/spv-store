@@ -14,7 +14,7 @@ import {
   type TxnService,
 } from "../services";
 import type { BlockHeader } from "../models/block-header";
-import type { Network } from "../casemod-spv";
+import type { Network } from "../spv-store";
 import type { Outpoint } from "../models/outpoint";
 import type { Ordinal } from "../indexers/remote-types";
 import type { Txn } from "../stores";

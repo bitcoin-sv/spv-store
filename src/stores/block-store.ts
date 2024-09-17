@@ -1,6 +1,6 @@
 import type { ChainTracker } from "@bsv/sdk";
 import type { BlockStorage } from "../storage/block-storage";
-import type { Services } from "../casemod-spv";
+import type { Services } from "../spv-store";
 import type { EventEmitter } from "../lib/event-emitter";
 import type { BlockHeader } from "../models";
 

@@ -1,4 +1,4 @@
-import type { CaseModSPV, Network } from "../casemod-spv";
+import type { SPVStore, Network } from "../spv-store";
 import type { TxoStore } from "../stores";
 import type { IndexContext } from "./index-context";
 import { IndexData } from "./index-data";
