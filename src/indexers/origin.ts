@@ -88,9 +88,9 @@ export class OriginIndexer extends Indexer {
     };
     if (txo.owner && this.owners.has(txo.owner)) {
       events.push({ id: "outpoint", value: origin.outpoint.toString() });
-    }
-    if (origin.insc?.file?.type) {
-      events.push({ id: "type", value: origin.insc.file.type });
+      if (origin.insc?.file?.type) {
+        events.push({ id: "type", value: origin.insc.file.type });
+      }
     }
     return new IndexData(origin, events, deps);
   }
