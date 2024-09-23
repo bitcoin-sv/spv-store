@@ -48,7 +48,7 @@ export class InscriptionIndexer extends Indexer {
     }
     if (fromPos === undefined) return;
 
-    if (!txo.owner) txo.owner = parseAddress(script, 0);
+    if (!txo.owner) txo.owner = parseAddress(script, 0, this.network);
     const insc = {
       file: { hash: "", size: 0, type: "" },
       fields: {},
@@ -57,7 +57,7 @@ export class InscriptionIndexer extends Indexer {
     for (let i = fromPos; i < script.chunks.length; i += 2) {
       const field = script.chunks[i];
       if (field.op == OP.OP_ENDIF) {
-        if (!txo.owner) txo.owner = parseAddress(script, i + 1);
+        if (!txo.owner) txo.owner = parseAddress(script, i + 1, this.network);
         if (!txo.owner && script.chunks[i + 1]?.op == OP.OP_CODESEPARATOR) {
           txo.owner = parseAddress(script, i + 2);
         }

@@ -46,7 +46,7 @@ export class OrdLockIndexer extends Indexer {
     );
     txo.owner =
       dataScript.chunks[0]?.data &&
-      Utils.toBase58Check(Array.from(dataScript.chunks[0]!.data!));
+      Utils.toBase58Check(Array.from(dataScript.chunks[0]!.data!), this.network == 'mainnet' ? [0] : [111]);
     const events: Event[] = [];
     if (txo.owner && this.owners.has(txo.owner)) {
       events.push({

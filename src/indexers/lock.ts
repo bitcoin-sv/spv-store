@@ -38,7 +38,8 @@ export class LockIndexer extends Indexer {
       Buffer.from(dataScript.chunks[1]!.data!).reverse().toString("hex"),
       16,
     );
-    txo.owner = Utils.toBase58Check(dataScript.chunks[0].data!);
+    
+    txo.owner = Utils.toBase58Check(dataScript.chunks[0].data!, this.network == 'mainnet' ? [0] : [111]);
     const events: Event[] = [];
     if (txo.owner && this.owners.has(txo.owner)) {
       events.push({ id: "until", value: until.toString().padStart(7, "0") });

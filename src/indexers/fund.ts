@@ -20,7 +20,7 @@ export class FundIndexer extends Indexer {
   async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     const script = ctx.tx.outputs[vout].lockingScript;
-    txo.owner = parseAddress(script, 0);
+    txo.owner = parseAddress(script, 0, this.network);
     if (txo.satoshis < 2n) return;
     const events: Event[] = [];
     if (txo.owner && this.owners.has(txo.owner)) {
