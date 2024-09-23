@@ -51,12 +51,6 @@ export class TxoStore {
         }
         input.sourceTXID = input.sourceTransaction.id("hex") as string;
       }
-      if (!input.sourceTransaction) {
-        input.sourceTransaction = await this.stores.txns!.loadTx(
-          input.sourceTXID,
-          fromRemote,
-        );
-      }
     }
     const ctx = new IndexContext(tx)
     if (tx.merklePath) {
@@ -73,14 +67,9 @@ export class TxoStore {
     for (const [vin, input] of tx.inputs.entries()) {
       let spend = spends[vin];
       if (!spend) {
-        spend = new Txo(
-          new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
-          BigInt(
-            input.sourceTransaction?.outputs[input.sourceOutputIndex].satoshis || 0,
-          ),
-          input.sourceTransaction?.outputs[input.sourceOutputIndex]?.lockingScript.toBinary() || [],
-          TxoStatus.Unindexed,
-        );
+        const inTx = await this.stores.txns!.loadTx(input.sourceTXID!, fromRemote);
+        const inCtx = await this.parse(inTx!, previewOnly, undefined, fromRemote);
+        spend = inCtx.txos[input.sourceOutputIndex];
       }
       spend.spend = ctx.txid;
       ctx.spends.push(spend);
