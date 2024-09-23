@@ -43,6 +43,7 @@ export class TxoStore {
     previewOnly = true,
     outputs?: number[],
     fromRemote = false,
+    resolveInputs = false
   ): Promise<IndexContext> {
     for (const input of tx.inputs) {
       if (!input.sourceTXID) {
@@ -50,6 +51,12 @@ export class TxoStore {
           throw new Error("Input missing source transaction");
         }
         input.sourceTXID = input.sourceTransaction.id("hex") as string;
+      }
+      if (!input.sourceTransaction) {
+        input.sourceTransaction = await this.stores.txns!.loadTx(
+          input.sourceTXID,
+          fromRemote,
+        );
       }
     }
     const ctx = new IndexContext(tx)
@@ -67,9 +74,19 @@ export class TxoStore {
     for (const [vin, input] of tx.inputs.entries()) {
       let spend = spends[vin];
       if (!spend) {
-        const inTx = await this.stores.txns!.loadTx(input.sourceTXID!, fromRemote);
-        const inCtx = await this.parse(inTx!, previewOnly, undefined, fromRemote);
-        spend = inCtx.txos[input.sourceOutputIndex];
+        if(!resolveInputs) {
+          const inCtx = await this.parse(input.sourceTransaction!, previewOnly, undefined, fromRemote, false);
+          spend = inCtx.txos[input.sourceOutputIndex];
+        } else {
+          spend = new Txo(
+            new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
+            BigInt(
+              input.sourceTransaction?.outputs[input.sourceOutputIndex].satoshis || 0,
+            ),
+            input.sourceTransaction?.outputs[input.sourceOutputIndex]?.lockingScript.toBinary() || [],
+            TxoStatus.Unindexed,
+          )
+        }
       }
       spend.spend = ctx.txid;
       ctx.spends.push(spend);
