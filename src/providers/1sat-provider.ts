@@ -16,7 +16,7 @@ import {
 import type { BlockHeader } from "../models/block-header";
 import type { Network } from "../spv-store";
 import type { Outpoint } from "../models/outpoint";
-import type { Ordinal } from "../indexers/remote-types";
+import type { Ordinal, RemoteBsv20 } from "../indexers/remote-types";
 import type { Txn } from "../stores";
 
 const APIS = {
@@ -188,5 +188,9 @@ export class OneSatProvider
       body: JSON.stringify(outpoints),
     });
     return resp.ok ? (resp.json() as Promise<Ordinal[]>) : [];
+  }
+  async getBsv20Txo(id: Outpoint): Promise<RemoteBsv20 | undefined> {
+    const resp = await fetch(`${APIS[this.network]}/api/fungibles/id/${id.toString()}`);
+    return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
   }
 }

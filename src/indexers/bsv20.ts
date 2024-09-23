@@ -5,6 +5,7 @@ import { IndexData } from "../models/index-data";
 import { Indexer, IndexMode } from "../models/indexer";
 import type { TxoStore } from "../stores";
 import type { RemoteBsv20 } from "./remote-types";
+import { OneSatProvider } from "../providers/1sat-provider";
 
 export const FEE_XPUB = 'xpub661MyMwAqRbcF221R74MPqdipLsgUevAAX4hZP2rywyEeShpbe3v2r9ciAvSGT6FB22TEmFLdUyeEDJL4ekG8s9H5WXbzDQPr6eW1zEYYy9'
 const hdKey = HD.fromString(FEE_XPUB);
@@ -53,6 +54,11 @@ export class Bsv20Indexer extends Indexer {
       }
       if (!bsv20.tick) {
         return;
+      }
+      if(this.mode !== IndexMode.Verify) {
+        const provider = new OneSatProvider(this.network);
+        const remote = await provider.getBsv20Txo(txo.outpoint);
+        bsv20.status = remote?.status || 0;
       }
       bsv20.fundAddress = deriveFundAddress(bsv20.tick)
       if(txo.owner && this.owners.has(txo.owner)) {

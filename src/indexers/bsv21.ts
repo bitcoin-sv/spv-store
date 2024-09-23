@@ -8,6 +8,7 @@ import { TxoStore } from "../stores/txo-store";
 import { Outpoint, type Ingest } from "../models";
 import type { RemoteBsv20 } from "./remote-types";
 import { deriveFundAddress, FEE_XPUB } from "./bsv20";
+import { OneSatProvider } from "../providers/1sat-provider";
 
 export enum Bsv21Status {
   Invalid = -1,
@@ -74,6 +75,14 @@ export class Bsv21Indexer extends Indexer {
         break;
       default:
         return;
+    }
+    if(this.mode !== IndexMode.Verify) {
+      const provider = new OneSatProvider(this.network);
+      const remote = await provider.getBsv20Txo(txo.outpoint);
+      bsv21.sym = remote?.sym;
+      bsv21.icon = remote?.icon;
+      bsv21.dec = remote?.dec || 0;
+      bsv21.status = remote?.status || Bsv21Status.Pending;
     }
     if (!bsv21.id) {
       return;
