@@ -55,7 +55,9 @@ export class Bsv20Indexer extends Indexer {
         return;
       }
       bsv20.fundAddress = deriveFundAddress(bsv20.tick)
-      data.events.push({ id: "tick", value: bsv20.tick });
+      if(txo.owner && this.owners.has(txo.owner)) {
+        data.events.push({ id: "tick", value: bsv20.tick });
+      }
       return data;
     } catch (e) {
       return;
