@@ -42,7 +42,22 @@ export class TxoStore {
     tx: Transaction,
     previewOnly = true,
     outputs?: number[],
+    fromRemote = false,
   ): Promise<IndexContext> {
+    for (const input of tx.inputs) {
+      if (!input.sourceTXID) {
+        if (!input.sourceTransaction) {
+          throw new Error("Input missing source transaction");
+        }
+        input.sourceTXID = input.sourceTransaction.id("hex") as string;
+      }
+      if (!input.sourceTransaction) {
+        input.sourceTransaction = await this.stores.txns!.loadTx(
+          input.sourceTXID,
+          fromRemote,
+        );
+      }
+    }
     const ctx = new IndexContext(tx)
     if (tx.merklePath) {
       if (!tx.merklePath.verify(ctx.txid, this.stores.blocks!)) {
@@ -113,26 +128,12 @@ export class TxoStore {
   ): Promise<IndexContext> {
     this.stores.txns!.saveTx(tx);
     for (const input of tx.inputs) {
-      if (!input.sourceTXID) {
-        if (!input.sourceTransaction) {
-          throw new Error("Input missing source transaction");
-        }
-        input.sourceTXID = input.sourceTransaction.id("hex") as string;
-      }
       if (input.sourceTransaction) {
         await this.ingest(input.sourceTransaction, "beef", fromRemote);
-      } else {
-        input.sourceTransaction = await this.stores.txns!.loadTx(
-          input.sourceTXID,
-          fromRemote,
-        );
-        if (!input.sourceTransaction && fromRemote) {
-          throw new Error(`Failed to get source tx ${input.sourceTXID}`);
-        }
       }
     }
     
-    const ctx = await this.parse(tx, false, outputs);
+    const ctx = await this.parse(tx, false, outputs, fromRemote);
     console.log("Ingesting", ctx.txid);
     const block: Block = { height: Date.now(), idx: 0n };
     if (tx.merklePath) {

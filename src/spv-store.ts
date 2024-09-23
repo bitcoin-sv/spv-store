@@ -146,7 +146,7 @@ export class SPVStore {
   }
 
   async parseTx(tx: Transaction): Promise<IndexContext> {
-    return this.stores.txos!.parse(tx, true);
+    return this.stores.txos!.parse(tx, true, undefined, true);
   }
 
   async getSyncedBlock(): Promise<BlockHeader | undefined> {
