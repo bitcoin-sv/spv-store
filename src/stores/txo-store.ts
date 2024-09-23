@@ -74,7 +74,7 @@ export class TxoStore {
     for (const [vin, input] of tx.inputs.entries()) {
       let spend = spends[vin];
       if (!spend) {
-        if(!resolveInputs) {
+        if(resolveInputs) {
           const inCtx = await this.parse(input.sourceTransaction!, previewOnly, undefined, fromRemote, false);
           spend = inCtx.txos[input.sourceOutputIndex];
         } else {
