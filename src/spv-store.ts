@@ -130,9 +130,9 @@ export class SPVStore {
     return this.stores.txos!.storage.getMany(outpoints);
   }
 
-  async getTxids(): Promise<string[]> {
-    return this.stores.txns!.storage.getTxids();
-  }
+  // async getTxids(): Promise<string[]> {
+  //   return this.stores.txns!.storage.getTxids();
+  // }
 
   async getTx(
     txid: string,

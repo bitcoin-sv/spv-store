@@ -1,5 +1,5 @@
 import type { Bsv21Status } from "./bsv21";
-import type { File } from "./ord";
+import type { File } from "./insc";
 
 export interface RemoteBsv20 {
   txid: string;

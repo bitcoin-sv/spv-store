@@ -41,7 +41,7 @@ export class Bsv21 {
   static fromJSON(obj: any): Bsv21 {
     // if (typeof obj.id != "string" && !Array.isArray(obj.id)) return;
     const bsv21 = new Bsv21({
-      id: new Outpoint(obj.id as string),
+      // id: new Outpoint(obj.id as string),x
       ...obj,
       amt: BigInt(obj.amt),
     });
@@ -92,7 +92,7 @@ export class Bsv21Indexer extends Indexer {
     }
     if (txo.owner && this.owners.has(txo.owner)) {
       data.events.push({ id: "address", value: txo.owner });
-      data.events.push({ id: "id", value: bsv21.id.toString() });
+      data.events.push({ id: "id", value: bsv21.id });
       if (bsv21.contract) {
         data.events.push({ id: "contract", value: bsv21.contract });
       }
