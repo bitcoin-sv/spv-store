@@ -55,6 +55,7 @@ export class OriginIndexer extends Indexer {
             origin = {
               outpoint: remote.origin.outpoint,
               insc: { file: remote.origin.data.insc.file },
+              map: remote.origin.data.map,
               nonce: 0,
             };
             if (!previewOnly && this.mode == IndexMode.TrustAndVerify) {

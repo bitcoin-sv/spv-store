@@ -10,6 +10,13 @@ import type { Network } from "../spv-store";
 
 export const FEE_XPUB = 'xpub661MyMwAqRbcF221R74MPqdipLsgUevAAX4hZP2rywyEeShpbe3v2r9ciAvSGT6FB22TEmFLdUyeEDJL4ekG8s9H5WXbzDQPr6eW1zEYYy9'
 const hdKey = HD.fromString(FEE_XPUB);
+
+export enum Bsv20Status {
+  Invalid = -1,
+  Pending = 0,
+  Valid = 1,
+}
+
 export class Bsv20 {
   status = 0;
   public tick = "";

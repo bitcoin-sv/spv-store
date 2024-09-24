@@ -7,20 +7,12 @@ import { Hash, HD, Utils } from "@bsv/sdk";
 import { TxoStore } from "../stores/txo-store";
 import { Outpoint, type Ingest } from "../models";
 import type { RemoteBsv20 } from "./remote-types";
-import { deriveFundAddress, FEE_XPUB } from "./bsv20";
+import { Bsv20Status, deriveFundAddress, FEE_XPUB } from "./bsv20";
 import { OneSatProvider } from "../providers/1sat-provider";
 import type { Network } from "../spv-store";
 
-export enum Bsv21Status {
-  Invalid = -1,
-  Pending = 0,
-  Valid = 1,
-}
-
-const hdKey = HD.fromString(FEE_XPUB);
-
 export class Bsv21 {
-  status = Bsv21Status.Pending;
+  status = Bsv20Status.Pending;
   public id: string;
   public op = "";
   public amt = 0n;
@@ -56,7 +48,7 @@ export class Bsv21Indexer extends Indexer {
     public owners = new Set<string>(),
     public mode: IndexMode,
     public network: Network = "mainnet",
-  ) { 
+  ) {
     super(owners, mode, network);
     this.provider = new OneSatProvider(network);
   }
@@ -78,8 +70,7 @@ export class Bsv21Indexer extends Indexer {
         if (bsv21.dec > 18) return;
         bsv21.id = txo.outpoint.toString();
         bsv21.supply = bsv21.amt;
-        bsv21.status = Bsv21Status.Valid;
-        bsv21.fundAddress = deriveFundAddress(txo.outpoint.toBEBinary());
+        bsv21.status = Bsv20Status.Valid;
         break;
       case "transfer":
       case "burn":
@@ -90,6 +81,7 @@ export class Bsv21Indexer extends Indexer {
     if (!bsv21.id) {
       return;
     }
+    bsv21.fundAddress = deriveFundAddress(txo.outpoint.toBEBinary());
     if (txo.owner && this.owners.has(txo.owner)) {
       data.events.push({ id: "address", value: txo.owner });
       data.events.push({ id: "id", value: bsv21.id });
@@ -107,7 +99,7 @@ export class Bsv21Indexer extends Indexer {
     for (const spend of ctx.spends) {
       const bsv21 = spend.data.bsv21;
       if (!bsv21) continue;
-      if (bsv21.data.status != Bsv21Status.Valid && this.mode !== IndexMode.Verify) {
+      if (bsv21.data.status != Bsv20Status.Valid && this.mode == IndexMode.Trust) {
         const remote = await this.provider.getBsv2021Txo(spend.outpoint);
         if (remote) {
           bsv21.data.status = remote.status;
@@ -116,7 +108,18 @@ export class Bsv21Indexer extends Indexer {
           bsv21.data.dec = remote.dec;
         }
       }
-      if (bsv21.data.status == Bsv21Status.Valid) {
+      if (bsv21.data.status == Bsv20Status.Pending) {
+        for(const txo of ctx.txos) {
+          const outBsv21 = txo.data?.bsv21;
+          if (outBsv21?.data?.id == bsv21.data.id) {
+            outBsv21.data.status = Bsv20Status.Pending;
+            outBsv21.data.sym = bsv21.data.sym;
+            outBsv21.data.icon = bsv21.data.icon;
+            outBsv21.data.dec = bsv21.data.dec;
+          }
+        }
+        return
+      } else if (bsv21.data.status == Bsv20Status.Valid) {
         if (!tokensIn[bsv21.data.id]) {
           tokensIn[bsv21.data.id] = [];
         }
@@ -158,8 +161,8 @@ export class Bsv21Indexer extends Indexer {
       const reason = reasons[id];
       for (const txo of txos) {
         txo.data.bsv21.data.status = reason
-          ? Bsv21Status.Invalid
-          : Bsv21Status.Valid;
+          ? Bsv20Status.Invalid
+          : Bsv20Status.Valid;
         txo.data.bsv21.data.reason = reason;
       }
     }

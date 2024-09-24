@@ -1,4 +1,4 @@
-import type { Bsv21Status } from "./bsv21";
+import type { Bsv20Status } from "./bsv20";
 import type { File } from "./insc";
 
 export interface RemoteBsv20 {
@@ -13,7 +13,7 @@ export interface RemoteBsv20 {
   sym?: string;
   dec: number;
   amt: string;
-  status?: Bsv21Status;
+  status?: Bsv20Status;
   icon?: string;
   script: string;
   listing: boolean;
