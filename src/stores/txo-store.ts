@@ -121,7 +121,9 @@ export class TxoStore {
       }
     }
 
-    this.indexers.forEach((i) => i.preSave && i.preSave(ctx));
+    for (const i of this.indexers) {
+      i.preSave && await i.preSave(ctx)
+    }
     return ctx;
   }
 
