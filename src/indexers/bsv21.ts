@@ -76,14 +76,6 @@ export class Bsv21Indexer extends Indexer {
       default:
         return;
     }
-    if(this.mode !== IndexMode.Verify) {
-      const provider = new OneSatProvider(this.network);
-      const remote = await provider.getBsv20Txo(txo.outpoint);
-      bsv21.sym = remote?.sym;
-      bsv21.icon = remote?.icon;
-      bsv21.dec = remote?.dec || 0;
-      bsv21.status = remote?.status || Bsv21Status.Pending;
-    }
     if (!bsv21.id) {
       return;
     }
@@ -99,8 +91,17 @@ export class Bsv21Indexer extends Indexer {
   }
 
   async preSave(ctx: IndexContext) {
-    if (this.mode !== IndexMode.Trust) {
-      return;
+    if (this.mode !== IndexMode.Verify) {
+      const provider = new OneSatProvider(this.network);
+      const remotes = (await provider.getBsv20TxosByTxid(ctx.txid)) || [] as RemoteBsv20[];
+      for (const remote of remotes) {
+        if (ctx.txos[remote.vout].data.bsv21) {
+          ctx.txos[remote.vout].data.bsv21.data.status = remote.status;
+          ctx.txos[remote.vout].data.bsv21.data.sym = remote.sym;
+          ctx.txos[remote.vout].data.bsv21.data.icon = remote.icon;
+          ctx.txos[remote.vout].data.bsv21.data.dec = remote.dec;
+        }
+      }
     }
     const balance: { [id: string]: bigint } = {};
     const tokensIn: { [id: string]: Txo[] } = {};
@@ -156,7 +157,7 @@ export class Bsv21Indexer extends Indexer {
     }
   }
 
-  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<void>  {
+  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<void> {
     const limit = 100;
     for await (const owner of this.owners) {
       let resp = await fetch(
@@ -222,7 +223,7 @@ export class Bsv21Indexer extends Indexer {
           if (this.mode !== IndexMode.Verify) {
             await txoStore.storage.putMany(txos);
           }
-  
+
           for (const t of txos) {
             let ingest = ingestQueue[t.outpoint.txid];
             if (!ingest) {

@@ -55,13 +55,8 @@ export class Bsv20Indexer extends Indexer {
       if (!bsv20.tick) {
         return;
       }
-      if(this.mode !== IndexMode.Verify) {
-        const provider = new OneSatProvider(this.network);
-        const remote = await provider.getBsv20Txo(txo.outpoint);
-        bsv20.status = remote?.status || 0;
-      }
       bsv20.fundAddress = deriveFundAddress(bsv20.tick)
-      if(txo.owner && this.owners.has(txo.owner)) {
+      if (txo.owner && this.owners.has(txo.owner)) {
         data.events.push({ id: "tick", value: bsv20.tick });
       }
       return data;
@@ -70,9 +65,24 @@ export class Bsv20Indexer extends Indexer {
     }
   }
 
-  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<void>  {
-    const limit = 100;
-    for await (const owner of this.owners) {
+  async preSave(ctx: IndexContext) {
+    if (this.mode !== IndexMode.Verify) {
+      const provider = new OneSatProvider(this.network);
+      const remotes = (await provider.getBsv20TxosByTxid(ctx.txid)) || [] as RemoteBsv20[];
+      for (const remote of remotes) {
+        if (ctx.txos[remote.vout].data.bsv21) {
+          ctx.txos[remote.vout].data.bsv21.data.status = remote.status;
+          ctx.txos[remote.vout].data.bsv21.data.sym = remote.sym;
+          ctx.txos[remote.vout].data.bsv21.data.icon = remote.icon;
+          ctx.txos[remote.vout].data.bsv21.data.dec = remote.dec;
+        }
+      }
+    }
+  }
+
+  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise < void> {
+      const limit = 100;
+      for await (const owner of this.owners) {
       let resp = await fetch(
         `https://ordinals.gorillapool.io/api/bsv20/${owner}/balance`,
       );
@@ -99,7 +109,7 @@ export class Bsv20Indexer extends Indexer {
             if (u.height) {
               txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
             }
-            
+
             txo.data[this.tag] = new IndexData(
               Bsv20.fromJSON({
                 tick: token.tick,
@@ -136,7 +146,7 @@ export class Bsv20Indexer extends Indexer {
           if (this.mode !== IndexMode.Verify) {
             await txoStore.storage.putMany(txos);
           }
-  
+
           for (const t of txos) {
             let ingest = ingestQueue[t.outpoint.txid];
             if (!ingest) {
@@ -181,8 +191,8 @@ export class Bsv20Indexer extends Indexer {
 export function deriveFundAddress(idOrTick: string | number[]): string {
   const hash = Hash.sha256(idOrTick);
   const reader = new Utils.Reader(hash);
-  let path = `m/21/${reader.readUInt32BE()>>1}`;
+  let path = `m/21/${reader.readUInt32BE() >> 1}`;
   reader.pos = 24;
-  path += `/${reader.readUInt32BE()>>1}`;
+  path += `/${reader.readUInt32BE() >> 1}`;
   return hdKey.derive(path).pubKey.toAddress();
 }
