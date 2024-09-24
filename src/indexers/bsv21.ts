@@ -9,6 +9,7 @@ import { Outpoint, type Ingest } from "../models";
 import type { RemoteBsv20 } from "./remote-types";
 import { deriveFundAddress, FEE_XPUB } from "./bsv20";
 import { OneSatProvider } from "../providers/1sat-provider";
+import type { Network } from "../spv-store";
 
 export enum Bsv21Status {
   Invalid = -1,
@@ -34,6 +35,7 @@ export class Bsv21 {
   constructor(props: Bsv21) {
     this.id = props.id || "";
     Object.assign(this, props);
+
   }
 
   static fromJSON(obj: any): Bsv21 {
@@ -49,6 +51,15 @@ export class Bsv21 {
 
 export class Bsv21Indexer extends Indexer {
   tag = "bsv21";
+  provider: OneSatProvider;
+  constructor(
+    public owners = new Set<string>(),
+    public mode: IndexMode,
+    public network: Network = "mainnet",
+  ) { 
+    super(owners, mode, network);
+    this.provider = new OneSatProvider(network);
+  }
 
   async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
@@ -91,23 +102,20 @@ export class Bsv21Indexer extends Indexer {
   }
 
   async preSave(ctx: IndexContext) {
-    if (this.mode !== IndexMode.Verify) {
-      const provider = new OneSatProvider(this.network);
-      const remotes = (await provider.getBsv20TxosByTxid(ctx.txid)) || [] as RemoteBsv20[];
-      for (const remote of remotes) {
-        if (ctx.txos[remote.vout].data.bsv21) {
-          ctx.txos[remote.vout].data.bsv21.data.status = remote.status;
-          ctx.txos[remote.vout].data.bsv21.data.sym = remote.sym;
-          ctx.txos[remote.vout].data.bsv21.data.icon = remote.icon;
-          ctx.txos[remote.vout].data.bsv21.data.dec = remote.dec;
-        }
-      }
-    }
     const balance: { [id: string]: bigint } = {};
     const tokensIn: { [id: string]: Txo[] } = {};
     for (const spend of ctx.spends) {
       const bsv21 = spend.data.bsv21;
       if (!bsv21) continue;
+      if (bsv21.data.status != Bsv21Status.Valid && this.mode !== IndexMode.Verify) {
+        const remote = await this.provider.getBsv2021Txo(spend.outpoint);
+        if (remote) {
+          bsv21.data.status = remote.status;
+          bsv21.data.sym = remote.sym;
+          bsv21.data.icon = remote.icon;
+          bsv21.data.dec = remote.dec;
+        }
+      }
       if (bsv21.data.status == Bsv21Status.Valid) {
         if (!tokensIn[bsv21.data.id]) {
           tokensIn[bsv21.data.id] = [];

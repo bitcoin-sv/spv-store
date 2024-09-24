@@ -189,8 +189,12 @@ export class OneSatProvider
     });
     return resp.ok ? (resp.json() as Promise<Ordinal[]>) : [];
   }
-  async getBsv20TxosByTxid(txid: string): Promise<RemoteBsv20[]> {
-    const resp = await fetch(`${APIS[this.network]}/api/bsv20/txid/${txid}`);
-    return resp.ok ? (resp.json() as Promise<RemoteBsv20[]>) : [];
+  async getBsv20Details(tick: string): Promise<RemoteBsv20 | undefined> {
+    const resp = await fetch(`${APIS[this.network]}/api/bsv20/tick/${tick}`);
+    return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
+  }
+  async getBsv2021Txo(outpoint: Outpoint): Promise<RemoteBsv20 | undefined> {
+    const resp = await fetch(`${APIS[this.network]}/api/bsv20/outpoint/${outpoint.toString()}`);
+    return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
   }
 }

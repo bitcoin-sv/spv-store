@@ -6,6 +6,7 @@ import { Indexer, IndexMode } from "../models/indexer";
 import type { TxoStore } from "../stores";
 import type { RemoteBsv20 } from "./remote-types";
 import { OneSatProvider } from "../providers/1sat-provider";
+import type { Network } from "../spv-store";
 
 export const FEE_XPUB = 'xpub661MyMwAqRbcF221R74MPqdipLsgUevAAX4hZP2rywyEeShpbe3v2r9ciAvSGT6FB22TEmFLdUyeEDJL4ekG8s9H5WXbzDQPr6eW1zEYYy9'
 const hdKey = HD.fromString(FEE_XPUB);
@@ -30,6 +31,16 @@ export class Bsv20 {
 
 export class Bsv20Indexer extends Indexer {
   tag = "bsv20";
+
+  provider: OneSatProvider;
+  constructor(
+    public owners = new Set<string>(),
+    public mode: IndexMode,
+    public network: Network = "mainnet",
+  ) {
+    super(owners, mode, network);
+    this.provider = new OneSatProvider(network);
+  }
 
   async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
@@ -66,23 +77,30 @@ export class Bsv20Indexer extends Indexer {
   }
 
   async preSave(ctx: IndexContext) {
-    if (this.mode !== IndexMode.Verify) {
-      const provider = new OneSatProvider(this.network);
-      const remotes = (await provider.getBsv20TxosByTxid(ctx.txid)) || [] as RemoteBsv20[];
-      for (const remote of remotes) {
-        if (ctx.txos[remote.vout].data.bsv21) {
-          ctx.txos[remote.vout].data.bsv21.data.status = remote.status;
-          ctx.txos[remote.vout].data.bsv21.data.sym = remote.sym;
-          ctx.txos[remote.vout].data.bsv21.data.icon = remote.icon;
-          ctx.txos[remote.vout].data.bsv21.data.dec = remote.dec;
+    const tokens = new Map<string, RemoteBsv20>();
+    for (const spend of ctx.spends) {
+      const bsv20 = spend.data.bsv20;
+      if (!bsv20) continue;
+      if (bsv20.data.status == 0 && this.mode !== IndexMode.Verify) {
+        const remote = await this.provider.getBsv2021Txo(spend.outpoint);
+        if (remote) {
+          tokens.set(bsv20.data.tick, remote);
+          bsv20.data.status = remote.status;
+          bsv20.data.dec = remote.dec;
         }
+      }
+    }
+    for (const txo of ctx.txos) {
+      const bsv20 = txo.data.bsv20;
+      if (bsv20?.data?.tick && tokens.has(bsv20.data.tick)) {
+        bsv20.data.dec = tokens.get(bsv20.data.tick)!.dec;
       }
     }
   }
 
-  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise < void> {
-      const limit = 100;
-      for await (const owner of this.owners) {
+  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<void> {
+    const limit = 100;
+    for await (const owner of this.owners) {
       let resp = await fetch(
         `https://ordinals.gorillapool.io/api/bsv20/${owner}/balance`,
       );
