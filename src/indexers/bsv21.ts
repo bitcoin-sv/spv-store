@@ -36,6 +36,7 @@ export class Bsv21 {
       // id: new Outpoint(obj.id as string),x
       ...obj,
       amt: BigInt(obj.amt),
+      dec: parseInt(obj.dec || '0'),
     });
     return bsv21;
   }
@@ -147,6 +148,7 @@ export class Bsv21Indexer extends Indexer {
         bsv21.data.icon = token.icon;
         bsv21.data.contract = token.contract;
         bsv21.data.supply = token.supply;
+        bsv21.data.dec = token.dec;
       }
 
       if (!tokensOut[bsv21.data.id]) {
