@@ -45,7 +45,15 @@ export class TxoStore {
     fromRemote = false,
     resolveInputs = false
   ): Promise<IndexContext> {
-    for (const input of tx.inputs) {
+    const ctx = new IndexContext(tx)
+    if (tx.merklePath) {
+      if (!tx.merklePath.verify(ctx.txid, this.stores.blocks!)) {
+        throw new Error("Failed to verify merkle path");
+      }
+      ctx.block.height = tx.merklePath.blockHeight;
+      ctx.block.idx = BigInt(tx.merklePath.path[0].find((p) => p.hash == ctx.txid)!.offset)
+    }
+    for (const [vin, input] of tx.inputs.entries()) {
       if (!input.sourceTXID) {
         if (!input.sourceTransaction) {
           throw new Error("Input missing source transaction");
@@ -58,26 +66,13 @@ export class TxoStore {
           fromRemote,
         );
       }
-    }
-    const ctx = new IndexContext(tx)
-    if (tx.merklePath) {
-      if (!tx.merklePath.verify(ctx.txid, this.stores.blocks!)) {
-        throw new Error("Failed to verify merkle path");
-      }
-      ctx.block.height = tx.merklePath.blockHeight;
-      ctx.block.idx = BigInt(tx.merklePath.path[0].find((p) => p.hash == ctx.txid)!.offset)
-    }
-
-    const spends = await this.storage.getMany(
-      tx.inputs.map((i) => new Outpoint(i.sourceTXID!, i.sourceOutputIndex)),
-    );
-    for (const [vin, input] of tx.inputs.entries()) {
-      let spend = spends[vin];
-      if (!spend) {
-        if(resolveInputs) {
-          const inCtx = await this.parse(input.sourceTransaction!, previewOnly, undefined, fromRemote, false);
-          spend = inCtx.txos[input.sourceOutputIndex];
-        } else {
+      let spend: Txo | undefined;
+      if (input.sourceTransaction && resolveInputs) {
+        const inCtx = await this.parse(input.sourceTransaction!, previewOnly, undefined, fromRemote, false);
+        spend = inCtx.txos[input.sourceOutputIndex];
+      } else {
+        spend = await this.storage.get(new Outpoint(input.sourceTXID, input.sourceOutputIndex));
+        if(!spend) {
           spend = new Txo(
             new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
             BigInt(
@@ -100,11 +95,13 @@ export class TxoStore {
       if (!txo) {
         txo = new Txo(
           new Outpoint(ctx.txid, vout),
-          BigInt(output.satoshis!),
-          output.lockingScript.toBinary(),
+          0n,
+          [],
           TxoStatus.Unindexed,
         );
       }
+      txo.satoshis = BigInt(output.satoshis!);
+      txo.script = output.lockingScript.toBinary();
       ctx.txos.push(txo);
       if (outputs && !outputs.includes(vout)) {
         continue;
@@ -140,7 +137,7 @@ export class TxoStore {
         await this.ingest(input.sourceTransaction, "beef", fromRemote);
       }
     }
-    
+
     const ctx = await this.parse(tx, false, outputs, fromRemote);
     console.log("Ingesting", ctx.txid);
     const block: Block = { height: Date.now(), idx: 0n };
