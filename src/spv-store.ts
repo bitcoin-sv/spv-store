@@ -70,13 +70,24 @@ export class SPVStore {
 
   async broadcast(
     tx: Transaction,
-    source = ""
+    source = "",
+    ingestParets = false
   ): Promise<BroadcastResponse | BroadcastFailure> {
-    const resp = await this.stores.txns!.broadcast(tx);
+    let resp: BroadcastResponse | BroadcastFailure;
+    if(!tx.merklePath) {
+      resp = await this.stores.txns!.broadcast(tx);
+    } else {
+      resp = {
+        status: 'success',
+        txid: tx.id('hex'),
+        message: ''
+      }
+    }
     if (isBroadcastResponse(resp)) {
-      await this.stores.txos!.ingest(tx, source);
+      await this.stores.txos!.ingest(tx, source, true, false, ingestParets);
     }
     return resp;
+
   }
 
   async sync(): Promise<void> {

@@ -72,7 +72,7 @@ export class TxoStore {
         spend = inCtx.txos[input.sourceOutputIndex];
       } else {
         spend = await this.storage.get(new Outpoint(input.sourceTXID, input.sourceOutputIndex));
-        if(!spend) {
+        if (!spend) {
           spend = new Txo(
             new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
             BigInt(
@@ -129,12 +129,15 @@ export class TxoStore {
     source: string = "",
     fromRemote = false,
     isDep = false,
+    ingestParents = true,
     outputs?: number[],
   ): Promise<IndexContext> {
     this.stores.txns!.saveTx(tx);
-    for (const input of tx.inputs) {
-      if (input.sourceTransaction) {
-        await this.ingest(input.sourceTransaction, "beef", fromRemote);
+    if (ingestParents) {
+      for (const input of tx.inputs) {
+        if (input.sourceTransaction) {
+          await this.ingest(input.sourceTransaction, "beef", fromRemote, false, ingestParents);
+        }
       }
     }
 
@@ -245,7 +248,7 @@ export class TxoStore {
             console.error("Failed to get tx", ingest.txid);
             continue;
           }
-          await this.ingest(tx, ingest.source, ingest.validateInputs, ingest.isDep, ingest.outputs);
+          await this.ingest(tx, ingest.source, ingest.validateInputs, ingest.isDep, false, ingest.outputs);
           ingest.status = IngestStatus.INGESTED;
           await this.storage.putIngest(ingest);
           await this.updateQueueStats();
@@ -281,7 +284,7 @@ export class TxoStore {
           if (!tx.merklePath) {
             ingest.height = Date.now();
           } else {
-            const ctx = await this.ingest(tx, ingest.source, false, ingest.isDep, ingest.outputs);
+            const ctx = await this.ingest(tx, ingest.source, false, ingest.isDep, false, ingest.outputs);
             ingest.status = IngestStatus.CONFIRMED;
             ingest.height = ctx.block.height;
             ingest.idx = Number(ctx.block.idx);
