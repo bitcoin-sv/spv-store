@@ -362,7 +362,7 @@ export class TxoStore {
       );
       const puts = newLogs.reduce((puts, log, i) => {
         if (!oldLogs[i] || oldLogs[i]!.height != log.height ||
-          (log.height < 50000000 && oldLogs[i]?.idx != log.idx)
+          (log.height < 50000000 && log.idx && oldLogs[i]?.idx != log.idx)
         ) {
           puts.push(log);
           syncHeight = Math.max(syncHeight, log.height);
