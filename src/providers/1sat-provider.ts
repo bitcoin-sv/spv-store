@@ -154,13 +154,6 @@ export class OneSatProvider
     return resp.json() as Promise<BlockHeader>;
   }
 
-  async getSpend(outpoint: Outpoint): Promise<string | undefined> {
-    const resp = await fetch(
-      `${APIS[this.network]}/api/spends/${outpoint.toString()}`,
-    );
-    return resp.ok ? (resp.json() as Promise<string>) : undefined;
-  }
-
   async getSpends(outpoints: Outpoint[]): Promise<(string | undefined)[]> {
     const body = JSON.stringify(outpoints);
     const resp = await fetch(`${APIS[this.network]}/api/spends`, {

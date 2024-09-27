@@ -16,6 +16,7 @@ import type { TxoStore } from "../stores";
 
 export class FundIndexer extends Indexer {
   tag = "fund";
+  name = "Funds";
 
   async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];

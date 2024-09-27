@@ -11,7 +11,6 @@ import {
   type BlockHeaderService,
   type BroadcastService,
   type InventoryService,
-  type SpendsService,
   type TxnService,
 } from "./services";
 import type { BlockStore, Txn, TxnStore, TxoStore } from "./stores";
@@ -33,7 +32,6 @@ export interface Services {
   txns: TxnService;
   broadcast: BroadcastService;
   inv: InventoryService;
-  spends: SpendsService;
 }
 
 export interface Stores {
@@ -98,6 +96,7 @@ export class SPVStore {
     if (!isSynced) {
       const ingestQueue: { [txid: string]: Ingest } = {};
       for (const indexer of this.stores.txos!.indexers) {
+        this.events.emit("importing", indexer.name);
         await indexer.sync(this.stores.txos!, ingestQueue);
       }
       this.stores.txos?.queue(Object.values(ingestQueue));

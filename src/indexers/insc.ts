@@ -24,6 +24,7 @@ export interface Inscription {
 
 export class InscriptionIndexer extends Indexer {
   tag = "insc";
+  name = "Inscriptions";
 
   async parse(
     ctx: IndexContext,

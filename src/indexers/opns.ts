@@ -5,7 +5,7 @@ import type { Inscription } from "./insc";
 
 export class OpNSIndexer extends Indexer {
   tag = "opns";
-
+  name = "OpNS";
   async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     const insc = txo.data.insc?.data as Inscription;

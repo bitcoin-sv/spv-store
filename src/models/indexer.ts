@@ -12,6 +12,7 @@ export enum IndexMode {
 
 export abstract class Indexer {
   tag = "";
+  name = ""
 
   constructor(
     public owners = new Set<string>(),

@@ -20,7 +20,8 @@
     "build": "npm run clean && microbundle --globals @bsv/sdk=bsv && npm pack",
     "clean": "rimraf -rf dist",
     "format": "tsfmt -r",
-    "test": "jest"
+    "test": "jest",
+    "docs": "typedoc"
   },
   "dependencies": {
     "@tempfix/idb": "^8.0.3",

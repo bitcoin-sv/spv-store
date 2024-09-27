@@ -8,6 +8,7 @@ import {
 const MAP = "1PuQa7K62MiKCtssSLKy1kh56WWU7MtUR5"
 export class MapIndexer extends Indexer {
   tag = "map";
+  name = "MAP";
 
   async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const script = ctx.tx.outputs[vout].lockingScript;

@@ -19,6 +19,7 @@ export class Lock {
 
 export class LockIndexer extends Indexer {
   tag = "lock";
+  name = "Locks";
   async parse(
     ctx: IndexContext,
     vout: number

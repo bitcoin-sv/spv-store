@@ -38,6 +38,7 @@ export class Bsv20 {
 
 export class Bsv20Indexer extends Indexer {
   tag = "bsv20";
+  name = "Bsv20s";
 
   provider: OneSatProvider;
   constructor(

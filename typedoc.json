@@ -1,8 +1,13 @@
 {
+    "entryPoints": ["src"],
+    "out": "docs",
+    "includeVersion": true,
     "navigation": {
-        "includeCategories": true,
+        "includeCategories": false,
         "includeGroups": false,
         "includeFolders": true
     },
+    "cleanOutputDir": true,
+    "excludeNotDocumented": false,
     "categorizeByGroup": false
 }

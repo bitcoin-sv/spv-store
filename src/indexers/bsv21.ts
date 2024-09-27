@@ -44,6 +44,8 @@ export class Bsv21 {
 
 export class Bsv21Indexer extends Indexer {
   tag = "bsv21";
+  name = "Bsv21s";
+
   provider: OneSatProvider;
   constructor(
     public owners = new Set<string>(),

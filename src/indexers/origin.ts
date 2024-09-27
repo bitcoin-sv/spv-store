@@ -26,6 +26,7 @@ export interface Origin {
 
 export class OriginIndexer extends Indexer {
   tag = "origin";
+  name = "Origins";
 
   async parse(ctx: IndexContext, vout: number, previewOnly = false): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];

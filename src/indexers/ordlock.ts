@@ -22,6 +22,7 @@ export class Listing {
 
 export class OrdLockIndexer extends Indexer {
   tag = "list";
+  name = "Listings"
 
   async parse(
     ctx: IndexContext,
