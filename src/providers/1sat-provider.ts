@@ -132,6 +132,7 @@ export class OneSatProvider
     const resp = await fetch(
       `${APIS[this.network]}/api/tx/address/${owner}/from/${fromHeight}`,
     );
+    if (!resp.ok) throw new Error("Failed to fetch tx logs");
     return (
       (await resp.json()) as { txid: string; height?: number; idx?: string }[]
     ).map((l) => ({
@@ -151,6 +152,7 @@ export class OneSatProvider
 
   async getChaintip(): Promise<BlockHeader> {
     const resp = await fetch(`${APIS[this.network]}/api/blocks/tip`);
+    if (!resp.ok) throw new Error("Failed to fetch chaintip");
     return resp.json() as Promise<BlockHeader>;
   }
 
