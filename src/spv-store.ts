@@ -96,7 +96,7 @@ export class SPVStore {
     if (!isSynced) {
       const ingestQueue: { [txid: string]: Ingest } = {};
       for (const indexer of this.stores.txos!.indexers) {
-        this.events.emit("importing", indexer.name);
+        this.events.emit("importing", indexer.tag, indexer.name);
         await indexer.sync(this.stores.txos!, ingestQueue);
       }
       this.stores.txos?.queue(Object.values(ingestQueue));
