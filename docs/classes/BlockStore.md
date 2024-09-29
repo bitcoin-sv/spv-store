@@ -30,7 +30,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:12](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/stores/block-store.ts#L12)
+[stores/block-store.ts:12](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/block-store.ts#L12)
 
 ## Properties
 
@@ -40,7 +40,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/stores/block-store.ts#L15)
+[stores/block-store.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/block-store.ts#L15)
 
 ***
 
@@ -50,7 +50,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:14](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/stores/block-store.ts#L14)
+[stores/block-store.ts:14](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/block-store.ts#L14)
 
 ***
 
@@ -60,7 +60,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:13](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/stores/block-store.ts#L13)
+[stores/block-store.ts:13](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/block-store.ts#L13)
 
 ## Methods
 
@@ -74,7 +74,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/stores/block-store.ts#L18)
+[stores/block-store.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/block-store.ts#L18)
 
 ***
 
@@ -88,7 +88,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:76](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/stores/block-store.ts#L76)
+[stores/block-store.ts:76](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/block-store.ts#L76)
 
 ***
 
@@ -112,7 +112,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:71](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/stores/block-store.ts#L71)
+[stores/block-store.ts:71](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/block-store.ts#L71)
 
 ***
 
@@ -130,4 +130,4 @@
 
 #### Defined in
 
-[stores/block-store.ts:24](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/stores/block-store.ts#L24)
+[stores/block-store.ts:24](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/block-store.ts#L24)

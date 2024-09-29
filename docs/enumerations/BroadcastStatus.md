@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[services/broadcast-service.ts:10](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/services/broadcast-service.ts#L10)
+[services/broadcast-service.ts:10](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/broadcast-service.ts#L10)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[services/broadcast-service.ts:11](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/services/broadcast-service.ts#L11)
+[services/broadcast-service.ts:11](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/broadcast-service.ts#L11)
 
 ***
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[services/broadcast-service.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/services/broadcast-service.ts#L9)
+[services/broadcast-service.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/broadcast-service.ts#L9)
 
 ***
 
@@ -44,4 +44,4 @@
 
 #### Defined in
 
-[services/broadcast-service.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/d2d8e139fbd295fc0999df738863fea71ede7818/src/services/broadcast-service.ts#L8)
+[services/broadcast-service.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/broadcast-service.ts#L8)
