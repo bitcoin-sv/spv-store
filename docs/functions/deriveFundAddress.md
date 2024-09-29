@@ -18,4 +18,4 @@
 
 ## Defined in
 
-[indexers/bsv20.ts:217](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/indexers/bsv20.ts#L217)
+[indexers/bsv20.ts:217](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/indexers/bsv20.ts#L217)

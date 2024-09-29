@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[models/indexer.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/indexer.ts#L8)
+[models/indexer.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/indexer.ts#L8)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[models/indexer.ts:10](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/indexer.ts#L10)
+[models/indexer.ts:10](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/indexer.ts#L10)
 
 ***
 
@@ -34,4 +34,4 @@
 
 #### Defined in
 
-[models/indexer.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/indexer.ts#L9)
+[models/indexer.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/indexer.ts#L9)

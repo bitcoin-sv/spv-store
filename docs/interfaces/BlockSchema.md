@@ -34,4 +34,4 @@
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:10](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-blocks.ts#L10)
+[storage/idb/idb-blocks.ts:10](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-blocks.ts#L10)

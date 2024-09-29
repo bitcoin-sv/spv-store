@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[models/txo.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/txo.ts#L8)
+[models/txo.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/txo.ts#L8)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[models/txo.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/txo.ts#L7)
+[models/txo.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/txo.ts#L7)
 
 ***
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[models/txo.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/txo.ts#L6)
+[models/txo.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/txo.ts#L6)
 
 ***
 
@@ -44,4 +44,4 @@
 
 #### Defined in
 
-[models/txo.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/txo.ts#L9)
+[models/txo.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/txo.ts#L9)

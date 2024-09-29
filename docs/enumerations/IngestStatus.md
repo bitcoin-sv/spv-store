@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[models/ingest.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/ingest.ts#L6)
+[models/ingest.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/ingest.ts#L6)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[models/ingest.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/ingest.ts#L4)
+[models/ingest.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/ingest.ts#L4)
 
 ***
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[models/ingest.ts:2](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/ingest.ts#L2)
+[models/ingest.ts:2](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/ingest.ts#L2)
 
 ***
 
@@ -44,7 +44,7 @@
 
 #### Defined in
 
-[models/ingest.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/ingest.ts#L7)
+[models/ingest.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/ingest.ts#L7)
 
 ***
 
@@ -54,7 +54,7 @@
 
 #### Defined in
 
-[models/ingest.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/ingest.ts#L5)
+[models/ingest.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/ingest.ts#L5)
 
 ***
 
@@ -64,4 +64,4 @@
 
 #### Defined in
 
-[models/ingest.ts:3](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/ingest.ts#L3)
+[models/ingest.ts:3](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/ingest.ts#L3)

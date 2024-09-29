@@ -28,7 +28,7 @@
 
 #### Defined in
 
-[models/search.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/search.ts#L9)
+[models/search.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/search.ts#L9)
 
 ## Properties
 
@@ -38,7 +38,7 @@
 
 #### Defined in
 
-[models/search.ts:11](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/search.ts#L11)
+[models/search.ts:11](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/search.ts#L11)
 
 ***
 
@@ -48,7 +48,7 @@
 
 #### Defined in
 
-[models/search.ts:13](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/search.ts#L13)
+[models/search.ts:13](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/search.ts#L13)
 
 ***
 
@@ -58,7 +58,7 @@
 
 #### Defined in
 
-[models/search.ts:10](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/search.ts#L10)
+[models/search.ts:10](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/search.ts#L10)
 
 ***
 
@@ -68,7 +68,7 @@
 
 #### Defined in
 
-[models/search.ts:12](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/search.ts#L12)
+[models/search.ts:12](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/search.ts#L12)
 
 ## Methods
 
@@ -82,7 +82,7 @@
 
 #### Defined in
 
-[models/search.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/search.ts#L16)
+[models/search.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/search.ts#L16)
 
 ***
 
@@ -104,4 +104,4 @@
 
 #### Defined in
 
-[models/search.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/search.ts#L20)
+[models/search.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/models/search.ts#L20)

@@ -22,7 +22,7 @@
 
 #### Defined in
 
-[indexers/lock.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/indexers/lock.ts#L17)
+[indexers/lock.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/indexers/lock.ts#L17)
 
 ## Properties
 
@@ -32,4 +32,4 @@
 
 #### Defined in
 
-[indexers/lock.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/indexers/lock.ts#L17)
+[indexers/lock.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/indexers/lock.ts#L17)

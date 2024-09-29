@@ -24,4 +24,4 @@
 
 #### Defined in
 
-[services/inv-service.ts:14](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/services/inv-service.ts#L14)
+[services/inv-service.ts:14](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/services/inv-service.ts#L14)

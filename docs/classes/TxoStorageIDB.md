@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:77](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L77)
+[storage/idb/idb-txos.ts:77](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L77)
 
 ## Methods
 
@@ -40,7 +40,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:259](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L259)
+[storage/idb/idb-txos.ts:259](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L259)
 
 ***
 
@@ -62,7 +62,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:263](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L263)
+[storage/idb/idb-txos.ts:263](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L263)
 
 ***
 
@@ -80,7 +80,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:107](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L107)
+[storage/idb/idb-txos.ts:107](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L107)
 
 ***
 
@@ -102,7 +102,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:111](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L111)
+[storage/idb/idb-txos.ts:111](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L111)
 
 ***
 
@@ -120,7 +120,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:298](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L298)
+[storage/idb/idb-txos.ts:298](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L298)
 
 ***
 
@@ -142,7 +142,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:125](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L125)
+[storage/idb/idb-txos.ts:125](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L125)
 
 ***
 
@@ -170,7 +170,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:207](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L207)
+[storage/idb/idb-txos.ts:207](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L207)
 
 ***
 
@@ -192,7 +192,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:116](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L116)
+[storage/idb/idb-txos.ts:116](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L116)
 
 ***
 
@@ -210,7 +210,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:195](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L195)
+[storage/idb/idb-txos.ts:195](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L195)
 
 ***
 
@@ -232,7 +232,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:286](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L286)
+[storage/idb/idb-txos.ts:286](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L286)
 
 ***
 
@@ -254,7 +254,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:186](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L186)
+[storage/idb/idb-txos.ts:186](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L186)
 
 ***
 
@@ -276,7 +276,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:269](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L269)
+[storage/idb/idb-txos.ts:269](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L269)
 
 ***
 
@@ -298,7 +298,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:273](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L273)
+[storage/idb/idb-txos.ts:273](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L273)
 
 ***
 
@@ -318,7 +318,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:331](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L331)
+[storage/idb/idb-txos.ts:331](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L331)
 
 ***
 
@@ -340,7 +340,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:134](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L134)
+[storage/idb/idb-txos.ts:134](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L134)
 
 ***
 
@@ -362,7 +362,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:226](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L226)
+[storage/idb/idb-txos.ts:226](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L226)
 
 ***
 
@@ -384,7 +384,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:240](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L240)
+[storage/idb/idb-txos.ts:240](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L240)
 
 ***
 
@@ -406,7 +406,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:139](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L139)
+[storage/idb/idb-txos.ts:139](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L139)
 
 ***
 
@@ -428,7 +428,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:282](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L282)
+[storage/idb/idb-txos.ts:282](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L282)
 
 ***
 
@@ -456,7 +456,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:151](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L151)
+[storage/idb/idb-txos.ts:151](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L151)
 
 ***
 
@@ -480,7 +480,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:191](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L191)
+[storage/idb/idb-txos.ts:191](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L191)
 
 ***
 
@@ -500,4 +500,4 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:78](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/storage/idb/idb-txos.ts#L78)
+[storage/idb/idb-txos.ts:78](https://github.com/shruggr/ts-casemod-spv/blob/02da5207bded388f76e8bebbed39ca525a18e420/src/storage/idb/idb-txos.ts#L78)
