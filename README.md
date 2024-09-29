@@ -5,7 +5,7 @@
 ## Usage
 
 ### Instantiate
-Initialize with OneSat API provider
+Initialize for use in web browser with OneSat API provider
 ```
 import {
     Bsv21Indexer,

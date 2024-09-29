@@ -26,7 +26,7 @@
 
 #### Defined in
 
-[services/inv-service.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/inv-service.ts#L6)
+[services/inv-service.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/services/inv-service.ts#L6)
 
 ## Properties
 
@@ -36,7 +36,7 @@
 
 #### Defined in
 
-[services/inv-service.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/inv-service.ts#L8)
+[services/inv-service.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/services/inv-service.ts#L8)
 
 ***
 
@@ -46,7 +46,7 @@
 
 #### Defined in
 
-[services/inv-service.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/inv-service.ts#L9)
+[services/inv-service.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/services/inv-service.ts#L9)
 
 ***
 
@@ -56,7 +56,7 @@
 
 #### Defined in
 
-[services/inv-service.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/inv-service.ts#L5)
+[services/inv-service.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/services/inv-service.ts#L5)
 
 ***
 
@@ -66,7 +66,7 @@
 
 #### Defined in
 
-[services/inv-service.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/inv-service.ts#L4)
+[services/inv-service.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/services/inv-service.ts#L4)
 
 ***
 
@@ -76,4 +76,4 @@
 
 #### Defined in
 
-[services/inv-service.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/inv-service.ts#L7)
+[services/inv-service.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/services/inv-service.ts#L7)

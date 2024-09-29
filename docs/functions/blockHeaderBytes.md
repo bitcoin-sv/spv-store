@@ -18,4 +18,4 @@
 
 ## Defined in
 
-[models/block-header.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/models/block-header.ts#L16)
+[models/block-header.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/models/block-header.ts#L16)

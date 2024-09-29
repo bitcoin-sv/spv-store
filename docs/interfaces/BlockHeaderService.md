@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[services/block-service.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/block-service.ts#L4)
+[services/block-service.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/services/block-service.ts#L4)
 
 ***
 
@@ -38,4 +38,4 @@
 
 #### Defined in
 
-[services/block-service.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/services/block-service.ts#L5)
+[services/block-service.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/services/block-service.ts#L5)

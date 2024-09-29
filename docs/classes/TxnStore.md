@@ -28,7 +28,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:33](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L33)
+[stores/txn-store.ts:33](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L33)
 
 ## Properties
 
@@ -38,7 +38,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:37](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L37)
+[stores/txn-store.ts:37](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L37)
 
 ***
 
@@ -48,7 +48,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:35](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L35)
+[stores/txn-store.ts:35](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L35)
 
 ***
 
@@ -58,7 +58,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:34](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L34)
+[stores/txn-store.ts:34](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L34)
 
 ***
 
@@ -68,7 +68,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:36](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L36)
+[stores/txn-store.ts:36](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L36)
 
 ## Methods
 
@@ -86,7 +86,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L46)
+[stores/txn-store.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L46)
 
 ***
 
@@ -100,7 +100,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L40)
+[stores/txn-store.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L40)
 
 ***
 
@@ -118,7 +118,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:186](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L186)
+[stores/txn-store.ts:186](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L186)
 
 ***
 
@@ -138,7 +138,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:58](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L58)
+[stores/txn-store.ts:58](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L58)
 
 ***
 
@@ -152,7 +152,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:144](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L144)
+[stores/txn-store.ts:144](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L144)
 
 ***
 
@@ -166,7 +166,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:108](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L108)
+[stores/txn-store.ts:108](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L108)
 
 ***
 
@@ -180,7 +180,7 @@
 
 #### Defined in
 
-[stores/txn-store.ts:100](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L100)
+[stores/txn-store.ts:100](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L100)
 
 ***
 
@@ -198,4 +198,4 @@
 
 #### Defined in
 
-[stores/txn-store.ts:79](https://github.com/shruggr/ts-casemod-spv/blob/e76938ede3d1388f9d1a1c2ddcbe0c172bd9233b/src/stores/txn-store.ts#L79)
+[stores/txn-store.ts:79](https://github.com/shruggr/ts-casemod-spv/blob/7c4f30ec55cedd3466531bc7310dc7c1601f1f8a/src/stores/txn-store.ts#L79)
