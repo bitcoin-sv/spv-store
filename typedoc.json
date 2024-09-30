@@ -1,6 +1,7 @@
 {
     "entryPoints": ["src"],
     "out": "docs",
+    "plugin": ["typedoc-plugin-markdown"],
     "includeVersion": true,
     "navigation": {
         "includeCategories": false,
