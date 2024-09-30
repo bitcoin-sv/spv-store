@@ -25,15 +25,15 @@ const APIS = {
 };
 
 export class OneSatProvider
-  implements BroadcastService, TxnService, BlockHeaderService, InventoryService {
+  implements BroadcastService, TxnService, BlockHeaderService, InventoryService
+{
   public constructor(
-    public network: Network,
-    // authKey?: PrivateKey
-  ) { }
+    public network: Network // authKey?: PrivateKey
+  ) {}
 
   async broadcast(
     tx: Transaction,
-    owner?: string,
+    owner?: string
   ): Promise<BroadcastResponse | BroadcastFailure> {
     console.log("Broadcasting", tx.id("hex"), tx.toHex());
     const url = owner
@@ -86,7 +86,7 @@ export class OneSatProvider
     const reader = new Utils.Reader([...Buffer.from(data)]);
     let len = reader.readVarIntNum();
     const txn = {
-      rawtx: reader.read(len)
+      rawtx: reader.read(len),
     } as Txn;
     len = reader.readVarIntNum();
     if (len) txn.proof = reader.read(len);
@@ -96,7 +96,7 @@ export class OneSatProvider
   async fetchProof(txid: string): Promise<number[] | undefined> {
     const resp = await fetch(`${APIS[this.network]}/api/tx/${txid}/proof`);
     console.log("Fetching", txid);
-    if (resp.status !== 200) return
+    if (resp.status !== 200) return;
     const proof = await resp.arrayBuffer();
     return [...Buffer.from(proof)];
   }
@@ -111,7 +111,7 @@ export class OneSatProvider
     });
     if (resp.status !== 200)
       throw new Error(
-        `${resp.status} - Failed to fetch txs: ${await resp.text()}`,
+        `${resp.status} - Failed to fetch txs: ${await resp.text()}`
       );
     const data = await resp.arrayBuffer();
     const reader = new Utils.Reader([...Buffer.from(data)]);
@@ -119,7 +119,7 @@ export class OneSatProvider
     while (reader.pos < data.byteLength) {
       let len = reader.readVarIntNum();
       const txn = {
-        rawtx: reader.read(len)
+        rawtx: reader.read(len),
       } as Txn;
       len = reader.readVarIntNum();
       if (len) txn.proof = reader.read(len);
@@ -130,7 +130,7 @@ export class OneSatProvider
 
   async pollTxLogs(owner: string, fromHeight = 0): Promise<TxLog[]> {
     const resp = await fetch(
-      `${APIS[this.network]}/api/tx/address/${owner}/from/${fromHeight}`,
+      `${APIS[this.network]}/api/tx/address/${owner}/from/${fromHeight}`
     );
     if (!resp.ok) throw new Error("Failed to fetch tx logs");
     return (
@@ -145,7 +145,7 @@ export class OneSatProvider
 
   async getBlocks(lastHeight: number, limit = 1000): Promise<BlockHeader[]> {
     const resp = await fetch(
-      `${APIS[this.network]}/api/blocks/list/${lastHeight}?limit=${limit}`,
+      `${APIS[this.network]}/api/blocks/list/${lastHeight}?limit=${limit}`
     );
     return resp.json() as Promise<BlockHeader[]>;
   }
@@ -170,7 +170,7 @@ export class OneSatProvider
 
   async getTxo(outpoint: Outpoint): Promise<Ordinal | undefined> {
     const resp = await fetch(
-      `${APIS[this.network]}/api/txos/${outpoint.toString()}`,
+      `${APIS[this.network]}/api/txos/${outpoint.toString()}`
     );
     return resp.ok ? (resp.json() as Promise<Ordinal>) : undefined;
   }
@@ -189,7 +189,9 @@ export class OneSatProvider
     return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
   }
   async getBsv2021Txo(outpoint: Outpoint): Promise<RemoteBsv20 | undefined> {
-    const resp = await fetch(`${APIS[this.network]}/api/bsv20/outpoint/${outpoint.toString()}`);
+    const resp = await fetch(
+      `${APIS[this.network]}/api/bsv20/outpoint/${outpoint.toString()}`
+    );
     return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
   }
 }

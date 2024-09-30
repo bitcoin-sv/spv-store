@@ -12,7 +12,7 @@ import { Block } from "../models";
 
 /**
  * Represents a transaction in the system.
- * 
+ *
  * @interface Txn
  * @property {string} txid - The unique identifier for the transaction.
  * @property {number[]} rawtx - The raw transaction data.
@@ -30,7 +30,7 @@ export interface Txn {
 
 /**
  * Enum representing the various statuses a transaction can have.
- * 
+ *
  * @enum {number}
  * @property {number} REJECTED - The transaction has been rejected.
  * @property {number} PENDING - The transaction is pending and awaiting further action.
@@ -54,8 +54,8 @@ export class TxnStore {
     public storage: TxnStorage,
     public services: Services,
     public stores: Stores,
-    public events?: EventEmitter,
-  ) { }
+    public events?: EventEmitter
+  ) {}
 
   async destroy() {
     this.stopSync = true;
@@ -64,7 +64,7 @@ export class TxnStore {
   }
 
   async broadcast(
-    tx: Transaction,
+    tx: Transaction
   ): Promise<BroadcastResponse | BroadcastFailure> {
     const resp = await this.services.broadcast.broadcast(tx);
     if (isBroadcastResponse(resp)) {
@@ -77,11 +77,12 @@ export class TxnStore {
 
   async loadTx(
     txid: string,
-    fromRemote = false,
+    fromRemote = false
   ): Promise<Transaction | undefined> {
     let txn = await this.storage.get(txid);
     let saveTx = false;
     if (!txn && fromRemote) {
+      this.events?.emit("fetchingTx", { txid });
       txn = await this.services.txns.fetchTxn(txid);
       saveTx = !!txn;
     }
@@ -104,7 +105,7 @@ export class TxnStore {
       status: TxnStatus.BROADCASTED,
     };
     if (tx.merklePath) {
-      if (!await tx.merklePath.verify(txn.txid, this.stores.blocks!)) {
+      if (!(await tx.merklePath.verify(txn.txid, this.stores.blocks!))) {
         throw new Error("Invalid merkle path");
       }
       txn.proof = tx.merklePath!.toBinary();
@@ -122,24 +123,29 @@ export class TxnStore {
     this.syncRunning = Promise.all([
       this.processMempool(),
       this.processConfirmed(),
-    ]).then(() => { });
+    ]).then(() => {});
   }
 
   async processMempool(): Promise<void> {
     try {
-      const txns = await this.storage.getByStatus(TxnStatus.BROADCASTED, Date.now() - 600000, 25);
+      const txns = await this.storage.getByStatus(
+        TxnStatus.BROADCASTED,
+        Date.now() - 600000,
+        25
+      );
       if (txns.length) {
         for (const txn of txns) {
+          this.events?.emit("fetchingTx", { txid: txn.txid });
           const proof = await this.services.txns.fetchProof(txn.txid);
           if (!proof) {
             txn.block.height = Date.now();
-            continue
+            continue;
           }
           const merklePath = MerklePath.fromBinary(proof);
           if (await merklePath.verify(txn.txid, this.stores.blocks!)) {
             txn.block.height = merklePath.blockHeight;
             txn.block.idx = BigInt(
-              merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0,
+              merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0
             );
             txn.proof = merklePath.toBinary();
             txn.status = TxnStatus.CONFIRMED;
@@ -164,21 +170,26 @@ export class TxnStore {
   async processConfirmed(): Promise<void> {
     try {
       const chaintip = await this.stores.blocks!.getChaintip();
-      const txns = await this.storage.getByStatus(TxnStatus.CONFIRMED, chaintip!.height - 5, 25);
+      const txns = await this.storage.getByStatus(
+        TxnStatus.CONFIRMED,
+        chaintip!.height - 5,
+        25
+      );
       if (txns.length) {
         for (const txn of txns) {
           let merklePath = MerklePath.fromBinary(txn.proof!);
           if (await merklePath.verify(txn.txid, this.stores.blocks!)) {
             txn.status = TxnStatus.IMMUTABLE;
-            continue
+            continue;
           }
+          this.events?.emit("fetchingTx", { txid: txn.txid });
           const proof = await this.services.txns.fetchProof(txn.txid);
           if (proof) {
             merklePath = MerklePath.fromBinary(proof);
             if (await merklePath.verify(txn.txid, this.stores.blocks!)) {
               txn.block.height = merklePath!.blockHeight;
               txn.block.idx = BigInt(
-                merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0,
+                merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0
               );
               txn.proof = proof;
               if (txn.block.height <= chaintip!.height - 5) {
@@ -219,10 +230,10 @@ export class TxnStore {
           let merklePath = MerklePath.fromBinary(txn.proof);
           txn.block.height = merklePath!.blockHeight;
           txn.block.idx = BigInt(
-            merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0,
+            merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0
           );
         }),
-      ])
+      ]);
       await this.storage.putMany(results);
     }
   }
