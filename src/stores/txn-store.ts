@@ -10,6 +10,16 @@ import type { Services, Stores } from "../spv-store";
 import type { EventEmitter } from "../lib/event-emitter";
 import { Block } from "../models";
 
+/**
+ * Represents a transaction in the system.
+ * 
+ * @interface Txn
+ * @property {string} txid - The unique identifier for the transaction.
+ * @property {number[]} rawtx - The raw transaction data.
+ * @property {number[]} [proof] - Optional proof data for the transaction.
+ * @property {Block} block - The block containing the transaction.
+ * @property {TxnStatus} status - The current status of the transaction.
+ */
 export interface Txn {
   txid: string;
   rawtx: number[];
@@ -18,6 +28,16 @@ export interface Txn {
   status: TxnStatus;
 }
 
+/**
+ * Enum representing the various statuses a transaction can have.
+ * 
+ * @enum {number}
+ * @property {number} REJECTED - The transaction has been rejected.
+ * @property {number} PENDING - The transaction is pending and awaiting further action.
+ * @property {number} BROADCASTED - The transaction has been broadcasted to the network.
+ * @property {number} CONFIRMED - The transaction has been confirmed by the network, but could still be re-orged
+ * @property {number} IMMUTABLE - The transaction is 6 blocks deep and is considered immutable.
+ */
 export enum TxnStatus {
   REJECTED = -1,
   PENDING = 0,

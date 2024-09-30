@@ -23,12 +23,29 @@ export class TxoStore {
     public events?: EventEmitter,
   ) { }
 
+
+  /**
+   * Asynchronously destroys the current instance by stopping synchronization and 
+   * destroying the associated storage.
+   * 
+   * @async
+   * @returns {Promise<void>} A promise that resolves when the instance is destroyed.
+   */
   async destroy() {
     this.stopSync = true;
     if (this.syncRunning) await this.syncRunning;
     await this.storage.destroy();
   }
 
+  /**
+   * Searches for transaction outputs (TXOs) based on the provided lookup criteria.
+   *
+   * @param lookup - The criteria used to search for TXOs.
+   * @param sort - The sorting order of the results. Defaults to `TxoSort.DESC`.
+   * @param limit - The maximum number of results to return. Defaults to 100. 0 means no limit.
+   * @param from - An optional parameter to specify the starting point for the search. Use for pagination.
+   * @returns A promise that resolves to the search results.
+   */
   public async search(
     lookup: TxoLookup,
     sort = TxoSort.DESC,
@@ -38,6 +55,17 @@ export class TxoStore {
     return this.storage.search(lookup, sort, limit, from);
   }
 
+  /**
+   * Parses a transaction and returns an IndexContext.
+   * 
+   * @param tx - The transaction to parse.
+   * @param previewOnly - If true, only a preview of the transaction is parsed. Defaults to true.
+   * @param outputs - An optional array of output indices to include in the parsing.
+   * @param fromRemote - If true, the transaction is loaded from a remote source. Defaults to false.
+   * @param resolveInputs - If true, the inputs of the transaction are resolved. Defaults to false.
+   * @returns A promise that resolves to an IndexContext.
+   * @throws Will throw an error if the merkle path verification fails or if an input is missing a source transaction.
+   */
   async parse(
     tx: Transaction,
     previewOnly = true,
@@ -124,6 +152,17 @@ export class TxoStore {
     return ctx;
   }
 
+  /**
+   * Ingests a transaction into the store, optionally ingesting its parent transactions.
+   *
+   * @param tx - The transaction to ingest.
+   * @param source - An optional string indicating the source of the transaction.
+   * @param fromRemote - A boolean indicating if the transaction is from a remote source.
+   * @param isDep - A boolean indicating if the transaction is a dependency.
+   * @param ingestParents - A boolean indicating if parent transactions should be ingested.
+   * @param outputs - An optional array of output indices to be ingested.
+   * @returns A promise that resolves to an IndexContext object.
+   */
   async ingest(
     tx: Transaction,
     source: string = "",
@@ -182,6 +221,7 @@ export class TxoStore {
     const queueLength = await this.storage.getQueueLength();
     this.events?.emit("queueStats", { length: queueLength });
   }
+  
   async queue(ingests: Ingest[]) {
     ingests.forEach((i) => (i.status = i.status || IngestStatus.QUEUED));
     await this.storage.putIngests(ingests);

@@ -114,7 +114,7 @@ export class InscriptionIndexer extends Indexer {
     }
 
     const events: Event[] = [];
-    if (!previewOnly && txo.owner && this.owners.has(txo.owner)) {
+    if (txo.owner && this.owners.has(txo.owner)) {
       events.push({ id: "address", value: txo.owner });
     }
     return new IndexData(insc, events);

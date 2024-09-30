@@ -21,6 +21,12 @@ export class BlockStore implements ChainTracker {
     await this.storage.destroy();
   }
 
+  /**
+   * Synchronizes the block store with the blockchain.
+   * 
+   * @param returnOnChaintip - If true, the method will wait until the sync is complete before returning.
+   * @returns A promise that resolves when the synchronization is complete.
+   */
   async sync(returnOnChaintip = true): Promise<void> {
     if (this.syncRunning) return;
     // const doSync = async (returnOnChaintip: boolean) =>
@@ -68,11 +74,23 @@ export class BlockStore implements ChainTracker {
     return this.doSync(returnOnChaintip);
   }
 
+  /**
+   * Checks if the given root is valid for the specified block height.
+   *
+   * @param root - The Merkle root to validate.
+   * @param height - The height of the block to check.
+   * @returns A promise that resolves to `true` if the root is valid for the given height, otherwise `false`.
+   */
   async isValidRootForHeight(root: string, height: number): Promise<boolean> {
     const block = await this.storage.getByHeight(height);
     return block?.merkleroot == root;
   }
 
+  /**
+   * Retrieves the current chaintip from the storage.
+   *
+   * @returns {Promise<BlockHeader | undefined>} A promise that resolves to the current chaintip block header, or undefined if not available.
+   */
   async getChaintip(): Promise<BlockHeader | undefined> {
     return this.storage.getSynced();
   }
