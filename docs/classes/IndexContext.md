@@ -40,7 +40,7 @@ The transaction block. Defaults to a new Block instance.
 
 #### Defined in
 
-[models/index-context.ts:48](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-context.ts#L48)
+[models/index-context.ts:48](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/index-context.ts#L48)
 
 ## Properties
 
@@ -50,7 +50,7 @@ The transaction block. Defaults to a new Block instance.
 
 #### Defined in
 
-[models/index-context.ts:50](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-context.ts#L50)
+[models/index-context.ts:50](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/index-context.ts#L50)
 
 ***
 
@@ -62,7 +62,7 @@ Dependency transactions to be ingested.
 
 #### Defined in
 
-[models/index-context.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-context.ts#L46)
+[models/index-context.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/index-context.ts#L46)
 
 ***
 
@@ -74,7 +74,7 @@ An array of spent transaction outputs (inputs).
 
 #### Defined in
 
-[models/index-context.ts:44](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-context.ts#L44)
+[models/index-context.ts:44](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/index-context.ts#L44)
 
 ***
 
@@ -86,7 +86,7 @@ Summary of the transaction after indexing.
 
 #### Defined in
 
-[models/index-context.ts:47](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-context.ts#L47)
+[models/index-context.ts:47](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/index-context.ts#L47)
 
 ***
 
@@ -96,7 +96,7 @@ Summary of the transaction after indexing.
 
 #### Defined in
 
-[models/index-context.ts:49](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-context.ts#L49)
+[models/index-context.ts:49](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/index-context.ts#L49)
 
 ***
 
@@ -108,7 +108,7 @@ The transaction ID in hexadecimal format.
 
 #### Defined in
 
-[models/index-context.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-context.ts#L43)
+[models/index-context.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/index-context.ts#L43)
 
 ***
 
@@ -120,4 +120,4 @@ An array of transaction outputs.
 
 #### Defined in
 
-[models/index-context.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-context.ts#L45)
+[models/index-context.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/index-context.ts#L45)
