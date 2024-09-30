@@ -44,7 +44,7 @@ Block height when unlockable
 
 #### Defined in
 
-[templates/lock.ts:31](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/templates/lock.ts#L31)
+[templates/lock.ts:31](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/templates/lock.ts#L31)
 
 ***
 
@@ -98,4 +98,4 @@ Block height when unlockable
 
 #### Defined in
 
-[templates/lock.ts:41](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/templates/lock.ts#L41)
+[templates/lock.ts:41](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/templates/lock.ts#L41)

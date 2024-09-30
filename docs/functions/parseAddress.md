@@ -22,4 +22,4 @@
 
 ## Defined in
 
-[models/address.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/address.ts#L4)
+[models/address.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/address.ts#L4)

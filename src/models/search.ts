@@ -6,6 +6,14 @@ export enum TxoSort {
 }
 
 export class TxoLookup {
+  /**
+   * Constructs a new instance of the search model.
+   * 
+   * @param tag - Tag of the indexer to be searched.
+   * @param id - Optional ID of the field to be searched. Required if value populated.
+   * @param value - Optional value of the field to be searched.
+   * @param owner - Optional owner of the transaction output.
+   */
   constructor(
     public tag: string,
     public id?: string,

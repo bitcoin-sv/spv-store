@@ -6,15 +6,19 @@
 
 # Enumeration: TxoStatus
 
+Enumeration representing the status of a transaction output (Txo).
+
 ## Enumeration Members
 
 ### Dependency
 
 > **Dependency**: `1`
 
+The transaction output is a dependency.
+
 #### Defined in
 
-[models/txo.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L8)
+[models/txo.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L17)
 
 ***
 
@@ -22,9 +26,11 @@
 
 > **Trusted**: `0`
 
+The transaction output is trusted.
+
 #### Defined in
 
-[models/txo.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L7)
+[models/txo.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L16)
 
 ***
 
@@ -32,9 +38,11 @@
 
 > **Unindexed**: `-1`
 
+The transaction output is not indexed.
+
 #### Defined in
 
-[models/txo.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L6)
+[models/txo.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L15)
 
 ***
 
@@ -42,6 +50,8 @@
 
 > **Validated**: `2`
 
+The transaction output is validated.
+
 #### Defined in
 
-[models/txo.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L9)
+[models/txo.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L18)

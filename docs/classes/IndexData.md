@@ -6,19 +6,30 @@
 
 # Class: IndexData
 
+Represents the data structure used by the indexer to store parsed data,
+emitted events, and dependencies.
+
 ## Constructors
 
 ### new IndexData()
 
 > **new IndexData**(`data`?, `events`?, `deps`?): [`IndexData`](IndexData.md)
 
+Creates an instance of IndexData.
+
 #### Parameters
 
 • **data?**: `any`
 
+An arbitrary data object to be used by the indexer to store parsed data.
+
 • **events?**: [`Event`](../interfaces/Event.md)[] = `[]`
 
+An array of events emitted by the indexer in regard to the output. Events can be searched.
+
 • **deps?**: [`Outpoint`](Outpoint.md)[] = `[]`
+
+An array of outpoints that this output depends on.
 
 #### Returns
 
@@ -26,7 +37,7 @@
 
 #### Defined in
 
-[models/index-data.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/index-data.ts#L7)
+[models/index-data.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-data.ts#L16)
 
 ## Properties
 
@@ -34,9 +45,11 @@
 
 > `optional` **data**: `any`
 
+An arbitrary data object to be used by the indexer to store parsed data.
+
 #### Defined in
 
-[models/index-data.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/index-data.ts#L8)
+[models/index-data.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-data.ts#L17)
 
 ***
 
@@ -44,9 +57,11 @@
 
 > **deps**: [`Outpoint`](Outpoint.md)[] = `[]`
 
+An array of outpoints that this output depends on.
+
 #### Defined in
 
-[models/index-data.ts:10](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/index-data.ts#L10)
+[models/index-data.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-data.ts#L17)
 
 ***
 
@@ -54,16 +69,8 @@
 
 > **events**: [`Event`](../interfaces/Event.md)[] = `[]`
 
-#### Defined in
-
-[models/index-data.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/index-data.ts#L9)
-
-***
-
-### tag?
-
-> `optional` **tag**: `string`
+An array of events emitted by the indexer in regard to the output. Events can be searched.
 
 #### Defined in
 
-[models/index-data.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/index-data.ts#L5)
+[models/index-data.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/index-data.ts#L17)

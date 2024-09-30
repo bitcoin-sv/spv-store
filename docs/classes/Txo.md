@@ -6,23 +6,37 @@
 
 # Class: Txo
 
+Represents a transaction output (Txo).
+
 ## Constructors
 
 ### new Txo()
 
 > **new Txo**(`outpoint`, `satoshis`, `script`, `status`, `block`): [`Txo`](Txo.md)
 
+Creates an instance of Txo.
+
 #### Parameters
 
 • **outpoint**: [`Outpoint`](Outpoint.md)
 
+The outpoint of the transaction output.
+
 • **satoshis**: `bigint`
+
+The amount of satoshis in the transaction output.
 
 • **script**: `number`[]
 
+The script associated with the transaction output.
+
 • **status**: [`TxoStatus`](../enumerations/TxoStatus.md)
 
+The status of the transaction output.
+
 • **block**: [`Block`](Block.md) = `...`
+
+The block containing the transaction output.
 
 #### Returns
 
@@ -30,7 +44,7 @@
 
 #### Defined in
 
-[models/txo.ts:21](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L21)
+[models/txo.ts:70](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L70)
 
 ## Properties
 
@@ -38,9 +52,11 @@
 
 > **block**: [`Block`](Block.md)
 
+The block containing the transaction output.
+
 #### Defined in
 
-[models/txo.ts:26](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L26)
+[models/txo.ts:75](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L75)
 
 ***
 
@@ -48,13 +64,15 @@
 
 > **data**: `object` = `{}`
 
+A dictionary containing index data associated with each indexer tag.
+
 #### Index Signature
 
  \[`tag`: `string`\]: [`IndexData`](IndexData.md)
 
 #### Defined in
 
-[models/txo.ts:14](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L14)
+[models/txo.ts:33](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L33)
 
 ***
 
@@ -62,9 +80,11 @@
 
 > **deps**: `string`[] = `[]`
 
+A list of dependencies associated with the transaction output.
+
 #### Defined in
 
-[models/txo.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L18)
+[models/txo.ts:55](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L55)
 
 ***
 
@@ -72,9 +92,11 @@
 
 > **events**: `string`[] = `[]`
 
+A list of events associated with the transaction output.
+
 #### Defined in
 
-[models/txo.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L16)
+[models/txo.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L45)
 
 ***
 
@@ -82,9 +104,11 @@
 
 > **hasEvents**: `number` = `0`
 
+A flag indicating whether the transaction output has events.
+
 #### Defined in
 
-[models/txo.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L19)
+[models/txo.ts:60](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L60)
 
 ***
 
@@ -92,9 +116,11 @@
 
 > **outpoint**: [`Outpoint`](Outpoint.md)
 
+The outpoint of the transaction output.
+
 #### Defined in
 
-[models/txo.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L22)
+[models/txo.ts:71](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L71)
 
 ***
 
@@ -102,9 +128,13 @@
 
 > `optional` **owner**: `string`
 
+The owner of the transaction output. 
+This is typically and address, but can be populated with any string. 
+An indexer should not overwrite this field if it is already populated.
+
 #### Defined in
 
-[models/txo.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L15)
+[models/txo.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L40)
 
 ***
 
@@ -112,9 +142,11 @@
 
 > **satoshis**: `bigint`
 
+The amount of satoshis in the transaction output.
+
 #### Defined in
 
-[models/txo.ts:23](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L23)
+[models/txo.ts:72](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L72)
 
 ***
 
@@ -122,9 +154,11 @@
 
 > **script**: `number`[]
 
+The script associated with the transaction output.
+
 #### Defined in
 
-[models/txo.ts:24](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L24)
+[models/txo.ts:73](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L73)
 
 ***
 
@@ -132,9 +166,11 @@
 
 > **spend**: `string` = `''`
 
+The txid in which the output was spent, or and empty string if unspent.
+
 #### Defined in
 
-[models/txo.ts:13](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L13)
+[models/txo.ts:28](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L28)
 
 ***
 
@@ -142,9 +178,11 @@
 
 > **status**: [`TxoStatus`](../enumerations/TxoStatus.md)
 
+The status of the transaction output.
+
 #### Defined in
 
-[models/txo.ts:25](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L25)
+[models/txo.ts:74](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L74)
 
 ***
 
@@ -152,6 +190,8 @@
 
 > **tags**: `string`[] = `[]`
 
+A list of tags associated with the transaction output.
+
 #### Defined in
 
-[models/txo.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/txo.ts#L17)
+[models/txo.ts:50](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/txo.ts#L50)

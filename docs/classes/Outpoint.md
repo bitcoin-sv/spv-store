@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/outpoint.ts#L6)
+[models/outpoint.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/outpoint.ts#L6)
 
 ## Properties
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:3](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/outpoint.ts#L3)
+[models/outpoint.ts:3](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/outpoint.ts#L3)
 
 ***
 
@@ -44,7 +44,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/outpoint.ts#L4)
+[models/outpoint.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/outpoint.ts#L4)
 
 ## Methods
 
@@ -58,7 +58,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/outpoint.ts#L43)
+[models/outpoint.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/outpoint.ts#L43)
 
 ***
 
@@ -72,7 +72,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:36](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/outpoint.ts#L36)
+[models/outpoint.ts:36](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/outpoint.ts#L36)
 
 ***
 
@@ -86,7 +86,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:50](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/outpoint.ts#L50)
+[models/outpoint.ts:50](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/outpoint.ts#L50)
 
 ***
 
@@ -100,4 +100,4 @@
 
 #### Defined in
 
-[models/outpoint.ts:32](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/models/outpoint.ts#L32)
+[models/outpoint.ts:32](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/models/outpoint.ts#L32)

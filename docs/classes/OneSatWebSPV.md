@@ -22,7 +22,7 @@
 
 #### Defined in
 
-[pre-config/1sat-web.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/pre-config/1sat-web.ts#L17)
+[pre-config/1sat-web.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/pre-config/1sat-web.ts#L17)
 
 ***
 
@@ -36,7 +36,7 @@
 
 #### Defined in
 
-[pre-config/1sat-web.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/pre-config/1sat-web.ts#L15)
+[pre-config/1sat-web.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/pre-config/1sat-web.ts#L15)
 
 ***
 
@@ -50,7 +50,7 @@
 
 #### Defined in
 
-[pre-config/1sat-web.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/pre-config/1sat-web.ts#L16)
+[pre-config/1sat-web.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/pre-config/1sat-web.ts#L16)
 
 ## Methods
 
@@ -76,7 +76,7 @@
 
 #### Defined in
 
-[spv-store.ts:69](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L69)
+[spv-store.ts:69](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L69)
 
 ***
 
@@ -94,7 +94,7 @@
 
 #### Defined in
 
-[spv-store.ts:54](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L54)
+[spv-store.ts:54](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L54)
 
 ***
 
@@ -112,7 +112,7 @@
 
 #### Defined in
 
-[spv-store.ts:220](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L220)
+[spv-store.ts:220](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L220)
 
 ***
 
@@ -134,7 +134,7 @@
 
 #### Defined in
 
-[spv-store.ts:174](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L174)
+[spv-store.ts:174](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L174)
 
 ***
 
@@ -156,7 +156,7 @@
 
 #### Defined in
 
-[spv-store.ts:166](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L166)
+[spv-store.ts:166](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L166)
 
 ***
 
@@ -174,7 +174,7 @@
 
 #### Defined in
 
-[spv-store.ts:190](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L190)
+[spv-store.ts:190](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L190)
 
 ***
 
@@ -192,7 +192,7 @@
 
 #### Defined in
 
-[spv-store.ts:170](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L170)
+[spv-store.ts:170](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L170)
 
 ***
 
@@ -210,7 +210,7 @@
 
 #### Defined in
 
-[spv-store.ts:154](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L154)
+[spv-store.ts:154](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L154)
 
 ***
 
@@ -228,7 +228,7 @@
 
 #### Defined in
 
-[spv-store.ts:162](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L162)
+[spv-store.ts:162](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L162)
 
 ***
 
@@ -252,7 +252,7 @@
 
 #### Defined in
 
-[spv-store.ts:147](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L147)
+[spv-store.ts:147](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L147)
 
 ***
 
@@ -274,7 +274,7 @@
 
 #### Defined in
 
-[spv-store.ts:135](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L135)
+[spv-store.ts:135](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L135)
 
 ***
 
@@ -296,7 +296,7 @@
 
 #### Defined in
 
-[spv-store.ts:139](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L139)
+[spv-store.ts:139](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L139)
 
 ***
 
@@ -318,7 +318,7 @@
 
 #### Defined in
 
-[spv-store.ts:158](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L158)
+[spv-store.ts:158](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L158)
 
 ***
 
@@ -340,7 +340,7 @@
 
 #### Defined in
 
-[spv-store.ts:224](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L224)
+[spv-store.ts:224](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L224)
 
 ***
 
@@ -364,7 +364,7 @@
 
 #### Defined in
 
-[spv-store.ts:203](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L203)
+[spv-store.ts:203](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L203)
 
 ***
 
@@ -386,7 +386,7 @@
 
 #### Defined in
 
-[spv-store.ts:194](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L194)
+[spv-store.ts:194](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L194)
 
 ***
 
@@ -414,7 +414,7 @@
 
 #### Defined in
 
-[spv-store.ts:126](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L126)
+[spv-store.ts:126](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L126)
 
 ***
 
@@ -432,7 +432,7 @@
 
 #### Defined in
 
-[spv-store.ts:91](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/spv-store.ts#L91)
+[spv-store.ts:91](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/spv-store.ts#L91)
 
 ***
 
@@ -458,4 +458,4 @@
 
 #### Defined in
 
-[pre-config/1sat-web.ts:23](https://github.com/shruggr/ts-casemod-spv/blob/56b4750a08daabb55f614a1b84ddcb1eb8c8c7fb/src/pre-config/1sat-web.ts#L23)
+[pre-config/1sat-web.ts:23](https://github.com/shruggr/ts-casemod-spv/blob/dc142b85a7bc32ae7c572ff1fa62fa3ec80b91ea/src/pre-config/1sat-web.ts#L23)
