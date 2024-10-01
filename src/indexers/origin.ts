@@ -52,7 +52,7 @@ export class OriginIndexer extends Indexer {
         } else if (this.mode !== IndexMode.Verify) {
           const provider = new OneSatProvider(this.network);
           const remote = await provider.getTxo(spend.outpoint);
-          if (remote?.origin?.data?.insc) {
+          if (remote?.origin?.data?.insc && remote.origin.data.insc.file?.type != 'application/bsv-20') {
             origin = {
               outpoint: remote.origin.outpoint,
               insc: { file: remote.origin.data.insc.file },
