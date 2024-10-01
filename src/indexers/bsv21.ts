@@ -239,20 +239,21 @@ export class Bsv21Indexer extends Indexer {
             await txoStore.storage.putMany(txos);
           }
 
-          for (const t of txos) {
-            let ingest = ingestQueue[t.outpoint.txid];
-            if (!ingest) {
-              ingest = {
-                txid: t.outpoint.txid,
-                height: t.block.height,
-                source: "bsv21",
-                idx: Number(t.block.idx),
-                outputs: [t.outpoint.vout],
-                downloadOnly: this.mode === IndexMode.Trust,
-              };
-              ingestQueue[t.outpoint.txid] = ingest;
-            } else {
-              ingest.outputs!.push(t.outpoint.vout);
+          if (this.mode !== IndexMode.Trust) {
+            for (const t of txos) {
+              let ingest = ingestQueue[t.outpoint.txid];
+              if (!ingest) {
+                ingest = {
+                  txid: t.outpoint.txid,
+                  height: t.block.height,
+                  source: "bsv21",
+                  idx: Number(t.block.idx),
+                  outputs: [t.outpoint.vout],
+                };
+                ingestQueue[t.outpoint.txid] = ingest;
+              } else {
+                ingest.outputs!.push(t.outpoint.vout);
+              }
             }
           }
           // if (this.syncMode !== TxoStatus.TRUSTED) {

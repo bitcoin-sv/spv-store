@@ -175,7 +175,7 @@ export class TxoStore {
     if (ingestParents) {
       for (const input of tx.inputs) {
         if (input.sourceTransaction) {
-          await this.ingest(input.sourceTransaction, "beef", fromRemote, false, ingestParents);
+          await this.ingest(input.sourceTransaction, "beef", fromRemote, true, ingestParents);
         }
       }
     }
@@ -221,7 +221,7 @@ export class TxoStore {
     const queueLength = await this.storage.getQueueLength();
     this.events?.emit("queueStats", { length: queueLength });
   }
-  
+
   async queue(ingests: Ingest[]) {
     ingests.forEach((i) => (i.status = i.status || IngestStatus.QUEUED));
     await this.storage.putIngests(ingests);
