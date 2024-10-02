@@ -18,6 +18,7 @@ import type { Network } from "../spv-store";
 import type { Outpoint } from "../models/outpoint";
 import type { Ordinal, RemoteBsv20 } from "../indexers/remote-types";
 import type { Txn } from "../stores";
+import { Block, type IndexQueue } from "../models";
 
 const APIS = {
   mainnet: "https://ordinals.gorillapool.io",
@@ -193,5 +194,25 @@ export class OneSatProvider
       `${APIS[this.network]}/api/bsv20/outpoint/${outpoint.toString()}`
     );
     return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
+  }
+
+  async getOriginAncestors(outpoints: Outpoint[]): Promise<IndexQueue> {
+    const resp = await fetch(`${APIS[this.network]}/api/inscriptions/ancestors`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(outpoints),
+      },
+    );
+    const ancestors = (await resp.json()) as {
+      txid: string;
+      idx: string;
+      height: number;
+    }[];
+
+    return ancestors.reduce((queue, u) => {
+      queue[u.txid] = new Block(u.height || 0, BigInt(u.idx || 0));
+      return queue;
+    }, {} as IndexQueue);
   }
 }

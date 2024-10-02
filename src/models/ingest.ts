@@ -1,3 +1,5 @@
+import type { ParseMode } from "./indexer";
+
 export enum IngestStatus {
   FAILED = -1,
   QUEUED = 0,
@@ -12,9 +14,10 @@ export interface Ingest {
   height: number;
   idx: number;
   source?: string;
-  isDep?: boolean;
+  parseMode: ParseMode;
+  // isDep?: boolean;
   downloadOnly?: boolean;
-  validateInputs?: boolean;
-  status?: IngestStatus;
+  // validateInputs?: boolean;
   outputs?: number[];
+  status?: IngestStatus;
 }

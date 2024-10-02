@@ -10,6 +10,7 @@ import {
   Outpoint,
   type Ingest,
   IndexMode,
+  ParseMode,
 } from "../models";
 import type { Ordinal } from "./remote-types";
 import type { TxoStore } from "../stores";
@@ -51,7 +52,7 @@ export class FundIndexer extends Indexer {
     }
   }
 
-  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<void>  {
+  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<void> {
     const limit = 10000;
     for await (const owner of this.owners) {
       let offset = 0;
@@ -71,7 +72,7 @@ export class FundIndexer extends Indexer {
             TxoStatus.Trusted,
           );
           txos.push(txo);
-          if (this.mode === IndexMode.Verify) continue;
+          if (this.indexMode === IndexMode.Verify) continue;
           txo.owner = owner;
           if (u.height) {
             txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
@@ -79,30 +80,31 @@ export class FundIndexer extends Indexer {
           txo.data[this.tag] = new IndexData(owner, [{ id: "address", value: owner }]);
         }
 
-        if (this.mode !== IndexMode.Verify) {
+        if (this.indexMode !== IndexMode.Verify) {
           await txoStore.storage.putMany(txos);
         }
 
-        for (const t of txos) {
-          let ingest = ingestQueue[t.outpoint.txid];
-          if (!ingest) {
-            ingest = {
-              txid: t.outpoint.txid,
-              height: t.block.height,
-              source: "fund",
-              idx: Number(t.block.idx),
-              outputs: [t.outpoint.vout],
-              downloadOnly: this.mode === IndexMode.Trust,
-            };
-            ingestQueue[t.outpoint.txid] = ingest;
-          } else {
-            ingest.outputs!.push(t.outpoint.vout);
+        if (this.indexMode !== IndexMode.Trust) {
+          for (const t of txos) {
+            let ingest = ingestQueue[t.outpoint.txid];
+            if (!ingest) {
+              ingest = {
+                txid: t.outpoint.txid,
+                height: t.block.height,
+                source: "fund",
+                idx: Number(t.block.idx),
+                parseMode: ParseMode.Persist,
+                outputs: [t.outpoint.vout],
+              };
+              ingestQueue[t.outpoint.txid] = ingest;
+            } else {
+              ingest.outputs!.push(t.outpoint.vout);
+              ingest.parseMode = ParseMode.Persist;
+            }
           }
         }
-
         offset += limit;
       } while (utxos.length == 100);
-
     }
   }
 }

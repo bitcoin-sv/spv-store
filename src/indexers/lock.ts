@@ -1,5 +1,5 @@
 import type { IndexContext } from "../models/index-context";
-import { Indexer, IndexMode as IndexMode } from "../models/indexer";
+import { Indexer, IndexMode as IndexMode, ParseMode } from "../models/indexer";
 import { IndexData } from "../models/index-data";
 import { Script, Utils } from "@bsv/sdk";
 import { LockTemplate, lockPrefix, lockSuffix } from "../templates/lock";
@@ -8,7 +8,6 @@ import type { Event } from "../models/event";
 import { TxoStore } from "../stores/txo-store";
 import type { Ordinal } from "./remote-types";
 import { Outpoint, type Ingest } from "../models";
-import { TxLog } from "../services";
 
 const PREFIX = Buffer.from(lockPrefix, "hex");
 const SUFFIX = Buffer.from(lockSuffix, "hex");
@@ -39,7 +38,7 @@ export class LockIndexer extends Indexer {
       Buffer.from(dataScript.chunks[1]!.data!).reverse().toString("hex"),
       16,
     );
-    
+
     txo.owner = Utils.toBase58Check(dataScript.chunks[0].data!, this.network == 'mainnet' ? [0] : [111]);
     const events: Event[] = [];
     if (txo.owner && this.owners.has(txo.owner)) {
@@ -66,7 +65,7 @@ export class LockIndexer extends Indexer {
     }
   }
 
-  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<void>  {
+  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<void> {
     const limit = 10000;
     for await (const owner of this.owners) {
       let offset = 0;
@@ -86,7 +85,7 @@ export class LockIndexer extends Indexer {
             TxoStatus.Trusted,
           );
           txos.push(txo);
-          if (this.mode === IndexMode.Verify) continue;
+          if (this.indexMode === IndexMode.Verify) continue;
           txo.owner = owner;
           if (u.height) {
             txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
@@ -101,24 +100,27 @@ export class LockIndexer extends Indexer {
           txos.push(txo);
         }
 
-        if (this.mode !== IndexMode.Verify) {
+        if (this.indexMode !== IndexMode.Verify) {
           await txoStore.storage.putMany(txos);
         }
 
-        for (const t of txos) {
-          let ingest = ingestQueue[t.outpoint.txid];
-          if (!ingest) {
-            ingest = {
-              txid: t.outpoint.txid,
-              height: t.block.height,
-              source: "lock",
-              idx: Number(t.block.idx),
-              outputs: [t.outpoint.vout],
-              downloadOnly: this.mode === IndexMode.Trust,
-            };
-            ingestQueue[t.outpoint.txid] = ingest;
-          } else {
-            ingest.outputs!.push(t.outpoint.vout);
+        if (this.indexMode !== IndexMode.Trust) {
+          for (const t of txos) {
+            let ingest = ingestQueue[t.outpoint.txid];
+            if (!ingest) {
+              ingest = {
+                txid: t.outpoint.txid,
+                height: t.block.height,
+                source: "lock",
+                idx: Number(t.block.idx),
+                parseMode: ParseMode.Persist,
+                outputs: [t.outpoint.vout],
+              };
+              ingestQueue[t.outpoint.txid] = ingest;
+            } else {
+              ingest.outputs!.push(t.outpoint.vout);
+              ingest.parseMode = ParseMode.Persist;
+            }
           }
         }
 

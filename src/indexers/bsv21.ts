@@ -1,7 +1,7 @@
 
 import type { IndexContext } from "../models/index-context";
 import { IndexData } from "../models/index-data";
-import { Indexer, IndexMode } from "../models/indexer";
+import { Indexer, IndexMode, ParseMode } from "../models/indexer";
 import { Txo, TxoStatus } from "../models/txo";
 import { Hash, HD, Utils } from "@bsv/sdk";
 import { TxoStore } from "../stores/txo-store";
@@ -49,10 +49,10 @@ export class Bsv21Indexer extends Indexer {
   provider: OneSatProvider;
   constructor(
     public owners = new Set<string>(),
-    public mode: IndexMode,
+    public indexMode: IndexMode,
     public network: Network = "mainnet",
   ) {
-    super(owners, mode, network);
+    super(owners, indexMode, network);
     this.provider = new OneSatProvider(network);
   }
 
@@ -102,7 +102,7 @@ export class Bsv21Indexer extends Indexer {
     for (const spend of ctx.spends) {
       const bsv21 = spend.data.bsv21;
       if (!bsv21) continue;
-      if (bsv21.data.status != Bsv20Status.Valid && this.mode == IndexMode.Trust) {
+      if (bsv21.data.status != Bsv20Status.Valid && this.indexMode == IndexMode.Trust) {
         const remote = await this.provider.getBsv2021Txo(spend.outpoint);
         if (remote) {
           bsv21.data.status = remote.status;
@@ -112,7 +112,7 @@ export class Bsv21Indexer extends Indexer {
         }
       }
       if (bsv21.data.status == Bsv20Status.Pending) {
-        for(const txo of ctx.txos) {
+        for (const txo of ctx.txos) {
           const outBsv21 = txo.data?.bsv21;
           if (outBsv21?.data?.id == bsv21.data.id) {
             outBsv21.data.status = Bsv20Status.Pending;
@@ -235,11 +235,11 @@ export class Bsv21Indexer extends Indexer {
             }
             txos.push(txo);
           }
-          if (this.mode !== IndexMode.Verify) {
+          if (this.indexMode !== IndexMode.Verify) {
             await txoStore.storage.putMany(txos);
           }
 
-          if (this.mode !== IndexMode.Trust) {
+          if (this.indexMode !== IndexMode.Trust) {
             for (const t of txos) {
               let ingest = ingestQueue[t.outpoint.txid];
               if (!ingest) {
@@ -248,6 +248,7 @@ export class Bsv21Indexer extends Indexer {
                   height: t.block.height,
                   source: "bsv21",
                   idx: Number(t.block.idx),
+                  parseMode: ParseMode.Persist,
                   outputs: [t.outpoint.vout],
                 };
                 ingestQueue[t.outpoint.txid] = ingest;
@@ -256,22 +257,27 @@ export class Bsv21Indexer extends Indexer {
               }
             }
           }
-          // if (this.syncMode !== TxoStatus.TRUSTED) {
+          // if (this.indexMode !== IndexMode.Verify) {
           //   resp = await fetch(
           //     `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}/ancestors`,
           //   );
           //   const txids = (await resp.json()) as { [score: string]: string };
-          //   await txoStore.queue(
-          //     Object.entries(txids).map(([score, txid]) => {
-          //       const [height, idx] = score.split(".");
-          //       return {
+          //   for (const [score, txid] of Object.entries(txids)) {
+          //     const [height, idx] = score.split(".");
+          //     let ingest = ingestQueue[txid];
+          //     if (!ingest) {
+          //       ingest = {
           //         txid,
-          //         height: Number(height || Date.now()),
-          //         idx: Number(idx || 0),
-          //         isDep: true
-          //       } as Ingest
-          //     })
-          //   );
+          //         height: parseInt(height),
+          //         source: "bsv21",
+          //         idx: Number(idx),
+          //         parseMode: ParseMode.Dependency,
+          //       };
+          //       ingestQueue[t.outpoint.txid] = ingest;
+          //     } else {
+          //       ingest.outputs!.push(t.outpoint.vout);
+          //     }
+          //   }
           // }
 
           offset += limit;

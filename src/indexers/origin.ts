@@ -6,6 +6,7 @@ import {
   Indexer,
   IndexMode,
   Outpoint,
+  ParseMode,
   Txo,
   TxoStatus,
   type Event,
@@ -16,6 +17,7 @@ import type { Inscription } from "./insc";
 import type { Ordinal } from "./remote-types";
 import { Listing } from "./ordlock";
 import type { TxoStore } from "../stores";
+import type { Network } from "../spv-store";
 
 export interface Origin {
   outpoint: string;
@@ -27,8 +29,18 @@ export interface Origin {
 export class OriginIndexer extends Indexer {
   tag = "origin";
   name = "Origins";
+  oneSat: OneSatProvider;
 
-  async parse(ctx: IndexContext, vout: number, previewOnly = false): Promise<IndexData | undefined> {
+  constructor(
+    public owners = new Set<string>(),
+    public indexMode: IndexMode,
+    public network: Network = "mainnet",
+  ) {
+    super(owners, indexMode, network);
+    this.oneSat = new OneSatProvider(network);
+  }
+
+  async parse(ctx: IndexContext, vout: number, parseMode = ParseMode.Persist): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     if (txo.satoshis != 1n) return;
 
@@ -49,20 +61,21 @@ export class OriginIndexer extends Indexer {
           if (origin?.nonce) {
             origin.nonce++;
           }
-        } else if (this.mode !== IndexMode.Verify) {
-          const provider = new OneSatProvider(this.network);
-          const remote = await provider.getTxo(spend.outpoint);
-          if (remote?.origin?.data?.insc && remote.origin.data.insc.file?.type != 'application/bsv-20') {
+        } else if (this.indexMode !== IndexMode.Verify) {
+          const remote = await this.oneSat.getTxo(spend.outpoint);
+          if (remote?.origin?.data?.insc) {
             origin = {
               outpoint: remote.origin.outpoint,
               insc: { file: remote.origin.data.insc.file },
               map: remote.origin.data.map,
               nonce: 0,
             };
-            if (!previewOnly && this.mode == IndexMode.TrustAndVerify) {
-              const ancestors = await this.fetchAncestors(txo.owner || "", [
-                txo.outpoint,
-              ]);
+            if (
+              this.indexMode == IndexMode.TrustAndVerify &&
+              parseMode == ParseMode.Persist &&
+              !origin.insc?.file?.type.startsWith("application/bsv-20")
+            ) {
+              const ancestors = await this.oneSat.getOriginAncestors([txo.outpoint]);
               for (const [txid, block] of Object.entries(ancestors)) {
                 ctx.queue[txid] = block;
               }
@@ -97,7 +110,7 @@ export class OriginIndexer extends Indexer {
     return new IndexData(origin, events, deps);
   }
 
-  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<void>  {
+  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<void> {
     const limit = 100;
     for await (const owner of this.owners) {
       let offset = 0;
@@ -118,7 +131,7 @@ export class OriginIndexer extends Indexer {
             TxoStatus.Trusted,
           );
           txos.push(txo);
-          if (this.mode == IndexMode.Verify) continue;
+          if (this.indexMode == IndexMode.Verify) continue;
           txo.owner = owner;
           if (u.height) {
             txo.block = new Block(u.height, BigInt(u.idx || 0));
@@ -148,29 +161,31 @@ export class OriginIndexer extends Indexer {
           }
         }
 
-        if (this.mode !== IndexMode.Verify) {
+        if (this.indexMode !== IndexMode.Verify) {
           await txoStore.storage.putMany(txos);
         }
 
-        for (const t of txos) {
-          let ingest = ingestQueue[t.outpoint.txid];
-          if (!ingest) {
-            ingest = {
-              txid: t.outpoint.txid,
-              height: t.block.height,
-              source: "origin",
-              idx: Number(t.block.idx),
-              outputs: [t.outpoint.vout],
-              downloadOnly: this.mode === IndexMode.Trust,
-            };
-            ingestQueue[t.outpoint.txid] = ingest;
-          } else {
-            ingest.outputs!.push(t.outpoint.vout);
+        if (this.indexMode !== IndexMode.Trust) {
+          for (const t of txos) {
+            let ingest = ingestQueue[t.outpoint.txid];
+            if (!ingest) {
+              ingest = {
+                txid: t.outpoint.txid,
+                height: t.block.height,
+                source: "origin",
+                idx: Number(t.block.idx),
+                parseMode: ParseMode.Persist,
+                outputs: [t.outpoint.vout],
+              };
+              ingestQueue[t.outpoint.txid] = ingest;
+            } else {
+              ingest.outputs!.push(t.outpoint.vout);
+              ingest.parseMode = ParseMode.Persist;
+            }
           }
         }
-        if (this.mode !== IndexMode.Trust) {
-          const ancestors = await this.fetchAncestors(
-            owner,
+        if (this.indexMode == IndexMode.Verify) {
+          const ancestors = await this.oneSat.getOriginAncestors(
             txos.map((t) => t.outpoint),
           );
           for (const [txid, block] of Object.entries(ancestors)) {
@@ -180,34 +195,12 @@ export class OriginIndexer extends Indexer {
               height: block.height,
               source: "ancestor",
               idx: Number(block.idx),
-              validateInputs: true,
-              isDep: true,
+              parseMode: ParseMode.Dependency,
             };
           }
         }
         offset += limit;
       } while (utxos.length == limit);
     }
-  }
-
-  async fetchAncestors(owner: string, outpoints: Outpoint[]): Promise<IndexQueue> {
-    const resp = await fetch(
-      `https://ordinals.gorillapool.io/api/inscriptions/ancestors`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(outpoints),
-      },
-    );
-    const ancestors = (await resp.json()) as {
-      txid: string;
-      idx: string;
-      height: number;
-    }[];
-
-    return ancestors.reduce((queue, u) => {
-      queue[u.txid] = new Block(u.height || 0, BigInt(u.idx || 0));
-      return queue;
-    }, {} as IndexQueue);
   }
 }

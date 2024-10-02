@@ -9,6 +9,20 @@ import type { Ingest } from "./ingest";
  * 
  * @enum {number}
  */
+export enum ParseMode {
+  /** Parse for preview. Do not load dependencies. */
+  Preview = 0,
+  /** Parse as dependency. */
+  Dependency = 1,
+  /** Parse and queue all dependencies for ingestion. */
+  Persist = 2,
+}
+
+/**
+ * Enum representing the different modes of indexing.
+ * 
+ * @enum {number}
+ */
 export enum IndexMode {
   /** Rely on an external indexer. */
   Trust = 1,
@@ -34,12 +48,12 @@ export abstract class Indexer {
    * @param {Set<string>} owners - A set of owners that this indexer is interested in. 
    *                 An owner can be an address or any other data the indexer 
    *                 wants to use to identify which transactions to include in the index.
-   * @param {IndexMode} mode - The mode of the indexer.
+   * @param {IndexMode} indexMode - The mode of the indexer.
    * @param {Network} [network="mainnet"] - The network the indexer is operating on. Defaults to "mainnet".
    */
   constructor(
     public owners = new Set<string>(),
-    public mode: IndexMode,
+    public indexMode: IndexMode,
     public network: Network = "mainnet",
   ) { }
 
@@ -52,7 +66,7 @@ export abstract class Indexer {
    * @param {boolean} [previewOnly=false] - A flag indicating whether to perform a preview-only parse.
    * @returns {Promise<IndexData | undefined>} A promise that resolves to the index data if relevant, or undefined if not.
    */
-  async parse(ctx: IndexContext, vout: number, previewOnly = false): Promise<IndexData | undefined> {
+  async parse(ctx: IndexContext, vout: number, parseMode  = ParseMode.Persist): Promise<IndexData | undefined> {
     return;
   }
 

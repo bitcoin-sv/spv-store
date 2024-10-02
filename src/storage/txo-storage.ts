@@ -155,5 +155,5 @@ export interface TxoStorage {
    * Retrieves backup logs.
    * @returns A promise that resolves to an array of backup logs.
    */
-  getBackupLogs(): Promise<TxLog[]>;
+  getBackupLogs(): Promise<Ingest[]>;
 }

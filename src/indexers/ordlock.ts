@@ -27,10 +27,8 @@ export class OrdLockIndexer extends Indexer {
   async parse(
     ctx: IndexContext,
     vout: number,
-    previewOnly = false,
   ): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
-    const a = Uint8Array.from(txo.script);
     const script = Buffer.from(txo.script);
     const prefixIdx = script.indexOf(PREFIX);
     if (prefixIdx === -1) return;

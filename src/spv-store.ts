@@ -17,6 +17,7 @@ import type { BlockStore, Txn, TxnStore, TxoStore } from "./stores";
 import {
   blockHeaderFromReader,
   Outpoint,
+  ParseMode,
   Txo,
   TxoSort,
   type BlockHeader,
@@ -69,7 +70,6 @@ export class SPVStore {
   async broadcast(
     tx: Transaction,
     source = "",
-    ingestParets = false
   ): Promise<BroadcastResponse | BroadcastFailure> {
     let resp: BroadcastResponse | BroadcastFailure;
     if(!tx.merklePath) {
@@ -82,7 +82,7 @@ export class SPVStore {
       }
     }
     if (isBroadcastResponse(resp)) {
-      await this.stores.txos!.ingest(tx, source, true, false, ingestParets);
+      await this.stores.txos!.ingest(tx, source, ParseMode.Persist, true)
     }
     return resp;
 
@@ -140,10 +140,6 @@ export class SPVStore {
     return this.stores.txos!.storage.getMany(outpoints);
   }
 
-  // async getTxids(): Promise<string[]> {
-  //   return this.stores.txns!.storage.getTxids();
-  // }
-
   async getTx(
     txid: string,
     fromRemote = false
@@ -156,7 +152,7 @@ export class SPVStore {
   }
 
   async parseTx(tx: Transaction): Promise<IndexContext> {
-    return this.stores.txos!.parse(tx, true, undefined, true, true);
+    return this.stores.txos!.ingest(tx, "", ParseMode.Preview, true)
   }
 
   async getSyncedBlock(): Promise<BlockHeader | undefined> {

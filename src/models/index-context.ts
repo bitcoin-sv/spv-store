@@ -22,33 +22,26 @@ export type IndexSummary = {
 };
 
 
+
 /**
- * Represents the context for indexing a transaction.
+ * Represents the context of an index operation.
  * 
- * @remarks
- * This class holds the necessary information for indexing a transaction,
- * including its transaction ID, spent transaction outputs, transaction outputs,
- * dependency transactions to be ingested, and a summary of the transaction after indexing.
+ * @interface IndexContext
  * 
- * @param tx - The transaction to be indexed.
- * @param block - The transaction block. Defaults to a new Block instance.
- * 
- * @property txid - The transaction ID in hexadecimal format.
- * @property spends - An array of spent transaction outputs (inputs).
- * @property txos - An array of transaction outputs.
- * @property queue - Dependency transactions to be ingested.
- * @property summary - Summary of the transaction after indexing.
+ * @property {Transaction} tx - The transaction being indexed.
+ * @property {string} txid - The unique identifier of the transaction.
+ * @property {Block} block - The block containing the transaction.
+ * @property {Txo[]} spends - The spent transaction outputs (inputs).
+ * @property {Txo[]} txos - The transaction outputs.
+ * @property {IndexQueue} queue - The dependency transactions to be ingested.
+ * @property {IndexSummary} summary - The summary of the transaction after indexing.
  */
-export class IndexContext {
+export interface IndexContext {
+  tx: Transaction;
   txid: string;
-  spends: Txo[] = []; //spent transaction outputs (inputs)
-  txos: Txo[] = []; //transaction outputs
-  queue: IndexQueue = {}; // dependency transactions to be ingested
-  summary: IndexSummary = {} // Summary of the transaction after indexing
-  constructor(
-    public tx: Transaction, // transaction to be indexed
-    public block = new Block() // transaction block
-  ) {
-    this.txid = tx.id('hex');
-  }
+  block: Block;
+  spends: Txo[]; //spent transaction outputs (inputs)
+  txos: Txo[]; //transaction outputs
+  queue: IndexQueue; // dependency transactions to be ingested
+  summary: IndexSummary // Summary of the transaction after indexing
 }

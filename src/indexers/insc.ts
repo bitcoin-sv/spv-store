@@ -29,7 +29,6 @@ export class InscriptionIndexer extends Indexer {
   async parse(
     ctx: IndexContext,
     vout: number,
-    previewOnly = false,
   ): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     if (txo.satoshis != 1n) return;

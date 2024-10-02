@@ -43,12 +43,16 @@ export class Bsv20Indexer extends Indexer {
   provider: OneSatProvider;
   constructor(
     public owners = new Set<string>(),
-    public mode: IndexMode,
+    public indexMode: IndexMode,
     public network: Network = "mainnet",
   ) {
-    super(owners, mode, network);
+    if (indexMode !== IndexMode.Trust) {
+      throw new Error("Bsv20 requires Trust mode");
+    }
+    super(owners, indexMode, network);
     this.provider = new OneSatProvider(network);
   }
+
 
   async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
@@ -89,7 +93,7 @@ export class Bsv20Indexer extends Indexer {
     for (const spend of ctx.spends) {
       const bsv20 = spend.data.bsv20;
       if (!bsv20) continue;
-      if (bsv20.data.status == 0 && this.mode !== IndexMode.Verify) {
+      if (bsv20.data.status == 0 && this.indexMode !== IndexMode.Verify) {
         const remote = await this.provider.getBsv2021Txo(spend.outpoint);
         if (remote) {
           tokens.set(bsv20.data.tick, remote);
@@ -169,44 +173,7 @@ export class Bsv20Indexer extends Indexer {
             }
             txos.push(txo);
           }
-          if (this.mode !== IndexMode.Verify) {
-            await txoStore.storage.putMany(txos);
-          }
-
-          for (const t of txos) {
-            let ingest = ingestQueue[t.outpoint.txid];
-            if (!ingest) {
-              ingest = {
-                txid: t.outpoint.txid,
-                height: t.block.height,
-                source: "bsv20",
-                idx: Number(t.block.idx),
-                outputs: [t.outpoint.vout],
-                downloadOnly: true,
-              };
-              ingestQueue[t.outpoint.txid] = ingest;
-            } else {
-              ingest.outputs!.push(t.outpoint.vout);
-            }
-          }
-          // if (this.syncMode !== TxoStatus.TRUSTED) {
-          //   resp = await fetch(
-          //     `https://ordinals.gorillapool.io/api/bsv20/${owner}/id/${token.id}/ancestors`,
-          //   );
-          //   const txids = (await resp.json()) as { [score: string]: string };
-          //   await txoStore.queue(
-          //     Object.entries(txids).map(([score, txid]) => {
-          //       const [height, idx] = score.split(".");
-          //       return {
-          //         txid,
-          //         height: Number(height || Date.now()),
-          //         idx: Number(idx || 0),
-          //         isDep: true
-          //       } as Ingest
-          //     })
-          //   );
-          // }
-
+          await txoStore.storage.putMany(txos);
           offset += limit;
         } while (utxos.length == limit);
       }

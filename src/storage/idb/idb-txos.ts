@@ -6,6 +6,7 @@ import { Outpoint } from "../../models/outpoint";
 import { TxoSort, type TxoLookup, type TxoResults } from "../../models/search";
 import type { Network } from "../../spv-store";
 import type { TxLog } from "../../services/inv-service";
+import { ParseMode } from "../../models";
 
 const TXO_DB_VERSION = 1;
 
@@ -323,8 +324,11 @@ export class TxoStorageIDB implements TxoStorage {
     return Array.from(ingests.values())
       .sort((a, b) => a.height - b.height || a.idx - b.idx)
       .map((ingest) => ({
-        ...ingest,
+        txid: ingest.txid,
+        height: ingest.height,
+        idx: ingest.idx,
         outputs: Array.from(ingest.outputs),
+        parseMode: ingest.isDep ? ParseMode.Dependency : ParseMode.Persist,
       }));
   }
 
