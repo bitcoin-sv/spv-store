@@ -18,7 +18,7 @@ The transaction has been broadcasted to the network.
 
 #### Defined in
 
-[stores/txn-store.ts:44](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txn-store.ts#L44)
+[stores/txn-store.ts:44](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/stores/txn-store.ts#L44)
 
 ***
 
@@ -30,7 +30,7 @@ The transaction has been confirmed by the network, but could still be re-orged
 
 #### Defined in
 
-[stores/txn-store.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txn-store.ts#L45)
+[stores/txn-store.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/stores/txn-store.ts#L45)
 
 ***
 
@@ -42,7 +42,7 @@ The transaction is 6 blocks deep and is considered immutable.
 
 #### Defined in
 
-[stores/txn-store.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txn-store.ts#L46)
+[stores/txn-store.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/stores/txn-store.ts#L46)
 
 ***
 
@@ -54,7 +54,7 @@ The transaction is pending and awaiting further action.
 
 #### Defined in
 
-[stores/txn-store.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txn-store.ts#L43)
+[stores/txn-store.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/stores/txn-store.ts#L43)
 
 ***
 
@@ -66,4 +66,4 @@ The transaction has been rejected.
 
 #### Defined in
 
-[stores/txn-store.ts:42](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txn-store.ts#L42)
+[stores/txn-store.ts:42](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/stores/txn-store.ts#L42)

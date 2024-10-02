@@ -20,7 +20,7 @@ The block containing the transaction.
 
 #### Defined in
 
-[models/index-context.ts:42](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/index-context.ts#L42)
+[models/index-context.ts:42](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/index-context.ts#L42)
 
 ***
 
@@ -32,7 +32,7 @@ The dependency transactions to be ingested.
 
 #### Defined in
 
-[models/index-context.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/index-context.ts#L45)
+[models/index-context.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/index-context.ts#L45)
 
 ***
 
@@ -44,7 +44,7 @@ The spent transaction outputs (inputs).
 
 #### Defined in
 
-[models/index-context.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/index-context.ts#L43)
+[models/index-context.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/index-context.ts#L43)
 
 ***
 
@@ -56,7 +56,7 @@ The summary of the transaction after indexing.
 
 #### Defined in
 
-[models/index-context.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/index-context.ts#L46)
+[models/index-context.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/index-context.ts#L46)
 
 ***
 
@@ -68,7 +68,7 @@ The transaction being indexed.
 
 #### Defined in
 
-[models/index-context.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/index-context.ts#L40)
+[models/index-context.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/index-context.ts#L40)
 
 ***
 
@@ -80,7 +80,7 @@ The unique identifier of the transaction.
 
 #### Defined in
 
-[models/index-context.ts:41](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/index-context.ts#L41)
+[models/index-context.ts:41](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/index-context.ts#L41)
 
 ***
 
@@ -92,4 +92,4 @@ The transaction outputs.
 
 #### Defined in
 
-[models/index-context.ts:44](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/index-context.ts#L44)
+[models/index-context.ts:44](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/index-context.ts#L44)

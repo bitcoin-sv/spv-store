@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[models/search.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/search.ts#L4)
+[models/search.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/search.ts#L4)
 
 ***
 
@@ -24,4 +24,4 @@
 
 #### Defined in
 
-[models/search.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/search.ts#L5)
+[models/search.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/search.ts#L5)

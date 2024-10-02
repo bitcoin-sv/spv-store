@@ -20,7 +20,7 @@ The block containing the transaction.
 
 #### Defined in
 
-[stores/txn-store.ts:27](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txn-store.ts#L27)
+[stores/txn-store.ts:27](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/stores/txn-store.ts#L27)
 
 ***
 
@@ -32,7 +32,7 @@ Optional proof data for the transaction.
 
 #### Defined in
 
-[stores/txn-store.ts:26](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txn-store.ts#L26)
+[stores/txn-store.ts:26](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/stores/txn-store.ts#L26)
 
 ***
 
@@ -44,7 +44,7 @@ The raw transaction data.
 
 #### Defined in
 
-[stores/txn-store.ts:25](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txn-store.ts#L25)
+[stores/txn-store.ts:25](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/stores/txn-store.ts#L25)
 
 ***
 
@@ -56,7 +56,7 @@ The current status of the transaction.
 
 #### Defined in
 
-[stores/txn-store.ts:28](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txn-store.ts#L28)
+[stores/txn-store.ts:28](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/stores/txn-store.ts#L28)
 
 ***
 
@@ -68,4 +68,4 @@ The unique identifier for the transaction.
 
 #### Defined in
 
-[stores/txn-store.ts:24](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txn-store.ts#L24)
+[stores/txn-store.ts:24](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/stores/txn-store.ts#L24)

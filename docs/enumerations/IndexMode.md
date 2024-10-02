@@ -18,7 +18,7 @@ Rely on an external indexer.
 
 #### Defined in
 
-[models/indexer.ts:28](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L28)
+[models/indexer.ts:28](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/indexer.ts#L28)
 
 ***
 
@@ -30,7 +30,7 @@ Initially rely on an external indexer, but also load and verify all data locally
 
 #### Defined in
 
-[models/indexer.ts:32](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L32)
+[models/indexer.ts:32](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/indexer.ts#L32)
 
 ***
 
@@ -42,4 +42,4 @@ Verify all data locally. This requires all dependent data to be indexed as well.
 
 #### Defined in
 
-[models/indexer.ts:30](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L30)
+[models/indexer.ts:30](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/indexer.ts#L30)

@@ -65,7 +65,10 @@ const ordinals = await oneSatSPV.search(new TxoLookup('origin', 'type', 'image/j
 
 ## Indexers
 Indexers parse transactions and identify if a transaction output fits a specified set of rules. If a match is identified, the indexer can extract pertinant data from the transaction and save that data in a fashion where it can be retrieved and searched.
+[indexers/index.ts](_media/index.ts)
 
 ## Storage
+[storage/index.ts](_media/index-1.ts)
 
-## Providers
+## Services
+[services/index.ts](_media/index-2.ts)

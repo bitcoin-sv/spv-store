@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[indexers/ordlock.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/ordlock.ts#L17)
+[indexers/ordlock.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/indexers/ordlock.ts#L17)
 
 ## Properties
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[indexers/ordlock.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/ordlock.ts#L18)
+[indexers/ordlock.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/indexers/ordlock.ts#L18)
 
 ***
 
@@ -44,4 +44,4 @@
 
 #### Defined in
 
-[indexers/ordlock.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/ordlock.ts#L19)
+[indexers/ordlock.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/indexers/ordlock.ts#L19)
