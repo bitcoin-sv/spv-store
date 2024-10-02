@@ -30,7 +30,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:12](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/block-store.ts#L12)
+[stores/block-store.ts:12](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/block-store.ts#L12)
 
 ## Properties
 
@@ -40,7 +40,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/block-store.ts#L15)
+[stores/block-store.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/block-store.ts#L15)
 
 ***
 
@@ -50,7 +50,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:14](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/block-store.ts#L14)
+[stores/block-store.ts:14](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/block-store.ts#L14)
 
 ***
 
@@ -60,7 +60,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:13](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/block-store.ts#L13)
+[stores/block-store.ts:13](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/block-store.ts#L13)
 
 ## Methods
 
@@ -74,7 +74,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/block-store.ts#L18)
+[stores/block-store.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/block-store.ts#L18)
 
 ***
 
@@ -92,7 +92,7 @@ A promise that resolves to the current chaintip block header, or undefined if no
 
 #### Defined in
 
-[stores/block-store.ts:94](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/block-store.ts#L94)
+[stores/block-store.ts:94](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/block-store.ts#L94)
 
 ***
 
@@ -124,7 +124,7 @@ A promise that resolves to `true` if the root is valid for the given height, oth
 
 #### Defined in
 
-[stores/block-store.ts:84](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/block-store.ts#L84)
+[stores/block-store.ts:84](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/block-store.ts#L84)
 
 ***
 
@@ -148,4 +148,4 @@ A promise that resolves when the synchronization is complete.
 
 #### Defined in
 
-[stores/block-store.ts:30](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/block-store.ts#L30)
+[stores/block-store.ts:30](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/block-store.ts#L30)

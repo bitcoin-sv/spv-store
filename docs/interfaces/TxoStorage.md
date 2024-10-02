@@ -30,7 +30,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:117](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L117)
+[storage/txo-storage.ts:117](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L117)
 
 ***
 
@@ -54,7 +54,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:124](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L124)
+[storage/txo-storage.ts:124](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L124)
 
 ***
 
@@ -72,7 +72,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L15)
+[storage/txo-storage.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L15)
 
 ***
 
@@ -96,25 +96,25 @@ A promise that resolves to the transaction output or undefined if not found.
 
 #### Defined in
 
-[storage/txo-storage.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L22)
+[storage/txo-storage.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L22)
 
 ***
 
 ### getBackupLogs()
 
-> **getBackupLogs**(): `Promise`\<[`TxLog`](../classes/TxLog.md)[]\>
+> **getBackupLogs**(): `Promise`\<[`Ingest`](Ingest.md)[]\>
 
 Retrieves backup logs.
 
 #### Returns
 
-`Promise`\<[`TxLog`](../classes/TxLog.md)[]\>
+`Promise`\<[`Ingest`](Ingest.md)[]\>
 
 A promise that resolves to an array of backup logs.
 
 #### Defined in
 
-[storage/txo-storage.ts:158](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L158)
+[storage/txo-storage.ts:158](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L158)
 
 ***
 
@@ -138,7 +138,7 @@ A promise that resolves to an array of transaction outputs.
 
 #### Defined in
 
-[storage/txo-storage.ts:36](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L36)
+[storage/txo-storage.ts:36](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L36)
 
 ***
 
@@ -174,7 +174,7 @@ A promise that resolves to an array of ingests.
 
 #### Defined in
 
-[storage/txo-storage.ts:91](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L91)
+[storage/txo-storage.ts:91](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L91)
 
 ***
 
@@ -198,7 +198,7 @@ A promise that resolves to an array of transaction outputs or undefined if not f
 
 #### Defined in
 
-[storage/txo-storage.ts:29](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L29)
+[storage/txo-storage.ts:29](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L29)
 
 ***
 
@@ -216,7 +216,7 @@ A promise that resolves to the length of the queue.
 
 #### Defined in
 
-[storage/txo-storage.ts:81](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L81)
+[storage/txo-storage.ts:81](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L81)
 
 ***
 
@@ -240,7 +240,7 @@ A promise that resolves to an array of recent transaction logs.
 
 #### Defined in
 
-[storage/txo-storage.ts:145](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L145)
+[storage/txo-storage.ts:145](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L145)
 
 ***
 
@@ -264,7 +264,7 @@ A promise that resolves to the state value or undefined if not found.
 
 #### Defined in
 
-[storage/txo-storage.ts:67](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L67)
+[storage/txo-storage.ts:67](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L67)
 
 ***
 
@@ -288,7 +288,7 @@ A promise that resolves to the transaction log or undefined if not found.
 
 #### Defined in
 
-[storage/txo-storage.ts:131](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L131)
+[storage/txo-storage.ts:131](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L131)
 
 ***
 
@@ -312,7 +312,7 @@ A promise that resolves to an array of transaction logs or undefined if not foun
 
 #### Defined in
 
-[storage/txo-storage.ts:138](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L138)
+[storage/txo-storage.ts:138](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L138)
 
 ***
 
@@ -336,7 +336,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L43)
+[storage/txo-storage.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L43)
 
 ***
 
@@ -360,7 +360,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:103](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L103)
+[storage/txo-storage.ts:103](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L103)
 
 ***
 
@@ -384,7 +384,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:110](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L110)
+[storage/txo-storage.ts:110](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L110)
 
 ***
 
@@ -408,7 +408,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:50](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L50)
+[storage/txo-storage.ts:50](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L50)
 
 ***
 
@@ -432,7 +432,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:152](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L152)
+[storage/txo-storage.ts:152](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L152)
 
 ***
 
@@ -468,7 +468,7 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[storage/txo-storage.ts:60](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L60)
+[storage/txo-storage.ts:60](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L60)
 
 ***
 
@@ -496,4 +496,4 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:75](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/txo-storage.ts#L75)
+[storage/txo-storage.ts:75](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/txo-storage.ts#L75)

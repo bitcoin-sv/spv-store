@@ -20,7 +20,7 @@ Interface representing a storage system for transaction outputs (Txo).
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:77](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L77)
+[storage/idb/idb-txos.ts:78](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L78)
 
 ## Methods
 
@@ -48,7 +48,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:259](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L259)
+[storage/idb/idb-txos.ts:260](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L260)
 
 ***
 
@@ -76,7 +76,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:263](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L263)
+[storage/idb/idb-txos.ts:264](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L264)
 
 ***
 
@@ -98,7 +98,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:107](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L107)
+[storage/idb/idb-txos.ts:108](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L108)
 
 ***
 
@@ -126,7 +126,7 @@ A promise that resolves to the transaction output or undefined if not found.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:111](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L111)
+[storage/idb/idb-txos.ts:112](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L112)
 
 ***
 
@@ -148,7 +148,7 @@ A promise that resolves to an array of backup logs.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:298](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L298)
+[storage/idb/idb-txos.ts:299](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L299)
 
 ***
 
@@ -176,7 +176,7 @@ A promise that resolves to an array of transaction outputs.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:125](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L125)
+[storage/idb/idb-txos.ts:126](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L126)
 
 ***
 
@@ -216,7 +216,7 @@ A promise that resolves to an array of ingests.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:207](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L207)
+[storage/idb/idb-txos.ts:208](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L208)
 
 ***
 
@@ -244,7 +244,7 @@ A promise that resolves to an array of transaction outputs or undefined if not f
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:116](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L116)
+[storage/idb/idb-txos.ts:117](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L117)
 
 ***
 
@@ -266,7 +266,7 @@ A promise that resolves to the length of the queue.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:195](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L195)
+[storage/idb/idb-txos.ts:196](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L196)
 
 ***
 
@@ -294,7 +294,7 @@ A promise that resolves to an array of recent transaction logs.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:286](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L286)
+[storage/idb/idb-txos.ts:287](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L287)
 
 ***
 
@@ -322,7 +322,7 @@ A promise that resolves to the state value or undefined if not found.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:186](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L186)
+[storage/idb/idb-txos.ts:187](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L187)
 
 ***
 
@@ -350,7 +350,7 @@ A promise that resolves to the transaction log or undefined if not found.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:269](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L269)
+[storage/idb/idb-txos.ts:270](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L270)
 
 ***
 
@@ -378,7 +378,7 @@ A promise that resolves to an array of transaction logs or undefined if not foun
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:273](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L273)
+[storage/idb/idb-txos.ts:274](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L274)
 
 ***
 
@@ -398,7 +398,7 @@ A promise that resolves to an array of transaction logs or undefined if not foun
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:331](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L331)
+[storage/idb/idb-txos.ts:335](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L335)
 
 ***
 
@@ -426,7 +426,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:134](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L134)
+[storage/idb/idb-txos.ts:135](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L135)
 
 ***
 
@@ -454,7 +454,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:226](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L226)
+[storage/idb/idb-txos.ts:227](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L227)
 
 ***
 
@@ -482,7 +482,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:240](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L240)
+[storage/idb/idb-txos.ts:241](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L241)
 
 ***
 
@@ -510,7 +510,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:139](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L139)
+[storage/idb/idb-txos.ts:140](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L140)
 
 ***
 
@@ -538,7 +538,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:282](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L282)
+[storage/idb/idb-txos.ts:283](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L283)
 
 ***
 
@@ -578,7 +578,7 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:151](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L151)
+[storage/idb/idb-txos.ts:152](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L152)
 
 ***
 
@@ -610,7 +610,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:191](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L191)
+[storage/idb/idb-txos.ts:192](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L192)
 
 ***
 
@@ -630,4 +630,4 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:78](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/storage/idb/idb-txos.ts#L78)
+[storage/idb/idb-txos.ts:79](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/storage/idb/idb-txos.ts#L79)

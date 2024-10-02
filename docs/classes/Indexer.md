@@ -24,7 +24,7 @@ Abstract class representing an Indexer.
 
 ### new Indexer()
 
-> **new Indexer**(`owners`, `mode`, `network`?): [`Indexer`](Indexer.md)
+> **new Indexer**(`owners`, `indexMode`, `network`?): [`Indexer`](Indexer.md)
 
 Creates an instance of the Indexer.
 
@@ -36,7 +36,7 @@ A set of owners that this indexer is interested in.
                 An owner can be an address or any other data the indexer 
                 wants to use to identify which transactions to include in the index.
 
-• **mode**: [`IndexMode`](../enumerations/IndexMode.md)
+• **indexMode**: [`IndexMode`](../enumerations/IndexMode.md)
 
 The mode of the indexer.
 
@@ -50,19 +50,19 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L40)
+[models/indexer.ts:54](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L54)
 
 ## Properties
 
-### mode
+### indexMode
 
-> **mode**: [`IndexMode`](../enumerations/IndexMode.md)
+> **indexMode**: [`IndexMode`](../enumerations/IndexMode.md)
 
 The mode of the indexer.
 
 #### Defined in
 
-[models/indexer.ts:42](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L42)
+[models/indexer.ts:56](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L56)
 
 ***
 
@@ -74,7 +74,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[models/indexer.ts:29](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L29)
+[models/indexer.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L43)
 
 ***
 
@@ -86,7 +86,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L43)
+[models/indexer.ts:57](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L57)
 
 ***
 
@@ -100,7 +100,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[models/indexer.ts:41](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L41)
+[models/indexer.ts:55](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L55)
 
 ***
 
@@ -112,20 +112,20 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[models/indexer.ts:28](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L28)
+[models/indexer.ts:42](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L42)
 
 ## Methods
 
 ### parse()
 
-> **parse**(`ctx`, `vout`, `previewOnly`?): `Promise`\<`undefined` \| [`IndexData`](IndexData.md)\>
+> **parse**(`ctx`, `vout`, `parseMode`): `Promise`\<`undefined` \| [`IndexData`](IndexData.md)\>
 
 Parses an output and returns the index data if it is relevant to this indexer.
 If the output is not relevant, it returns undefined.
 
 #### Parameters
 
-• **ctx**: [`IndexContext`](IndexContext.md)
+• **ctx**: [`IndexContext`](../interfaces/IndexContext.md)
 
 The context for the index operation.
 
@@ -133,9 +133,7 @@ The context for the index operation.
 
 The output number to be parsed.
 
-• **previewOnly?**: `boolean` = `false`
-
-A flag indicating whether to perform a preview-only parse.
+• **parseMode**: [`ParseMode`](../enumerations/ParseMode.md) = `ParseMode.Persist`
 
 #### Returns
 
@@ -145,7 +143,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[models/indexer.ts:55](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L55)
+[models/indexer.ts:69](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L69)
 
 ***
 
@@ -157,7 +155,7 @@ Pre-save hook that evaluates the index data for the entire transaction before it
 
 #### Parameters
 
-• **ctx**: [`IndexContext`](IndexContext.md)
+• **ctx**: [`IndexContext`](../interfaces/IndexContext.md)
 
 The context of the index operation.
 
@@ -169,7 +167,7 @@ A promise that resolves when the pre-save evaluation is complete.
 
 #### Defined in
 
-[models/indexer.ts:65](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L65)
+[models/indexer.ts:79](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L79)
 
 ***
 
@@ -197,4 +195,4 @@ A promise that resolves when the synchronization is complete.
 
 #### Defined in
 
-[models/indexer.ts:76](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L76)
+[models/indexer.ts:90](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L90)

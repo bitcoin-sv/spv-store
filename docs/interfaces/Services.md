@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[spv-store.ts:31](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/spv-store.ts#L31)
+[spv-store.ts:32](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/spv-store.ts#L32)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[spv-store.ts:33](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/spv-store.ts#L33)
+[spv-store.ts:34](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/spv-store.ts#L34)
 
 ***
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[spv-store.ts:34](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/spv-store.ts#L34)
+[spv-store.ts:35](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/spv-store.ts#L35)
 
 ***
 
@@ -44,4 +44,4 @@
 
 #### Defined in
 
-[spv-store.ts:32](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/spv-store.ts#L32)
+[spv-store.ts:33](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/spv-store.ts#L33)

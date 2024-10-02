@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L15)
+[indexers/bsv20.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L15)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L16)
+[indexers/bsv20.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L16)
 
 ***
 
@@ -34,4 +34,4 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L17)
+[indexers/bsv20.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L17)

@@ -16,53 +16,43 @@ Abstract class representing an Indexer.
 
 ### new OriginIndexer()
 
-> **new OriginIndexer**(`owners`, `mode`, `network`?): [`OriginIndexer`](OriginIndexer.md)
-
-Creates an instance of the Indexer.
+> **new OriginIndexer**(`owners`, `indexMode`, `network`): [`OriginIndexer`](OriginIndexer.md)
 
 #### Parameters
 
 • **owners**: `Set`\<`string`\> = `...`
 
-A set of owners that this indexer is interested in. 
-                An owner can be an address or any other data the indexer 
-                wants to use to identify which transactions to include in the index.
+• **indexMode**: [`IndexMode`](../enumerations/IndexMode.md)
 
-• **mode**: [`IndexMode`](../enumerations/IndexMode.md)
-
-The mode of the indexer.
-
-• **network?**: [`Network`](../type-aliases/Network.md) = `"mainnet"`
-
-The network the indexer is operating on. Defaults to "mainnet".
+• **network**: [`Network`](../type-aliases/Network.md) = `"mainnet"`
 
 #### Returns
 
 [`OriginIndexer`](OriginIndexer.md)
 
-#### Inherited from
+#### Overrides
 
 [`Indexer`](Indexer.md).[`constructor`](Indexer.md#constructors)
 
 #### Defined in
 
-[models/indexer.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L40)
+[indexers/origin.ts:34](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/origin.ts#L34)
 
 ## Properties
 
-### mode
+### indexMode
 
-> **mode**: [`IndexMode`](../enumerations/IndexMode.md)
+> **indexMode**: [`IndexMode`](../enumerations/IndexMode.md)
 
 The mode of the indexer.
 
 #### Inherited from
 
-[`Indexer`](Indexer.md).[`mode`](Indexer.md#mode)
+[`Indexer`](Indexer.md).[`indexMode`](Indexer.md#indexmode)
 
 #### Defined in
 
-[models/indexer.ts:42](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L42)
+[indexers/origin.ts:36](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/origin.ts#L36)
 
 ***
 
@@ -78,7 +68,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[indexers/origin.ts:29](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/origin.ts#L29)
+[indexers/origin.ts:31](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/origin.ts#L31)
 
 ***
 
@@ -94,7 +84,17 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L43)
+[indexers/origin.ts:37](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/origin.ts#L37)
+
+***
+
+### oneSat
+
+> **oneSat**: `OneSatProvider`
+
+#### Defined in
+
+[indexers/origin.ts:32](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/origin.ts#L32)
 
 ***
 
@@ -112,7 +112,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[models/indexer.ts:41](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L41)
+[indexers/origin.ts:35](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/origin.ts#L35)
 
 ***
 
@@ -128,40 +128,20 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[indexers/origin.ts:28](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/origin.ts#L28)
+[indexers/origin.ts:30](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/origin.ts#L30)
 
 ## Methods
 
-### fetchAncestors()
-
-> **fetchAncestors**(`owner`, `outpoints`): `Promise`\<[`IndexQueue`](../type-aliases/IndexQueue.md)\>
-
-#### Parameters
-
-• **owner**: `string`
-
-• **outpoints**: [`Outpoint`](Outpoint.md)[]
-
-#### Returns
-
-`Promise`\<[`IndexQueue`](../type-aliases/IndexQueue.md)\>
-
-#### Defined in
-
-[indexers/origin.ts:193](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/origin.ts#L193)
-
-***
-
 ### parse()
 
-> **parse**(`ctx`, `vout`, `previewOnly`): `Promise`\<`undefined` \| [`IndexData`](IndexData.md)\>
+> **parse**(`ctx`, `vout`, `parseMode`): `Promise`\<`undefined` \| [`IndexData`](IndexData.md)\>
 
 Parses an output and returns the index data if it is relevant to this indexer.
 If the output is not relevant, it returns undefined.
 
 #### Parameters
 
-• **ctx**: [`IndexContext`](IndexContext.md)
+• **ctx**: [`IndexContext`](../interfaces/IndexContext.md)
 
 The context for the index operation.
 
@@ -169,9 +149,7 @@ The context for the index operation.
 
 The output number to be parsed.
 
-• **previewOnly**: `boolean` = `false`
-
-A flag indicating whether to perform a preview-only parse.
+• **parseMode**: [`ParseMode`](../enumerations/ParseMode.md) = `ParseMode.Persist`
 
 #### Returns
 
@@ -185,7 +163,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[indexers/origin.ts:31](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/origin.ts#L31)
+[indexers/origin.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/origin.ts#L43)
 
 ***
 
@@ -197,7 +175,7 @@ Pre-save hook that evaluates the index data for the entire transaction before it
 
 #### Parameters
 
-• **ctx**: [`IndexContext`](IndexContext.md)
+• **ctx**: [`IndexContext`](../interfaces/IndexContext.md)
 
 The context of the index operation.
 
@@ -213,7 +191,7 @@ A promise that resolves when the pre-save evaluation is complete.
 
 #### Defined in
 
-[models/indexer.ts:65](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L65)
+[models/indexer.ts:79](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L79)
 
 ***
 
@@ -245,4 +223,4 @@ A promise that resolves when the synchronization is complete.
 
 #### Defined in
 
-[indexers/origin.ts:100](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/origin.ts#L100)
+[indexers/origin.ts:113](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/origin.ts#L113)

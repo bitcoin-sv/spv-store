@@ -16,13 +16,13 @@ Abstract class representing an Indexer.
 
 ### new Bsv20Indexer()
 
-> **new Bsv20Indexer**(`owners`, `mode`, `network`): [`Bsv20Indexer`](Bsv20Indexer.md)
+> **new Bsv20Indexer**(`owners`, `indexMode`, `network`): [`Bsv20Indexer`](Bsv20Indexer.md)
 
 #### Parameters
 
 • **owners**: `Set`\<`string`\> = `...`
 
-• **mode**: [`IndexMode`](../enumerations/IndexMode.md)
+• **indexMode**: [`IndexMode`](../enumerations/IndexMode.md)
 
 • **network**: [`Network`](../type-aliases/Network.md) = `"mainnet"`
 
@@ -36,23 +36,23 @@ Abstract class representing an Indexer.
 
 #### Defined in
 
-[indexers/bsv20.ts:44](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L44)
+[indexers/bsv20.ts:44](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L44)
 
 ## Properties
 
-### mode
+### indexMode
 
-> **mode**: [`IndexMode`](../enumerations/IndexMode.md)
+> **indexMode**: [`IndexMode`](../enumerations/IndexMode.md)
 
 The mode of the indexer.
 
 #### Inherited from
 
-[`Indexer`](Indexer.md).[`mode`](Indexer.md#mode)
+[`Indexer`](Indexer.md).[`indexMode`](Indexer.md#indexmode)
 
 #### Defined in
 
-[indexers/bsv20.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L46)
+[indexers/bsv20.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L46)
 
 ***
 
@@ -68,7 +68,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[indexers/bsv20.ts:41](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L41)
+[indexers/bsv20.ts:41](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L41)
 
 ***
 
@@ -84,7 +84,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[indexers/bsv20.ts:47](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L47)
+[indexers/bsv20.ts:47](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L47)
 
 ***
 
@@ -102,7 +102,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[indexers/bsv20.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L45)
+[indexers/bsv20.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L45)
 
 ***
 
@@ -112,7 +112,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[indexers/bsv20.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L43)
+[indexers/bsv20.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L43)
 
 ***
 
@@ -128,7 +128,7 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[indexers/bsv20.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L40)
+[indexers/bsv20.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L40)
 
 ## Methods
 
@@ -141,7 +141,7 @@ If the output is not relevant, it returns undefined.
 
 #### Parameters
 
-• **ctx**: [`IndexContext`](IndexContext.md)
+• **ctx**: [`IndexContext`](../interfaces/IndexContext.md)
 
 The context for the index operation.
 
@@ -161,7 +161,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[indexers/bsv20.ts:53](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L53)
+[indexers/bsv20.ts:57](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L57)
 
 ***
 
@@ -173,7 +173,7 @@ Pre-save hook that evaluates the index data for the entire transaction before it
 
 #### Parameters
 
-• **ctx**: [`IndexContext`](IndexContext.md)
+• **ctx**: [`IndexContext`](../interfaces/IndexContext.md)
 
 The context of the index operation.
 
@@ -189,7 +189,7 @@ A promise that resolves when the pre-save evaluation is complete.
 
 #### Defined in
 
-[indexers/bsv20.ts:87](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L87)
+[indexers/bsv20.ts:91](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L91)
 
 ***
 
@@ -221,4 +221,4 @@ A promise that resolves when the synchronization is complete.
 
 #### Defined in
 
-[indexers/bsv20.ts:109](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/bsv20.ts#L109)
+[indexers/bsv20.ts:113](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/bsv20.ts#L113)

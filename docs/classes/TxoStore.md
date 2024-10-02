@@ -32,7 +32,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L17)
+[stores/txo-store.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L17)
 
 ## Properties
 
@@ -42,7 +42,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:23](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L23)
+[stores/txo-store.ts:23](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L23)
 
 ***
 
@@ -52,7 +52,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:21](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L21)
+[stores/txo-store.ts:21](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L21)
 
 ***
 
@@ -62,7 +62,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L22)
+[stores/txo-store.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L22)
 
 ***
 
@@ -72,7 +72,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L19)
+[stores/txo-store.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L19)
 
 ***
 
@@ -82,7 +82,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L18)
+[stores/txo-store.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L18)
 
 ***
 
@@ -92,9 +92,27 @@
 
 #### Defined in
 
-[stores/txo-store.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L20)
+[stores/txo-store.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L20)
 
 ## Methods
+
+### buildIndexContext()
+
+> **buildIndexContext**(`tx`): `Promise`\<[`IndexContext`](../interfaces/IndexContext.md)\>
+
+#### Parameters
+
+• **tx**: `Transaction`
+
+#### Returns
+
+`Promise`\<[`IndexContext`](../interfaces/IndexContext.md)\>
+
+#### Defined in
+
+[stores/txo-store.ts:398](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L398)
+
+***
 
 ### destroy()
 
@@ -113,15 +131,15 @@ A promise that resolves when the instance is destroyed.
 
 #### Defined in
 
-[stores/txo-store.ts:34](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L34)
+[stores/txo-store.ts:34](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L34)
 
 ***
 
 ### ingest()
 
-> **ingest**(`tx`, `source`, `fromRemote`, `isDep`, `ingestParents`, `outputs`?): `Promise`\<[`IndexContext`](IndexContext.md)\>
+> **ingest**(`tx`, `source`, `parseMode`, `resolveParents`, `outputs`?): `Promise`\<[`IndexContext`](../interfaces/IndexContext.md)\>
 
-Ingests a transaction into the store, optionally ingesting its parent transactions.
+Ingests a new transaction into the store, building an index context for it.
 
 #### Parameters
 
@@ -133,75 +151,31 @@ The transaction to ingest.
 
 An optional string indicating the source of the transaction.
 
-• **fromRemote**: `boolean` = `false`
+• **parseMode**: [`ParseMode`](../enumerations/ParseMode.md) = `ParseMode.Persist`
 
-A boolean indicating if the transaction is from a remote source.
+The mode to parse the transaction, default is `ParseMode.Persist`.
 
-• **isDep**: `boolean` = `false`
+• **resolveParents**: `boolean` = `false`
 
-A boolean indicating if the transaction is a dependency.
-
-• **ingestParents**: `boolean` = `true`
-
-A boolean indicating if parent transactions should be ingested.
+Whether to resolve parent transactions, default is `false`.
 
 • **outputs?**: `number`[]
 
-An optional array of output indices to be ingested.
+Optional array of output indices to process.
 
 #### Returns
 
-`Promise`\<[`IndexContext`](IndexContext.md)\>
+`Promise`\<[`IndexContext`](../interfaces/IndexContext.md)\>
 
-A promise that resolves to an IndexContext object.
-
-#### Defined in
-
-[stores/txo-store.ts:166](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L166)
-
-***
-
-### parse()
-
-> **parse**(`tx`, `previewOnly`, `outputs`?, `fromRemote`?, `resolveInputs`?): `Promise`\<[`IndexContext`](IndexContext.md)\>
-
-Parses a transaction and returns an IndexContext.
-
-#### Parameters
-
-• **tx**: `Transaction`
-
-The transaction to parse.
-
-• **previewOnly**: `boolean` = `true`
-
-If true, only a preview of the transaction is parsed. Defaults to true.
-
-• **outputs?**: `number`[]
-
-An optional array of output indices to include in the parsing.
-
-• **fromRemote?**: `boolean` = `false`
-
-If true, the transaction is loaded from a remote source. Defaults to false.
-
-• **resolveInputs?**: `boolean` = `false`
-
-If true, the inputs of the transaction are resolved. Defaults to false.
-
-#### Returns
-
-`Promise`\<[`IndexContext`](IndexContext.md)\>
-
-A promise that resolves to an IndexContext.
+A promise that resolves to the index context of the ingested transaction.
 
 #### Throws
 
-Will throw an error if the merkle path verification fails or if an input is missing a source transaction.
+Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:69](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L69)
+[stores/txo-store.ts:69](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L69)
 
 ***
 
@@ -215,7 +189,7 @@ Will throw an error if the merkle path verification fails or if an input is miss
 
 #### Defined in
 
-[stores/txo-store.ts:309](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L309)
+[stores/txo-store.ts:288](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L288)
 
 ***
 
@@ -229,7 +203,7 @@ Will throw an error if the merkle path verification fails or if an input is miss
 
 #### Defined in
 
-[stores/txo-store.ts:241](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L241)
+[stores/txo-store.ts:220](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L220)
 
 ***
 
@@ -243,7 +217,7 @@ Will throw an error if the merkle path verification fails or if an input is miss
 
 #### Defined in
 
-[stores/txo-store.ts:347](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L347)
+[stores/txo-store.ts:326](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L326)
 
 ***
 
@@ -257,7 +231,7 @@ Will throw an error if the merkle path verification fails or if an input is miss
 
 #### Defined in
 
-[stores/txo-store.ts:277](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L277)
+[stores/txo-store.ts:256](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L256)
 
 ***
 
@@ -271,7 +245,7 @@ Will throw an error if the merkle path verification fails or if an input is miss
 
 #### Defined in
 
-[stores/txo-store.ts:230](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L230)
+[stores/txo-store.ts:209](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L209)
 
 ***
 
@@ -289,7 +263,7 @@ Will throw an error if the merkle path verification fails or if an input is miss
 
 #### Defined in
 
-[stores/txo-store.ts:225](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L225)
+[stores/txo-store.ts:204](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L204)
 
 ***
 
@@ -325,7 +299,7 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:49](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L49)
+[stores/txo-store.ts:49](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L49)
 
 ***
 
@@ -339,7 +313,7 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:389](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L389)
+[stores/txo-store.ts:366](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L366)
 
 ***
 
@@ -353,4 +327,4 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:220](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/stores/txo-store.ts#L220)
+[stores/txo-store.ts:199](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/stores/txo-store.ts#L199)

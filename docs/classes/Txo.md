@@ -44,7 +44,7 @@ The block containing the transaction output.
 
 #### Defined in
 
-[models/txo.ts:70](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L70)
+[models/txo.ts:70](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L70)
 
 ## Properties
 
@@ -56,7 +56,7 @@ The block containing the transaction output.
 
 #### Defined in
 
-[models/txo.ts:75](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L75)
+[models/txo.ts:75](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L75)
 
 ***
 
@@ -72,7 +72,7 @@ A dictionary containing index data associated with each indexer tag.
 
 #### Defined in
 
-[models/txo.ts:33](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L33)
+[models/txo.ts:33](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L33)
 
 ***
 
@@ -84,7 +84,7 @@ A list of dependencies associated with the transaction output.
 
 #### Defined in
 
-[models/txo.ts:55](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L55)
+[models/txo.ts:55](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L55)
 
 ***
 
@@ -96,7 +96,7 @@ A list of events associated with the transaction output.
 
 #### Defined in
 
-[models/txo.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L45)
+[models/txo.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L45)
 
 ***
 
@@ -108,7 +108,7 @@ A flag indicating whether the transaction output has events.
 
 #### Defined in
 
-[models/txo.ts:60](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L60)
+[models/txo.ts:60](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L60)
 
 ***
 
@@ -120,7 +120,7 @@ The outpoint of the transaction output.
 
 #### Defined in
 
-[models/txo.ts:71](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L71)
+[models/txo.ts:71](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L71)
 
 ***
 
@@ -134,7 +134,7 @@ An indexer should not overwrite this field if it is already populated.
 
 #### Defined in
 
-[models/txo.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L40)
+[models/txo.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L40)
 
 ***
 
@@ -146,7 +146,7 @@ The amount of satoshis in the transaction output.
 
 #### Defined in
 
-[models/txo.ts:72](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L72)
+[models/txo.ts:72](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L72)
 
 ***
 
@@ -158,7 +158,7 @@ The script associated with the transaction output.
 
 #### Defined in
 
-[models/txo.ts:73](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L73)
+[models/txo.ts:73](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L73)
 
 ***
 
@@ -170,7 +170,7 @@ The txid in which the output was spent, or and empty string if unspent.
 
 #### Defined in
 
-[models/txo.ts:28](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L28)
+[models/txo.ts:28](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L28)
 
 ***
 
@@ -182,7 +182,7 @@ The status of the transaction output.
 
 #### Defined in
 
-[models/txo.ts:74](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L74)
+[models/txo.ts:74](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L74)
 
 ***
 
@@ -194,4 +194,4 @@ A list of tags associated with the transaction output.
 
 #### Defined in
 
-[models/txo.ts:50](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/txo.ts#L50)
+[models/txo.ts:50](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/txo.ts#L50)

@@ -16,7 +16,7 @@ Abstract class representing an Indexer.
 
 ### new LockIndexer()
 
-> **new LockIndexer**(`owners`, `mode`, `network`?): [`LockIndexer`](LockIndexer.md)
+> **new LockIndexer**(`owners`, `indexMode`, `network`?): [`LockIndexer`](LockIndexer.md)
 
 Creates an instance of the Indexer.
 
@@ -28,7 +28,7 @@ A set of owners that this indexer is interested in.
                 An owner can be an address or any other data the indexer 
                 wants to use to identify which transactions to include in the index.
 
-• **mode**: [`IndexMode`](../enumerations/IndexMode.md)
+• **indexMode**: [`IndexMode`](../enumerations/IndexMode.md)
 
 The mode of the indexer.
 
@@ -46,23 +46,23 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L40)
+[models/indexer.ts:54](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L54)
 
 ## Properties
 
-### mode
+### indexMode
 
-> **mode**: [`IndexMode`](../enumerations/IndexMode.md)
+> **indexMode**: [`IndexMode`](../enumerations/IndexMode.md)
 
 The mode of the indexer.
 
 #### Inherited from
 
-[`Indexer`](Indexer.md).[`mode`](Indexer.md#mode)
+[`Indexer`](Indexer.md).[`indexMode`](Indexer.md#indexmode)
 
 #### Defined in
 
-[models/indexer.ts:42](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L42)
+[models/indexer.ts:56](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L56)
 
 ***
 
@@ -78,7 +78,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[indexers/lock.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/lock.ts#L22)
+[indexers/lock.ts:21](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/lock.ts#L21)
 
 ***
 
@@ -94,7 +94,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L43)
+[models/indexer.ts:57](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L57)
 
 ***
 
@@ -112,7 +112,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[models/indexer.ts:41](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/models/indexer.ts#L41)
+[models/indexer.ts:55](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/models/indexer.ts#L55)
 
 ***
 
@@ -128,7 +128,7 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[indexers/lock.ts:21](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/lock.ts#L21)
+[indexers/lock.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/lock.ts#L20)
 
 ## Methods
 
@@ -141,7 +141,7 @@ If the output is not relevant, it returns undefined.
 
 #### Parameters
 
-• **ctx**: [`IndexContext`](IndexContext.md)
+• **ctx**: [`IndexContext`](../interfaces/IndexContext.md)
 
 The context for the index operation.
 
@@ -161,7 +161,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[indexers/lock.ts:23](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/lock.ts#L23)
+[indexers/lock.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/lock.ts#L22)
 
 ***
 
@@ -173,7 +173,7 @@ Pre-save hook that evaluates the index data for the entire transaction before it
 
 #### Parameters
 
-• **ctx**: [`IndexContext`](IndexContext.md)
+• **ctx**: [`IndexContext`](../interfaces/IndexContext.md)
 
 The context of the index operation.
 
@@ -189,7 +189,7 @@ A promise that resolves when the pre-save evaluation is complete.
 
 #### Defined in
 
-[indexers/lock.ts:52](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/lock.ts#L52)
+[indexers/lock.ts:51](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/lock.ts#L51)
 
 ***
 
@@ -221,4 +221,4 @@ A promise that resolves when the synchronization is complete.
 
 #### Defined in
 
-[indexers/lock.ts:69](https://github.com/shruggr/ts-casemod-spv/blob/68dc275688b04f6a33c5c6063e9fd70d6c8a63ef/src/indexers/lock.ts#L69)
+[indexers/lock.ts:68](https://github.com/shruggr/ts-casemod-spv/blob/3ea4eaa98b52595d9cf79b03096c7b1d167ad808/src/indexers/lock.ts#L68)
