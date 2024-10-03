@@ -37,7 +37,7 @@ An array of outpoints that this output depends on.
 
 #### Defined in
 
-[models/index-data.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/index-data.ts#L16)
+[models/index-data.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/index-data.ts#L16)
 
 ## Properties
 
@@ -49,7 +49,7 @@ An arbitrary data object to be used by the indexer to store parsed data.
 
 #### Defined in
 
-[models/index-data.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/index-data.ts#L17)
+[models/index-data.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/index-data.ts#L17)
 
 ***
 
@@ -61,7 +61,7 @@ An array of outpoints that this output depends on.
 
 #### Defined in
 
-[models/index-data.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/index-data.ts#L17)
+[models/index-data.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/index-data.ts#L17)
 
 ***
 
@@ -73,4 +73,4 @@ An array of events emitted by the indexer in regard to the output. Events can be
 
 #### Defined in
 
-[models/index-data.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/index-data.ts#L17)
+[models/index-data.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/index-data.ts#L17)

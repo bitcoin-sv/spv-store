@@ -18,7 +18,7 @@ Parse as dependency.
 
 #### Defined in
 
-[models/indexer.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/indexer.ts#L16)
+[models/indexer.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L16)
 
 ***
 
@@ -30,7 +30,7 @@ Parse and queue all dependencies for ingestion.
 
 #### Defined in
 
-[models/indexer.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/indexer.ts#L18)
+[models/indexer.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L18)
 
 ***
 
@@ -42,4 +42,4 @@ Parse for preview. Do not load dependencies.
 
 #### Defined in
 
-[models/indexer.ts:14](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/indexer.ts#L14)
+[models/indexer.ts:14](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L14)

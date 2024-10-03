@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[models/event.ts:2](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/event.ts#L2)
+[models/event.ts:2](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/event.ts#L2)
 
 ***
 
@@ -24,4 +24,4 @@
 
 #### Defined in
 
-[models/event.ts:3](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/event.ts#L3)
+[models/event.ts:3](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/event.ts#L3)
