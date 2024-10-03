@@ -81,9 +81,7 @@ export class TxoStore {
         input.sourceTXID = input.sourceTransaction.id("hex") as string;
       }
       let spend: Txo | undefined;
-      // TODO: this is not really clean and will not work if source transaction is unmined
-      // but we cannot generate the txid for a mock source transaction
-      if (input.sourceTransaction?.merklePath) {
+      if (input.sourceTransaction && parseMode == ParseMode.Deep) {
         const sourceCtx = await this.ingest(
           input.sourceTransaction,
           "beef",
@@ -175,7 +173,7 @@ export class TxoStore {
     } else {
       await this.storage.putMany(ctx.txos);
     }
-    if (parseMode == ParseMode.Persist) {
+    if ([ParseMode.Persist, ParseMode.Deep].includes(parseMode)) {
       this.storage.putTxLog({
         txid: ctx.txid,
         height: ctx.block.height,

@@ -64,15 +64,17 @@ export class OriginIndexer extends Indexer {
         } else if (this.indexMode !== IndexMode.Verify) {
           const remote = await this.oneSat.getTxo(spend.outpoint);
           if (remote?.origin?.data?.insc) {
+            const file = remote.origin.data.insc.file;
+            file.content = (await this.oneSat.getInscriptionFile(new Outpoint(remote.origin.outpoint))) || [];
             origin = {
               outpoint: remote.origin.outpoint,
-              insc: { file: remote.origin.data.insc.file },
+              insc: { file },
               map: remote.origin.data.map,
               nonce: 0,
             };
             if (
               this.indexMode == IndexMode.TrustAndVerify &&
-              parseMode == ParseMode.Persist &&
+              [ParseMode.Persist, ParseMode.Deep].includes(parseMode) &&
               !origin.insc?.file?.type.startsWith("application/bsv-20")
             ) {
               const ancestors = await this.oneSat.getOriginAncestors([txo.outpoint]);

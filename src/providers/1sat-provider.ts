@@ -215,4 +215,9 @@ export class OneSatProvider
       return queue;
     }, {} as IndexQueue);
   }
+
+  async getInscriptionFile(outpoint: Outpoint): Promise<number[] | undefined> {
+    const resp = await fetch(`${APIS[this.network]}/content/${outpoint.toString()}`);
+    return resp.ok ? [...Buffer.from(await resp.arrayBuffer())] : undefined;
+  }
 }

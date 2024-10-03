@@ -70,6 +70,7 @@ export class SPVStore {
   async broadcast(
     tx: Transaction,
     source = "",
+    isBeefy = false
   ): Promise<BroadcastResponse | BroadcastFailure> {
     let resp: BroadcastResponse | BroadcastFailure;
     if(!tx.merklePath) {
@@ -82,7 +83,7 @@ export class SPVStore {
       }
     }
     if (isBroadcastResponse(resp)) {
-      await this.stores.txos!.ingest(tx, source, ParseMode.Persist, true)
+      await this.stores.txos!.ingest(tx, source, isBeefy ? ParseMode.Deep : ParseMode.Persist, true)
     }
     return resp;
 

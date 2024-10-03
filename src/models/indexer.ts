@@ -16,6 +16,8 @@ export enum ParseMode {
   Dependency = 1,
   /** Parse and queue all dependencies for ingestion. */
   Persist = 2,
+  /** Process source transaction tree */
+  Deep = 3,
 }
 
 /**
