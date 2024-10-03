@@ -28,7 +28,6 @@ export class TxoStore {
    * Asynchronously destroys the current instance by stopping synchronization and 
    * destroying the associated storage.
    * 
-   * @async
    * @returns {Promise<void>} A promise that resolves when the instance is destroyed.
    */
   async destroy() {

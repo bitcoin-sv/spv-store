@@ -18,7 +18,7 @@ The transaction output is a dependency.
 
 #### Defined in
 
-[models/txo.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/txo.ts#L17)
+[models/txo.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/txo.ts#L17)
 
 ***
 
@@ -30,7 +30,7 @@ The transaction output is trusted.
 
 #### Defined in
 
-[models/txo.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/txo.ts#L16)
+[models/txo.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/txo.ts#L16)
 
 ***
 
@@ -42,7 +42,7 @@ The transaction output is not indexed.
 
 #### Defined in
 
-[models/txo.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/txo.ts#L15)
+[models/txo.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/txo.ts#L15)
 
 ***
 
@@ -54,4 +54,4 @@ The transaction output is validated.
 
 #### Defined in
 
-[models/txo.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/txo.ts#L18)
+[models/txo.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/txo.ts#L18)

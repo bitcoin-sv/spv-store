@@ -14,4 +14,4 @@
 
 ## Defined in
 
-[models/index-context.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/index-context.ts#L5)
+[models/index-context.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/models/index-context.ts#L5)

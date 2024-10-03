@@ -32,7 +32,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L17)
+[stores/txo-store.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L17)
 
 ## Properties
 
@@ -42,7 +42,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:23](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L23)
+[stores/txo-store.ts:23](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L23)
 
 ***
 
@@ -52,7 +52,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:21](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L21)
+[stores/txo-store.ts:21](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L21)
 
 ***
 
@@ -62,7 +62,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L22)
+[stores/txo-store.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L22)
 
 ***
 
@@ -72,7 +72,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L19)
+[stores/txo-store.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L19)
 
 ***
 
@@ -82,7 +82,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L18)
+[stores/txo-store.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L18)
 
 ***
 
@@ -92,7 +92,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L20)
+[stores/txo-store.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L20)
 
 ## Methods
 
@@ -110,7 +110,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:398](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L398)
+[stores/txo-store.ts:397](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L397)
 
 ***
 
@@ -127,11 +127,9 @@ destroying the associated storage.
 
 A promise that resolves when the instance is destroyed.
 
-#### Async
-
 #### Defined in
 
-[stores/txo-store.ts:34](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L34)
+[stores/txo-store.ts:33](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L33)
 
 ***
 
@@ -175,7 +173,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:69](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L69)
+[stores/txo-store.ts:68](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L68)
 
 ***
 
@@ -189,7 +187,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:288](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L288)
+[stores/txo-store.ts:287](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L287)
 
 ***
 
@@ -203,7 +201,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:220](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L220)
+[stores/txo-store.ts:219](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L219)
 
 ***
 
@@ -217,7 +215,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:326](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L326)
+[stores/txo-store.ts:325](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L325)
 
 ***
 
@@ -231,7 +229,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:256](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L256)
+[stores/txo-store.ts:255](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L255)
 
 ***
 
@@ -245,7 +243,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:209](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L209)
+[stores/txo-store.ts:208](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L208)
 
 ***
 
@@ -263,7 +261,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:204](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L204)
+[stores/txo-store.ts:203](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L203)
 
 ***
 
@@ -299,7 +297,7 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:49](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L49)
+[stores/txo-store.ts:48](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L48)
 
 ***
 
@@ -313,7 +311,7 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:366](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L366)
+[stores/txo-store.ts:365](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L365)
 
 ***
 
@@ -327,4 +325,4 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:199](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/stores/txo-store.ts#L199)
+[stores/txo-store.ts:198](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/stores/txo-store.ts#L198)

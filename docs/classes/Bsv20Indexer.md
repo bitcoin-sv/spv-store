@@ -36,7 +36,7 @@ Abstract class representing an Indexer.
 
 #### Defined in
 
-[indexers/bsv20.ts:44](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/bsv20.ts#L44)
+[indexers/bsv20.ts:44](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/indexers/bsv20.ts#L44)
 
 ## Properties
 
@@ -52,7 +52,7 @@ The mode of the indexer.
 
 #### Defined in
 
-[indexers/bsv20.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/bsv20.ts#L46)
+[indexers/bsv20.ts:46](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/indexers/bsv20.ts#L46)
 
 ***
 
@@ -68,7 +68,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[indexers/bsv20.ts:41](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/bsv20.ts#L41)
+[indexers/bsv20.ts:41](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/indexers/bsv20.ts#L41)
 
 ***
 
@@ -84,7 +84,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[indexers/bsv20.ts:47](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/bsv20.ts#L47)
+[indexers/bsv20.ts:47](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/indexers/bsv20.ts#L47)
 
 ***
 
@@ -102,7 +102,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[indexers/bsv20.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/bsv20.ts#L45)
+[indexers/bsv20.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/indexers/bsv20.ts#L45)
 
 ***
 
@@ -112,7 +112,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[indexers/bsv20.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/bsv20.ts#L43)
+[indexers/bsv20.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/indexers/bsv20.ts#L43)
 
 ***
 
@@ -128,7 +128,7 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[indexers/bsv20.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/bsv20.ts#L40)
+[indexers/bsv20.ts:40](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/indexers/bsv20.ts#L40)
 
 ## Methods
 
@@ -161,7 +161,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[indexers/bsv20.ts:57](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/bsv20.ts#L57)
+[indexers/bsv20.ts:57](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/indexers/bsv20.ts#L57)
 
 ***
 
@@ -189,7 +189,7 @@ A promise that resolves when the pre-save evaluation is complete.
 
 #### Defined in
 
-[indexers/bsv20.ts:91](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/bsv20.ts#L91)
+[indexers/bsv20.ts:91](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/indexers/bsv20.ts#L91)
 
 ***
 
@@ -221,4 +221,4 @@ A promise that resolves when the synchronization is complete.
 
 #### Defined in
 
-[indexers/bsv20.ts:113](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/bsv20.ts#L113)
+[indexers/bsv20.ts:113](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/indexers/bsv20.ts#L113)

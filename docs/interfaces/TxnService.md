@@ -22,7 +22,7 @@
 
 #### Defined in
 
-[services/txn-service.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/services/txn-service.ts#L7)
+[services/txn-service.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/services/txn-service.ts#L7)
 
 ***
 
@@ -40,7 +40,7 @@
 
 #### Defined in
 
-[services/txn-service.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/services/txn-service.ts#L5)
+[services/txn-service.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/services/txn-service.ts#L5)
 
 ***
 
@@ -58,4 +58,4 @@
 
 #### Defined in
 
-[services/txn-service.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/services/txn-service.ts#L6)
+[services/txn-service.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/8cad294f9d357aecab6b1c47b568729155023889/src/services/txn-service.ts#L6)
