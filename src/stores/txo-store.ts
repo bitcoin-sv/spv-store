@@ -73,7 +73,7 @@ export class TxoStore {
     outputs?: number[],
   ): Promise<IndexContext> {
     const ctx = await this.buildIndexContext(tx);
-    for (const [vin, input] of tx.inputs.entries()) {
+    for (const input of tx.inputs.values()) {
       if (!input.sourceTXID) {
         if (!input.sourceTransaction) {
           throw new Error("Input missing source transaction");
@@ -81,7 +81,7 @@ export class TxoStore {
         input.sourceTXID = input.sourceTransaction.id("hex") as string;
       }
       let spend: Txo | undefined;
-      if (input.sourceTransaction) {
+      if (input.sourceTransaction?.merklePath) {
         const sourceCtx = await this.ingest(
           input.sourceTransaction,
           "beef",
