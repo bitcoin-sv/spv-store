@@ -76,8 +76,13 @@ export class OriginIndexer extends Indexer {
               !origin.insc?.file?.type.startsWith("application/bsv-20")
             ) {
               const ancestors = await this.oneSat.getOriginAncestors([txo.outpoint]);
+              let hasAncestor = false;
               for (const [txid, block] of Object.entries(ancestors)) {
                 ctx.queue[txid] = block;
+                hasAncestor = true;
+              }
+              if (hasAncestor) {
+                ctx.queue[ctx.txid] = ctx.block;
               }
             }
           }

@@ -24,7 +24,7 @@ A promise that resolves when the storage is destroyed.
 
 #### Defined in
 
-[storage/block-storage.ts:11](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/storage/block-storage.ts#L11)
+[storage/block-storage.ts:11](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/storage/block-storage.ts#L11)
 
 ***
 
@@ -42,7 +42,7 @@ A promise that resolves with an array of all block headers.
 
 #### Defined in
 
-[storage/block-storage.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/storage/block-storage.ts#L45)
+[storage/block-storage.ts:45](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/storage/block-storage.ts#L45)
 
 ***
 
@@ -60,7 +60,7 @@ A promise that resolves with a 2D array representing the backup.
 
 #### Defined in
 
-[storage/block-storage.ts:51](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/storage/block-storage.ts#L51)
+[storage/block-storage.ts:51](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/storage/block-storage.ts#L51)
 
 ***
 
@@ -84,7 +84,7 @@ A promise that resolves with the block header if found, or undefined if not foun
 
 #### Defined in
 
-[storage/block-storage.ts:32](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/storage/block-storage.ts#L32)
+[storage/block-storage.ts:32](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/storage/block-storage.ts#L32)
 
 ***
 
@@ -108,7 +108,7 @@ A promise that resolves with the block header if found, or undefined if not foun
 
 #### Defined in
 
-[storage/block-storage.ts:39](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/storage/block-storage.ts#L39)
+[storage/block-storage.ts:39](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/storage/block-storage.ts#L39)
 
 ***
 
@@ -126,7 +126,7 @@ A promise that resolves with the most recently synced block header, or undefined
 
 #### Defined in
 
-[storage/block-storage.ts:57](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/storage/block-storage.ts#L57)
+[storage/block-storage.ts:57](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/storage/block-storage.ts#L57)
 
 ***
 
@@ -150,7 +150,7 @@ A promise that resolves when the block header is stored.
 
 #### Defined in
 
-[storage/block-storage.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/storage/block-storage.ts#L18)
+[storage/block-storage.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/storage/block-storage.ts#L18)
 
 ***
 
@@ -174,4 +174,4 @@ A promise that resolves when all block headers are stored.
 
 #### Defined in
 
-[storage/block-storage.ts:25](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/storage/block-storage.ts#L25)
+[storage/block-storage.ts:25](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/storage/block-storage.ts#L25)

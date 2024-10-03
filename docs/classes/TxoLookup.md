@@ -38,7 +38,7 @@ Optional owner of the transaction output.
 
 #### Defined in
 
-[models/search.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/search.ts#L17)
+[models/search.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/search.ts#L17)
 
 ## Properties
 
@@ -50,7 +50,7 @@ Optional ID of the field to be searched. Required if value populated.
 
 #### Defined in
 
-[models/search.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/search.ts#L19)
+[models/search.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/search.ts#L19)
 
 ***
 
@@ -62,7 +62,7 @@ Optional owner of the transaction output.
 
 #### Defined in
 
-[models/search.ts:21](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/search.ts#L21)
+[models/search.ts:21](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/search.ts#L21)
 
 ***
 
@@ -74,7 +74,7 @@ Tag of the indexer to be searched.
 
 #### Defined in
 
-[models/search.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/search.ts#L18)
+[models/search.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/search.ts#L18)
 
 ***
 
@@ -86,7 +86,7 @@ Optional value of the field to be searched.
 
 #### Defined in
 
-[models/search.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/search.ts#L20)
+[models/search.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/search.ts#L20)
 
 ## Methods
 
@@ -100,7 +100,7 @@ Optional value of the field to be searched.
 
 #### Defined in
 
-[models/search.ts:24](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/search.ts#L24)
+[models/search.ts:24](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/search.ts#L24)
 
 ***
 
@@ -122,4 +122,4 @@ Optional value of the field to be searched.
 
 #### Defined in
 
-[models/search.ts:28](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/search.ts#L28)
+[models/search.ts:28](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/search.ts#L28)

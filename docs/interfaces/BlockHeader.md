@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[models/block-header.ts:10](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/block-header.ts#L10)
+[models/block-header.ts:10](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/block-header.ts#L10)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[models/block-header.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/block-header.ts#L4)
+[models/block-header.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/block-header.ts#L4)
 
 ***
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[models/block-header.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/block-header.ts#L5)
+[models/block-header.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/block-header.ts#L5)
 
 ***
 
@@ -44,7 +44,7 @@
 
 #### Defined in
 
-[models/block-header.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/block-header.ts#L9)
+[models/block-header.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/block-header.ts#L9)
 
 ***
 
@@ -54,7 +54,7 @@
 
 #### Defined in
 
-[models/block-header.ts:11](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/block-header.ts#L11)
+[models/block-header.ts:11](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/block-header.ts#L11)
 
 ***
 
@@ -64,7 +64,7 @@
 
 #### Defined in
 
-[models/block-header.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/block-header.ts#L6)
+[models/block-header.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/block-header.ts#L6)
 
 ***
 
@@ -74,7 +74,7 @@
 
 #### Defined in
 
-[models/block-header.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/block-header.ts#L7)
+[models/block-header.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/block-header.ts#L7)
 
 ***
 
@@ -84,4 +84,4 @@
 
 #### Defined in
 
-[models/block-header.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/block-header.ts#L8)
+[models/block-header.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/block-header.ts#L8)

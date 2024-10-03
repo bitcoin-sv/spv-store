@@ -10,4 +10,4 @@
 
 ## Defined in
 
-[templates/lock.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/templates/lock.ts#L15)
+[templates/lock.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/templates/lock.ts#L15)

@@ -34,4 +34,4 @@
 
 #### Defined in
 
-[storage/idb/idb-txns.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/storage/idb/idb-txns.ts#L9)
+[storage/idb/idb-txns.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/storage/idb/idb-txns.ts#L9)

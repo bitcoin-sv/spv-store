@@ -46,7 +46,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:54](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/indexer.ts#L54)
+[models/indexer.ts:54](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/indexer.ts#L54)
 
 ## Properties
 
@@ -62,7 +62,7 @@ The mode of the indexer.
 
 #### Defined in
 
-[models/indexer.ts:56](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/indexer.ts#L56)
+[models/indexer.ts:56](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/indexer.ts#L56)
 
 ***
 
@@ -78,7 +78,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[indexers/opns.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/indexers/opns.ts#L8)
+[indexers/opns.ts:8](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/opns.ts#L8)
 
 ***
 
@@ -94,7 +94,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:57](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/indexer.ts#L57)
+[models/indexer.ts:57](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/indexer.ts#L57)
 
 ***
 
@@ -112,7 +112,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[models/indexer.ts:55](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/indexer.ts#L55)
+[models/indexer.ts:55](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/indexer.ts#L55)
 
 ***
 
@@ -128,7 +128,7 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[indexers/opns.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/indexers/opns.ts#L7)
+[indexers/opns.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/opns.ts#L7)
 
 ## Methods
 
@@ -161,7 +161,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[indexers/opns.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/indexers/opns.ts#L9)
+[indexers/opns.ts:9](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/indexers/opns.ts#L9)
 
 ***
 
@@ -189,7 +189,7 @@ A promise that resolves when the pre-save evaluation is complete.
 
 #### Defined in
 
-[models/indexer.ts:79](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/indexer.ts#L79)
+[models/indexer.ts:79](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/indexer.ts#L79)
 
 ***
 
@@ -221,4 +221,4 @@ A promise that resolves when the synchronization is complete.
 
 #### Defined in
 
-[models/indexer.ts:90](https://github.com/shruggr/ts-casemod-spv/blob/eb07ea1ffa104a076983597e54d842fffa22bae3/src/models/indexer.ts#L90)
+[models/indexer.ts:90](https://github.com/shruggr/ts-casemod-spv/blob/050b8a2b88441deb8165e8e49b26bc7bba8ae64e/src/models/indexer.ts#L90)
