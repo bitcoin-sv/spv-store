@@ -81,6 +81,8 @@ export class TxoStore {
         input.sourceTXID = input.sourceTransaction.id("hex") as string;
       }
       let spend: Txo | undefined;
+      // TODO: this is not really clean and will not work if source transaction is unmined
+      // but we cannot generate the txid for a mock source transaction
       if (input.sourceTransaction?.merklePath) {
         const sourceCtx = await this.ingest(
           input.sourceTransaction,

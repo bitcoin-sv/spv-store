@@ -4,6 +4,9 @@
 
 ## Usage
 
+### Install
+`npm install spv-store`
+
 ### Instantiate
 Initialize for use in web browser with OneSat API provider
 ```

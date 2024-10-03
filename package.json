@@ -2,7 +2,7 @@
   "name": "spv-store",
   "author": "David Case",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "source": "src/index.ts",
   "exports": {
@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run clean && microbundle --globals @bsv/sdk=bsv && npm pack",
+    "build": "npm run clean && microbundle --globals @bsv/sdk=bsv",
     "clean": "rimraf -rf dist",
     "format": "tsfmt -r",
     "test": "jest",
