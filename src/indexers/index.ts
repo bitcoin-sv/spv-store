@@ -6,5 +6,6 @@ export * from './insc';
 export * from "./opns";
 export * from "./origin";
 export * from "./map";
+export * from "./sigma";
 // export * from "./ord";
 export * from "./ordlock";

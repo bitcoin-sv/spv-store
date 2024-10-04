@@ -1,5 +1,5 @@
 import { P2PKH, Utils } from "@bsv/sdk";
-import type { IndexContext, IndexQueue } from "../models/index-context";
+import type { IndexContext } from "../models/index-context";
 import {
   Block,
   IndexData,
@@ -14,7 +14,7 @@ import {
 } from "../models";
 import { OneSatProvider } from "../providers/1sat-provider";
 import type { Inscription } from "./insc";
-import type { Ordinal } from "./remote-types";
+import type { Ordinal, Sigma } from "./remote-types";
 import { Listing } from "./ordlock";
 import type { TxoStore } from "../stores";
 import type { Network } from "../spv-store";
@@ -24,6 +24,7 @@ export interface Origin {
   nonce?: number;
   insc?: Inscription;
   map?: { [key: string]: any };
+  sigma?: Sigma[];
 }
 
 export class OriginIndexer extends Indexer {
@@ -100,6 +101,7 @@ export class OriginIndexer extends Indexer {
         outpoint: txo.outpoint.toString(),
         insc: txo.data.insc?.data,
         nonce: 0,
+        sigma: txo.data.sigma?.data
       };
     }
 

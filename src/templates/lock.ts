@@ -1,5 +1,4 @@
 import {
-  type LockingScript,
   P2PKH,
   type PrivateKey,
   Script,
