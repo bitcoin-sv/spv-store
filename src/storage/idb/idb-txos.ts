@@ -156,13 +156,30 @@ export class TxoStorageIDB implements TxoStorage {
     from?: string
   ): Promise<TxoResults> {
     const dbkey = lookup.toQueryKey();
-    const start = from || dbkey;
-    const query: IDBKeyRange = IDBKeyRange.bound(
-      start,
-      dbkey + "\uffff",
-      true,
-      false
-    );
+    let query: IDBKeyRange
+    if (from && sort == TxoSort.ASC) {
+      query = IDBKeyRange.bound(
+        from,
+        dbkey + "\uffff",
+        false,
+        false
+      )  
+    } else if (from && sort == TxoSort.DESC) {
+      query = IDBKeyRange.bound(
+        dbkey,
+        from,
+        true,
+        false
+      )
+    } else {
+      query = IDBKeyRange.bound(
+        dbkey,
+        dbkey + "\uffff",
+        true,
+        false
+      )
+    }
+
     const indexName = lookup.id ? "events" : "tags";
     const results: TxoResults = { txos: [] };
     const t = this.db.transaction("txos");
@@ -176,6 +193,7 @@ export class TxoStorageIDB implements TxoStorage {
       if (lookup.owner && txo.owner != lookup.owner) continue;
       results.txos.push(txo);
       if (limit > 0 && results.txos.length >= limit) {
+        await t.done;
         return results;
       }
     }
