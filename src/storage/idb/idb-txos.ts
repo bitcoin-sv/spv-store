@@ -75,7 +75,7 @@ function buildTxoIndex(txo: Txo) {
 }
 
 export class TxoStorageIDB implements TxoStorage {
-  private constructor(public db: IDBPDatabase<TxoSchema>) {}
+  private constructor(public db: IDBPDatabase<TxoSchema>) { }
   static async init(
     accountId: string,
     network: Network
@@ -156,29 +156,14 @@ export class TxoStorageIDB implements TxoStorage {
     from?: string
   ): Promise<TxoResults> {
     const dbkey = lookup.toQueryKey();
-    let query: IDBKeyRange
-    if (from && sort == TxoSort.ASC) {
-      query = IDBKeyRange.bound(
-        from,
-        dbkey + "\uffff",
-        false,
-        false
-      )  
-    } else if (from && sort == TxoSort.DESC) {
-      query = IDBKeyRange.bound(
-        dbkey,
-        from,
-        true,
-        false
-      )
-    } else {
-      query = IDBKeyRange.bound(
-        dbkey,
-        dbkey + "\uffff",
-        true,
-        false
-      )
-    }
+    const lower = from && sort == TxoSort.ASC ? from : dbkey;
+    const upper = from && sort == TxoSort.DESC ? from : dbkey + "\uffff";
+    const query = IDBKeyRange.bound(
+      lower,
+      upper,
+      true,
+      true
+    );
 
     const indexName = lookup.id ? "events" : "tags";
     const results: TxoResults = { txos: [] };
