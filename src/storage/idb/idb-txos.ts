@@ -158,17 +158,15 @@ export class TxoStorageIDB implements TxoStorage {
     const dbkey = lookup.toQueryKey();
     let lower = dbkey
     let upper = dbkey + "\uffff"
-    let lowerOpen = false;
     if (from && sort == TxoSort.ASC) {
       lower = from
-      lowerOpen = true;
     } else if (from && sort == TxoSort.DESC) {
       upper = from
     }
     const query = IDBKeyRange.bound(
       lower,
       upper,
-      lowerOpen,
+      true,
       true
     );
 
