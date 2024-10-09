@@ -19,15 +19,20 @@ import type { Outpoint } from "../models/outpoint";
 import type { Ordinal, RemoteBsv20 } from "../indexers/remote-types";
 import type { Txn } from "../stores";
 import { Block, type IndexQueue } from "../models";
+import type { SyncService } from "../services/sync-service";
 
 const APIS = {
-  mainnet: "https://ordinals.gorillapool.io",
+  // mainnet: "https://ordinals.gorillapool.io",
+  mainnet: "http://localhost:8082",
   testnet: "https://testnet.ordinals.gorillapool.io",
 };
 
 export class OneSatProvider
-  implements BroadcastService, TxnService, BlockHeaderService, InventoryService
+  implements BroadcastService, TxnService, BlockHeaderService, InventoryService, SyncService
 {
+  public subscriptions = new Map<string, (topic: string, event: string) => void>();
+  public eventSource: EventSource | undefined;
+
   public constructor(
     public network: Network // authKey?: PrivateKey
   ) {}
@@ -220,4 +225,26 @@ export class OneSatProvider
     const resp = await fetch(`${APIS[this.network]}/content/${outpoint.toString()}`);
     return resp.ok ? [...Buffer.from(await resp.arrayBuffer())] : undefined;
   }
+
+  subscribe(topics: string[], cb: (topic: string, event: string) => void ) {
+    topics.forEach(topic => this.subscriptions.set(topic, cb));
+    this.startEventSource();
+  }
+
+  unsubscribe(topics: string[]) {
+    topics.forEach(topic => this.subscriptions.delete(topic));
+    this.startEventSource();
+  };
+
+  startEventSource() {
+    if (this.eventSource) this.eventSource.close();
+    if (!this.subscriptions.size) return;
+    this.eventSource = new EventSource(`${APIS[this.network]}/v1/sse?${[...this.subscriptions.keys()].map(t => `topic=${t}`).join('&')}`);
+    this.eventSource.onmessage = (e) => {
+      const { topic, event } = JSON.parse(e.data);
+      const cb = this.subscriptions.get(topic);
+      if (cb) cb(topic, event);
+    };
+  }
+
 }
