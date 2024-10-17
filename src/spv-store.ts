@@ -7,17 +7,18 @@ import {
 } from "@bsv/sdk";
 import type { TxoLookup, TxoResults } from "./models/search";
 import {
-  TxLog,
+  type AccountService,
   type BlockHeaderService,
   type BroadcastService,
-  type InventoryService,
   type TxnService,
+  type TxSyncLog,
 } from "./services";
 import type { BlockStore, Txn, TxnStore, TxoStore } from "./stores";
 import {
   blockHeaderFromReader,
   Outpoint,
   ParseMode,
+  TxLog,
   Txo,
   TxoSort,
   type BlockHeader,
@@ -29,10 +30,10 @@ import { EventEmitter } from "./lib/event-emitter";
 export type Network = "mainnet" | "testnet";
 
 export interface Services {
+  account?: AccountService;
   blocks: BlockHeaderService;
-  txns: TxnService;
+  txns?: TxnService;
   broadcast: BroadcastService;
-  inv: InventoryService;
 }
 
 export interface Stores {
@@ -47,7 +48,8 @@ export class SPVStore {
     public services: Services,
     public stores: Stores,
     public events = new EventEmitter(),
-    startSync = false
+    startSync = false,
+    public subscribe = false
   ) {
     if (startSync) this.sync();
   }
@@ -73,7 +75,7 @@ export class SPVStore {
     isBeefy = false
   ): Promise<BroadcastResponse | BroadcastFailure> {
     let resp: BroadcastResponse | BroadcastFailure;
-    if(!tx.merklePath) {
+    if (!tx.merklePath) {
       resp = await this.stores.txns!.broadcast(tx);
     } else {
       resp = {
@@ -93,27 +95,41 @@ export class SPVStore {
     await this.stores.blocks!.sync(true);
     this.events.emit("blocksSynced");
     const tip = await this.getSyncedBlock();
-    const isSynced = await this.stores.txos!.storage.getState("syncHeight");
+    const isSynced = await this.stores.txos!.storage.getState("lastSync");
     if (!isSynced) {
       const ingestQueue: { [txid: string]: Ingest } = {};
+      let lastSync = 0;
       for (const indexer of this.stores.txos!.indexers) {
         this.events.emit("importing", {tag: indexer.tag, name: indexer.name});
-        await indexer.sync(this.stores.txos!, ingestQueue);
+        const score = await indexer.sync(this.stores.txos!, ingestQueue);
+        lastSync = Math.max(lastSync, score);
       }
       this.stores.txos?.queue(Object.values(ingestQueue));
-      for (const owner of this.stores.txos!.owners) {
-        await this.stores.txos!.storage.setState(
-          `sync-${owner}`,
-          tip!.height.toString()
-        );
-      }
-      await this.stores.txos!.storage.setState(
-        "syncHeight",
-        tip!.height.toString()
-      );
+      await this.stores.txos!.storage.setState("lastSync", lastSync.toString());
       this.events.emit("txosSynced");
     }
-    this.stores.blocks!.sync();
+    
+    // This does not work in a service worker and should be disabled
+    if (this.subscribe) {
+      this.services.account?.subscribe(async (topic, data: string) => {
+        switch (topic) {
+          case "tx":
+            const txSyncLog = JSON.parse(data) as TxSyncLog;
+            this.stores.txos!.queue([{
+              txid: txSyncLog.txid,
+              height: Number(txSyncLog.height),
+              idx: Number(txSyncLog.idx || 0),
+              outputs: txSyncLog.outs,
+              source: "sync",
+              parseMode: ParseMode.Persist,
+            }])
+            break;
+          case "block":
+            this.stores.blocks!.sync(true);
+            break;
+        }
+      });
+    }
     this.stores.txns!.processQueue();
     this.stores.txos!.processQueue();
     await this.stores.txos!.syncTxLogs();
@@ -233,7 +249,7 @@ export class SPVStore {
       );
     }
     await this.stores.txos!.storage.setState(
-      "syncHeight",
+      "lastSync",
       lastHeight.toString()
     );
   }

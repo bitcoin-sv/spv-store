@@ -27,13 +27,13 @@ export class OneSatWebSPV extends SPVStore {
     startSync = false,
     network: Network = "mainnet",
   ) {
-    const oneSatService = new OneSatProvider(network);
+    const oneSatService = new OneSatProvider(network, accountId);
     const emitter = new EventEmitter();
     const services: Services = {
+      account: oneSatService,
       blocks: oneSatService,
       txns: oneSatService,
       broadcast: oneSatService,
-      inv: oneSatService,
     };
     const [blockStorage, txnStorage, txoStorage] = await Promise.all([
       BlockStorageIDB.init(network),

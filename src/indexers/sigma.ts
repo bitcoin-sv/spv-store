@@ -72,10 +72,7 @@ export class SigmaIndexer extends Indexer {
     if (!sigmas.length) return;
 
     return new IndexData(
-      sigmas, 
-      // sigmas
-      //   .filter(s => s.valid)
-      //   .map(s => ({id: 'address', value: s.address}))
+      sigmas,
     );
   }
 }

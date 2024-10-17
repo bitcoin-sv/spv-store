@@ -1,12 +1,10 @@
 import { Hash, HD, Utils } from "@bsv/sdk";
-import { Outpoint, Txo, TxoStatus, type Ingest } from "../models";
 import type { IndexContext } from "../models/index-context";
 import { IndexData } from "../models/index-data";
 import { Indexer, IndexMode } from "../models/indexer";
-import type { TxoStore } from "../stores";
-import type { RemoteBsv20 } from "./remote-types";
 import { OneSatProvider } from "../providers/1sat-provider";
 import type { Network } from "../spv-store";
+import type { RemoteBsv20 } from "./remote-types";
 
 export const FEE_XPUB = 'xpub661MyMwAqRbcF221R74MPqdipLsgUevAAX4hZP2rywyEeShpbe3v2r9ciAvSGT6FB22TEmFLdUyeEDJL4ekG8s9H5WXbzDQPr6eW1zEYYy9'
 const hdKey = HD.fromString(FEE_XPUB);
@@ -106,76 +104,6 @@ export class Bsv20Indexer extends Indexer {
       const bsv20 = txo.data.bsv20;
       if (bsv20?.data?.tick && tokens.has(bsv20.data.tick)) {
         bsv20.data.dec = tokens.get(bsv20.data.tick)!.dec;
-      }
-    }
-  }
-
-  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<void> {
-    const limit = 100;
-    for await (const owner of this.owners) {
-      let resp = await fetch(
-        `https://ordinals.gorillapool.io/api/bsv20/${owner}/balance`,
-      );
-      const balance = (await resp.json()) as RemoteBsv20[];
-      for await (const token of balance) {
-        if (!token.tick) continue;
-        console.log("importing", token.tick);
-        // try {
-        let offset = 0;
-        let utxos: RemoteBsv20[] = [];
-        do {
-          resp = await fetch(
-            `https://ordinals.gorillapool.io/api/bsv20/${owner}/tick/${token.tick}?limit=${limit}&offset=${offset}&includePending=true`,
-          );
-          utxos = ((await resp.json()) as RemoteBsv20[]) || [];
-          const txos: Txo[] = [];
-          for (const u of utxos) {
-            const txo = new Txo(
-              new Outpoint(u.txid, u.vout),
-              1n,
-              Utils.toArray(u.script, "base64"),
-              TxoStatus.Trusted,
-            );
-            if (u.height) {
-              txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
-            }
-
-            txo.data[this.tag] = new IndexData(
-              Bsv20.fromJSON({
-                tick: token.tick,
-                amt: u.amt,
-                dec: token.dec,
-                sym: token.sym,
-                op: u.op!,
-                status: u.status,
-                icon: token.icon,
-                fundAddress: deriveFundAddress(token.tick)
-              }),
-              [
-                { id: "address", value: owner },
-                { id: "tick", value: token.tick },
-              ],
-            );
-            if (u.listing && u.payout && u.price) {
-              const price = BigInt(u.price);
-              txo.data.list = new IndexData(
-                {
-                  payout: Utils.toArray(u.payout, "base64"),
-                  price,
-                },
-                [
-                  {
-                    id: "price",
-                    value: price.toString(16).padStart(16, "0"),
-                  },
-                ],
-              );
-            }
-            txos.push(txo);
-          }
-          await txoStore.storage.putMany(txos);
-          offset += limit;
-        } while (utxos.length == limit);
       }
     }
   }

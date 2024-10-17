@@ -6,10 +6,10 @@ import { type Ingest, IngestStatus } from "../models/ingest";
 import { Block } from "../models/block";
 import type { TxoStorage } from "../storage/txo-storage";
 import { Outpoint } from "../models/outpoint";
-import type { TxLog } from "../services/inv-service";
 import type { Services, Stores } from "../spv-store";
 import type { EventEmitter } from "../lib/event-emitter";
 import { ParseMode, TxoSort, type TxoLookup, type TxoResults } from "../models";
+import type { TxSyncLog } from "../services";
 
 export class TxoStore {
   private syncRunning: Promise<void> | undefined;
@@ -220,11 +220,10 @@ export class TxoStore {
     try {
       const ingests = await this.storage.getIngests(IngestStatus.QUEUED, 25);
       if (ingests.length) {
-        await this.stores.txns!.ensureTxns(ingests.map((i) => i.txid));
-
         const dels: string[] = []
         const updates: Ingest[] = []
         for (const ingest of ingests) {
+          await this.stores.txns!.loadTx(ingest.txid, true);
           if (ingest.downloadOnly) {
             dels.push(ingest.txid)
           } else {
@@ -363,34 +362,37 @@ export class TxoStore {
   }
 
   async syncTxLogs() {
-    let syncedState = await this.storage.getState("syncHeight");
-    if (!syncedState) return
-    for (const owner of this.owners) {
-      syncedState = await this.storage.getState(`sync-${owner}`);
-      let syncHeight = Number(syncedState);
-      console.log("Syncing logs for", owner, syncHeight);
-      const newLogs = await this.services.inv.pollTxLogs(
-        owner,
-        syncHeight,
-      );
+    let syncedState = await this.storage.getState("lastSync");
+    if (!this.services.account) return
+    let lastSync = Number(syncedState || 0);
+    await this.services.account.register([...this.owners]);
+    
+    while (true) {
+      console.log("Syncing logs from", lastSync);
+      const txSyncs = await this.services.account.syncTxLogs(lastSync);
       const oldLogs = await this.storage.getTxLogs(
-        newLogs.map((log) => log.txid),
+        txSyncs.map((log) => log.txid),
       );
-      const puts = newLogs.reduce((puts, log, i) => {
+      const puts: TxSyncLog[] = [];
+      for (const [i, txLog] of txSyncs.entries()) {
         if (!oldLogs[i]) {
-          puts.push(log);
-          syncHeight = Math.max(syncHeight, log.height);
+          puts.push(txLog);
+          if(txLog.score) {
+            lastSync = Math.max(lastSync, txLog.score);
+          }
         }
-        return puts;
-      }, [] as TxLog[]);
-      console.log("Queueing new logs for", owner, puts);
+      }
+      console.log("Queueing new logs:", puts);
       await this.queue(puts.map((p) => ({
         txid: p.txid,
         height: Number(p.height),
         idx: Number(p.idx || 0),
+        outputs: p.outs,
         source: "sync",
         parseMode: ParseMode.Persist,
       })));
+      this.storage.setState("lastSync", lastSync.toString());
+      if (!puts.length) break;
     }
   }
 

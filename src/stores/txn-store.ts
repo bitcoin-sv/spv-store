@@ -83,7 +83,7 @@ export class TxnStore {
     let saveTx = false;
     if (!txn && fromRemote) {
       this.events?.emit("fetchingTx", { txid });
-      txn = await this.services.txns.fetchTxn(txid);
+      txn = await this.services.txns?.fetchTxn(txid);
       saveTx = !!txn;
     }
     if (!txn) return;
@@ -136,7 +136,7 @@ export class TxnStore {
       if (txns.length) {
         for (const txn of txns) {
           this.events?.emit("fetchingTx", { txid: txn.txid });
-          const proof = await this.services.txns.fetchProof(txn.txid);
+          const proof = await this.services.txns?.fetchProof(txn.txid);
           if (!proof) {
             txn.block.height = Date.now();
             continue;
@@ -183,7 +183,7 @@ export class TxnStore {
             continue;
           }
           this.events?.emit("fetchingTx", { txid: txn.txid });
-          const proof = await this.services.txns.fetchProof(txn.txid);
+          const proof = await this.services.txns?.fetchProof(txn.txid);
           if (proof) {
             merklePath = MerklePath.fromBinary(proof);
             if (await merklePath.verify(txn.txid, this.stores.blocks!)) {
@@ -214,27 +214,27 @@ export class TxnStore {
     return this.processConfirmed();
   }
 
-  async ensureTxns(txids: string[]) {
-    console.log("Downloading", txids.length, "txs");
-    const exists = await this.storage.exists(txids);
-    const missing: { [txid: string]: boolean } = {};
-    for (const [i, txid] of txids.entries()) {
-      if (!exists[i]) await this.loadTx(txid, true);
-    }
-    const missingTxids = Object.keys(missing);
-    if (missingTxids.length) {
-      const results = await this.services.txns.fetchTxns(missingTxids);
-      await Promise.all([
-        ...results.map((txn) => {
-          if (!txn.proof) return;
-          let merklePath = MerklePath.fromBinary(txn.proof);
-          txn.block.height = merklePath!.blockHeight;
-          txn.block.idx = BigInt(
-            merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0
-          );
-        }),
-      ]);
-      await this.storage.putMany(results);
-    }
-  }
+  // async ensureTxns(txids: string[]) {
+  //   console.log("Downloading", txids.length, "txs");
+  //   const exists = await this.storage.exists(txids);
+  //   const missing: { [txid: string]: boolean } = {};
+  //   for (const [i, txid] of txids.entries()) {
+  //     if (!exists[i]) await this.loadTx(txid, true);
+  //   }
+  //   const missingTxids = Object.keys(missing);
+  //   if (missingTxids.length) {
+  //     const results = await this.services.txns?.fetchTxns(missingTxids) || [];
+  //     await Promise.all([
+  //       ...results.map((txn) => {
+  //         if (!txn.proof) return;
+  //         let merklePath = MerklePath.fromBinary(txn.proof);
+  //         txn.block.height = merklePath!.blockHeight;
+  //         txn.block.idx = BigInt(
+  //           merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0
+  //         );
+  //       }),
+  //     ]);
+  //     await this.storage.putMany(results);
+  //   }
+  // }
 }

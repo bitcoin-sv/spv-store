@@ -1,13 +1,9 @@
 import type { IndexContext } from "../models/index-context";
-import { Indexer, IndexMode as IndexMode, ParseMode } from "../models/indexer";
+import { Indexer } from "../models/indexer";
 import { IndexData } from "../models/index-data";
 import { Script, Utils } from "@bsv/sdk";
-import { LockTemplate, lockPrefix, lockSuffix } from "../templates/lock";
-import { Txo, TxoStatus } from "../models/txo";
+import { lockPrefix, lockSuffix } from "../templates/lock";
 import type { Event } from "../models/event";
-import { TxoStore } from "../stores/txo-store";
-import type { Ordinal } from "./remote-types";
-import { Outpoint, type Ingest } from "../models";
 
 const PREFIX = Buffer.from(lockPrefix, "hex");
 const SUFFIX = Buffer.from(lockSuffix, "hex");
@@ -62,70 +58,6 @@ export class LockIndexer extends Indexer {
       ctx.summary[this.tag] = {
         amount: balance,
       };
-    }
-  }
-
-  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<void> {
-    const limit = 10000;
-    for await (const owner of this.owners) {
-      let offset = 0;
-      let utxos: Ordinal[] = [];
-      do {
-        const resp = await fetch(
-          `https://ordinals.gorillapool.io/api/locks/address/${owner}/unspent?tag=lock&origins=false&limit=${limit}&offset=${offset}`,
-        );
-        utxos = ((await resp.json()) as Ordinal[]) || [];
-        const txos: Txo[] = [];
-        for (const u of utxos) {
-          if (!u.data?.lock || !u.data.lock.until) continue;
-          const txo = new Txo(
-            new Outpoint(u.outpoint),
-            BigInt(u.satoshis),
-            new LockTemplate().lock(owner, u.data.lock.until).toBinary(),
-            TxoStatus.Trusted,
-          );
-          txos.push(txo);
-          if (this.indexMode === IndexMode.Verify) continue;
-          txo.owner = owner;
-          if (u.height) {
-            txo.block = { height: u.height, idx: BigInt(u.idx || 0) };
-          }
-          txo.data[this.tag] = new IndexData(
-            new Lock(u.data.lock.until),
-            [
-              { id: "until", value: u.data.lock.until.toString().padStart(7, "0") },
-              { id: "address", value: owner },
-            ],
-          );
-          txos.push(txo);
-        }
-
-        if (this.indexMode !== IndexMode.Verify) {
-          await txoStore.storage.putMany(txos);
-        }
-
-        if (this.indexMode !== IndexMode.Trust) {
-          for (const t of txos) {
-            let ingest = ingestQueue[t.outpoint.txid];
-            if (!ingest) {
-              ingest = {
-                txid: t.outpoint.txid,
-                height: t.block.height,
-                source: "lock",
-                idx: Number(t.block.idx),
-                parseMode: ParseMode.Persist,
-                outputs: [t.outpoint.vout],
-              };
-              ingestQueue[t.outpoint.txid] = ingest;
-            } else {
-              ingest.outputs!.push(t.outpoint.vout);
-              ingest.parseMode = ParseMode.Persist;
-            }
-          }
-        }
-
-        offset += limit;
-      } while (utxos.length == 100);
     }
   }
 }

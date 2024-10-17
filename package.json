@@ -17,13 +17,14 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run clean && microbundle --globals @bsv/sdk=bsv",
+    "build": "npm run clean && microbundle --globals @bsv/sdk=bsv && npm pack",
     "clean": "rimraf -rf dist",
     "format": "tsfmt -r",
     "test": "jest",
     "docs": "typedoc"
   },
   "dependencies": {
+    "@microsoft/fetch-event-source": "^2.0.1",
     "@tempfix/idb": "^8.0.3",
     "buffer": "^6.0.3",
     "microbundle": "^0.15.1",

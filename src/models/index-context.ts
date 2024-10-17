@@ -21,6 +21,27 @@ export type IndexSummary = {
   }
 };
 
+/**
+ * Represents a log of indexed transactions.
+ * 
+ * @class TxLog
+ * 
+ * @property {IndexSummary} [summary] - The summary of the indexed transaction.
+ * @property {string} [source] - The source of the indexed transaction.
+ * @property {string} txid - The unique identifier of the transaction.
+ * @property {number} [height] - The height of the block containing the transaction.
+ * @property {number} [idx] - The index of the transaction in the block.
+ */
+export class TxLog {
+  summary?: IndexSummary
+  source?: string
+  constructor(
+    public txid: string,
+    public height: number = 0,
+    public idx = 0,
+  ) { }
+}
+
 
 
 /**
