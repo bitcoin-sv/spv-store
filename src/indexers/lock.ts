@@ -5,8 +5,8 @@ import { Script, Utils } from "@bsv/sdk";
 import { lockPrefix, lockSuffix } from "../templates/lock";
 import type { Event } from "../models/event";
 
-const PREFIX = Buffer.from(lockPrefix, "hex");
-const SUFFIX = Buffer.from(lockSuffix, "hex");
+const PREFIX = Uint8Array.from(Utils.toArray(lockPrefix, "hex"));
+const SUFFIX = Uint8Array.from(Utils.toArray(lockSuffix, "hex"));
 
 export class Lock {
   constructor(public until = 0) { }

@@ -1,5 +1,6 @@
-import { Indexer, Outpoint, ParseMode, type Ingest } from "../models";
+import { IndexData, Indexer, Outpoint, ParseMode, Txo, type Ingest } from "../models";
 import type { TxoStore } from "../stores";
+import type { Origin } from "./origin";
 
 export class OneSatIndexer extends Indexer {
   tag = "1sat";
@@ -12,6 +13,36 @@ export class OneSatIndexer extends Indexer {
     let maxScore = 0;
     for (const u of utxos) {
       const outpoint = new Outpoint(u.outpoint);
+      const txo = new Txo(outpoint, BigInt(u.satoshis), [], 0);
+      txo.owner = u.owners?.find(o => txoStore.owners.has(o));
+      if (txo.owner) {
+        if (txo.satoshis > 1n) {
+          txo.data["fund"] = new IndexData(txo.owner, [{ id: "address", value: txo.owner }])
+        }
+        if (u.origin) {
+          const origin: Origin = {
+            outpoint: u.origin.outpoint,
+            nonce: 0,
+            map: u.origin.map,
+            insc: u.origin.data?.insc,
+          }
+
+          const idxData = new IndexData(origin, []);
+          if (u.origin.outpoint) {
+            idxData.events.push({ id: "data", value: u.origin.outpoint });
+          }
+          if (origin.insc?.file?.type) {
+            idxData.events.push({ id: "type", value: origin.insc.file.type });
+          }
+          txo.data["origin"] = idxData;
+        }
+        if (u.data?.list) {
+          txo.data["list"] = new IndexData(u.data.list, []);
+        }
+        if (Object.keys(txo.data).length > 0) {
+          txoStore.storage.put(txo);
+        }
+      }
       let ingest = ingestQueue[outpoint.txid];
       if (!ingest) {
         ingest = {
@@ -30,22 +61,6 @@ export class OneSatIndexer extends Indexer {
         maxScore = Math.max(maxScore, u.height * 1000000000 + u.idx);
       }
     }
-    // for (const [txid, vouts] of outputs) {
-    //   const tx = await txoStore.stores.txns!.loadTx(txid, true);
-    //   if (!tx) {
-    //     continue;
-    //   }
-
-    //   // await txoStore.ingest(tx, "1sat", ParseMode.Persist, true, vouts);
-    //   ingest = {
-    //     txid: t.outpoint.txid,
-    //     height: t.block.height,
-    //     source: "origin",
-    //     idx: Number(t.block.idx),
-    //     parseMode: ParseMode.Persist,
-    //     outputs: [t.outpoint.vout],
-    //   };
-    // }
     return maxScore;
   }
 }

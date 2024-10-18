@@ -7,16 +7,11 @@ import {
   IndexMode,
   Outpoint,
   ParseMode,
-  Txo,
-  TxoStatus,
   type Event,
-  type Ingest,
 } from "../models";
 import { OneSatProvider } from "../providers/1sat-provider";
 import type { Inscription } from "./insc";
-import type { Ordinal, Sigma } from "./remote-types";
-import { Listing } from "./ordlock";
-import type { TxoStore } from "../stores";
+import type { Sigma } from "./remote-types";
 import type { Network } from "../spv-store";
 
 export interface Origin {
