@@ -223,12 +223,16 @@ export class TxoStore {
         const dels: string[] = []
         const updates: Ingest[] = []
         for (const ingest of ingests) {
-          await this.stores.txns!.loadTx(ingest.txid, true);
-          if (ingest.downloadOnly) {
-            dels.push(ingest.txid)
-          } else {
-            ingest.status = IngestStatus.DOWNLOADED;
-            updates.push(ingest)
+          try {
+            await this.stores.txns!.loadTx(ingest.txid, true);
+            if (ingest.downloadOnly) {
+              dels.push(ingest.txid)
+            } else {
+              ingest.status = IngestStatus.DOWNLOADED;
+              updates.push(ingest)
+            }
+          } catch (e) {
+            console.error("Failed to download tx", ingest.txid, e);
           }
         }
         if (dels.length) {

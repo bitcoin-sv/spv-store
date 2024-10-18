@@ -1,5 +1,6 @@
 import { IndexData, Indexer, Outpoint, ParseMode, Txo, type Ingest } from "../models";
 import type { TxoStore } from "../stores";
+import { Lock } from "./lock";
 import type { Origin } from "./origin";
 
 export class OneSatIndexer extends Indexer {
@@ -7,8 +8,6 @@ export class OneSatIndexer extends Indexer {
   name = "1Sat";
 
   async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<number> {
-    // const outputs = new Map<string, number[]>();
-
     const utxos = await txoStore.services.account!.utxos();
     let maxScore = 0;
     for (const u of utxos) {
@@ -16,7 +15,7 @@ export class OneSatIndexer extends Indexer {
       const txo = new Txo(outpoint, BigInt(u.satoshis), [], 0);
       txo.owner = u.owners?.find(o => txoStore.owners.has(o));
       if (txo.owner) {
-        if (txo.satoshis > 1n) {
+        if (txo.satoshis > 1n && !u.data?.lock) {
           txo.data["fund"] = new IndexData(txo.owner, [{ id: "address", value: txo.owner }])
         }
         if (u.origin) {
@@ -38,6 +37,12 @@ export class OneSatIndexer extends Indexer {
         }
         if (u.data?.list) {
           txo.data["list"] = new IndexData(u.data.list, []);
+        }
+        if (u.data?.lock) {
+          txo.data["lock"] = new IndexData(new Lock(u.data.lock.until), [
+            { id: "until", value: u.data.lock.until.toString().padStart(7, "0") },
+            { id: "address", value: txo.owner }
+          ]);
         }
         if (Object.keys(txo.data).length > 0) {
           txoStore.storage.put(txo);

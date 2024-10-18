@@ -64,7 +64,7 @@ export class LockTemplate {
         }
         const input = tx.inputs[inputIndex]
 
-        // const otherInputs = tx.inputs.filter((_, index) => index !== inputIndex)
+        const otherInputs = tx.inputs.filter((_, index) => index !== inputIndex)
 
         const sourceTXID = input.sourceTXID ? input.sourceTXID : input.sourceTransaction?.id('hex')
         if (!sourceTXID) {
@@ -90,11 +90,11 @@ export class LockTemplate {
           sourceOutputIndex: input.sourceOutputIndex,
           sourceSatoshis,
           transactionVersion: tx.version,
-          otherInputs: [],
-          inputIndex,
+          otherInputs,
           outputs: tx.outputs,
-          inputSequence: input.sequence,
+          inputIndex,
           subscript: lockingScript,
+          inputSequence: input.sequence || 0xffffffff,
           lockTime: tx.lockTime,
           scope: signatureScope
         })

@@ -2,7 +2,7 @@
   "name": "spv-store",
   "author": "David Case",
   "license": "MIT",
-  "version": "0.1.2",
+  "version": "0.1.8",
   "type": "module",
   "source": "src/index.ts",
   "exports": {
@@ -30,7 +30,7 @@
     "rollup-plugin-polyfill-node": "github:FredKSchott/rollup-plugin-polyfill-node"
   },
   "peerDependencies": {
-    "@bsv/sdk": "^1.1.19"
+    "@bsv/sdk": "^1.1.24"
   },
   "devDependencies": {
     "@types/bun": "latest",
