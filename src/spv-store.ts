@@ -94,7 +94,8 @@ export class SPVStore {
   async sync(): Promise<void> {
     await this.stores.blocks!.sync(true);
     this.events.emit("blocksSynced");
-    const tip = await this.getSyncedBlock();
+    // const tip = await this.getSyncedBlock();
+    await this.services.account?.register([...this.stores.txos?.owners || []]);
     const isSynced = await this.stores.txos!.storage.getState("lastSync");
     if (!isSynced) {
       const ingestQueue: { [txid: string]: Ingest } = {};

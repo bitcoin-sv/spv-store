@@ -274,6 +274,7 @@ export class TxoStorageIDB implements TxoStorage {
   }
 
   async getTxLogs(txids: string[]): Promise<(TxLog | undefined)[]> {
+    if (!txids.length) return [];
     const t = this.db.transaction("txLog");
     const logs = await Promise.all(
       txids.map((txid) => t.store.get(txid).catch(() => undefined))

@@ -369,11 +369,9 @@ export class TxoStore {
     let syncedState = await this.storage.getState("lastSync");
     if (!this.services.account) return
     let lastSync = Number(syncedState || 0);
-    await this.services.account.register([...this.owners]);
-    
     while (true) {
       console.log("Syncing logs from", lastSync);
-      const txSyncs = await this.services.account.syncTxLogs(lastSync);
+      const txSyncs = await this.services.account?.syncTxLogs(lastSync) || [];
       const oldLogs = await this.storage.getTxLogs(
         txSyncs.map((log) => log.txid),
       );
