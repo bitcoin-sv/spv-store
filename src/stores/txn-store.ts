@@ -111,7 +111,7 @@ export class TxnStore {
       txn.proof = tx.merklePath!.toBinary();
       txn.block.height = tx.merklePath!.blockHeight;
       txn.block.idx = BigInt(
-        tx.merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset!
+        tx.merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0
       );
       txn.status = TxnStatus.CONFIRMED;
     }
@@ -178,7 +178,13 @@ export class TxnStore {
       if (txns.length) {
         for (const txn of txns) {
           let merklePath = MerklePath.fromBinary(txn.proof!);
-          if (await merklePath.verify(txn.txid, this.stores.blocks!)) {
+          let verified = false;
+          try {
+            verified = await merklePath.verify(txn.txid, this.stores.blocks!);
+          } catch {
+            console.error("Failed to verify merkle path:", txn.txid);
+          }
+          if (verified) {
             txn.status = TxnStatus.IMMUTABLE;
             continue;
           }
@@ -186,10 +192,16 @@ export class TxnStore {
           const proof = await this.services.txns?.fetchProof(txn.txid);
           if (proof) {
             merklePath = MerklePath.fromBinary(proof);
-            if (await merklePath.verify(txn.txid, this.stores.blocks!)) {
+            
+            try {
+              verified = await merklePath.verify(txn.txid, this.stores.blocks!)
+            } catch {
+              console.error("Failed to verify merkle path:", txn.txid);
+            }
+            if (verified) {
               txn.block.height = merklePath!.blockHeight;
               txn.block.idx = BigInt(
-                merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0
+                merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0
               );
               txn.proof = proof;
               if (txn.block.height <= chaintip!.height - 5) {
