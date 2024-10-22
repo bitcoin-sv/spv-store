@@ -10,6 +10,7 @@ export class OneSatIndexer extends Indexer {
   async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<number> {
     const utxos = await txoStore.services.account!.utxos();
     let maxScore = 0;
+    console.log("Syncing", utxos.length, "utxos for ", [...txoStore.owners]);
     for (const u of utxos) {
       const outpoint = new Outpoint(u.outpoint);
       const txo = new Txo(outpoint, BigInt(u.satoshis), [], 0);
@@ -45,8 +46,10 @@ export class OneSatIndexer extends Indexer {
           ]);
         }
         if (Object.keys(txo.data).length > 0) {
-          txoStore.storage.put(txo);
+          await txoStore.storage.put(txo);
         }
+      } else {
+        console.log("No owner for", u.owners);
       }
       let ingest = ingestQueue[outpoint.txid];
       if (!ingest) {

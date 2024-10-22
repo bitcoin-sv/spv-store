@@ -94,9 +94,10 @@ export class SPVStore {
   async sync(): Promise<void> {
     await this.stores.blocks!.sync(true);
     this.events.emit("blocksSynced");
-    // const tip = await this.getSyncedBlock();
     await this.services.account?.register([...this.stores.txos?.owners || []]);
     const isSynced = await this.stores.txos!.storage.getState("lastSync");
+    
+    console.log("Syncing wallet", isSynced);
     if (!isSynced) {
       const ingestQueue: { [txid: string]: Ingest } = {};
       let lastSync = 0;
@@ -105,7 +106,7 @@ export class SPVStore {
         const score = await indexer.sync(this.stores.txos!, ingestQueue);
         lastSync = Math.max(lastSync, score);
       }
-      this.stores.txos?.queue(Object.values(ingestQueue));
+      await this.stores.txos?.queue(Object.values(ingestQueue));
       await this.stores.txos!.storage.setState("lastSync", lastSync.toString());
       this.events.emit("txosSynced");
     }

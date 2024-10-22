@@ -366,11 +366,15 @@ export class TxoStore {
   }
 
   async syncTxLogs() {
-    let syncedState = await this.storage.getState("lastSync");
     if (!this.services.account) return
+    let syncedState = await this.storage.getState("lastSync");
+    if(!syncedState) {
+      console.log("No initial sync. Skipping sync for", this.services.account.accountId);
+      return;
+    };
     let lastSync = Number(syncedState || 0);
-    while (true) {
-      console.log("Syncing logs from", lastSync);
+    // while (true) {
+      console.log("Syncing logs from", lastSync, "for", this.services.account.accountId);
       const txSyncs = await this.services.account?.syncTxLogs(lastSync) || [];
       const oldLogs = await this.storage.getTxLogs(
         txSyncs.map((log) => log.txid),
@@ -393,9 +397,9 @@ export class TxoStore {
         source: "sync",
         parseMode: ParseMode.Persist,
       })));
-      this.storage.setState("lastSync", lastSync.toString());
-      if (!puts.length) break;
-    }
+      await this.storage.setState("lastSync", lastSync.toString());
+    //   if (!puts.length) break;
+    // }
   }
 
   async buildIndexContext(tx: Transaction): Promise<IndexContext> {
