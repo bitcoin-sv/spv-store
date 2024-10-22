@@ -48,13 +48,10 @@ export class OneSatProvider
   }
 
   async broadcast(
-    tx: Transaction,
-    owner?: string
+    tx: Transaction
   ): Promise<BroadcastResponse | BroadcastFailure> {
     console.log("Broadcasting", tx.id("hex"), tx.toHex());
-    const url = owner
-      ? `${APIS[this.network]}/api/tx/address/${owner}/${tx.id("hex")}`
-      : `${APIS[this.network]}/api/tx/bin`;
+    const url = `${APIS[this.network]}/v5/tx`;
 
     const resp = await fetch(url, {
       method: "POST",
@@ -63,17 +60,17 @@ export class OneSatProvider
       },
       body: Buffer.from(tx.toBinary()),
     });
-    const body = (await resp.json()) as string | { message: string };
+    const body = (await resp.json()) as { txid: string, success: boolean, error: string, status: number };
     if (resp.status !== 200) {
       return {
         status: "error",
         code: resp.status.toString(),
-        description: `${(body as { message: string }).message}`,
+        description: body.error,
       } as BroadcastFailure;
     }
     return {
       status: "success",
-      txid: body,
+      txid: body.txid,
       message: "Transaction broadcast successfully",
     } as BroadcastResponse;
   }
