@@ -135,7 +135,7 @@ export class TxnStore {
       );
       if (txns.length) {
         for (const txn of txns) {
-          this.events?.emit("fetchingTx", { txid: txn.txid });
+          // this.events?.emit("fetchingTx", { txid: txn.txid });
           const proof = await this.services.txns?.fetchProof(txn.txid);
           if (!proof) {
             txn.block.height = Date.now();
@@ -188,7 +188,7 @@ export class TxnStore {
             txn.status = TxnStatus.IMMUTABLE;
             continue;
           }
-          this.events?.emit("fetchingTx", { txid: txn.txid });
+          // this.events?.emit("fetchingTx", { txid: txn.txid });
           const proof = await this.services.txns?.fetchProof(txn.txid);
           if (proof) {
             merklePath = MerklePath.fromBinary(proof);
