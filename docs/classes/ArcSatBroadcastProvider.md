@@ -1,8 +1,8 @@
-[**spv-store v0.1.23**](../README.md) • **Docs**
+[**spv-store v0.1.24**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.23](../globals.md) / ArcSatBroadcastProvider
+[spv-store v0.1.24](../globals.md) / ArcSatBroadcastProvider
 
 # Class: ArcSatBroadcastProvider
 
@@ -28,7 +28,7 @@
 
 #### Defined in
 
-[providers/arc-broadcast-service.ts:14](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/arc-broadcast-service.ts#L14)
+[providers/arc-broadcast-service.ts:14](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/arc-broadcast-service.ts#L14)
 
 ## Properties
 
@@ -38,7 +38,7 @@
 
 #### Defined in
 
-[providers/arc-broadcast-service.ts:16](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/arc-broadcast-service.ts#L16)
+[providers/arc-broadcast-service.ts:16](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/arc-broadcast-service.ts#L16)
 
 ***
 
@@ -48,7 +48,7 @@
 
 #### Defined in
 
-[providers/arc-broadcast-service.ts:15](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/arc-broadcast-service.ts#L15)
+[providers/arc-broadcast-service.ts:15](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/arc-broadcast-service.ts#L15)
 
 ## Methods
 
@@ -66,7 +66,7 @@
 
 #### Defined in
 
-[providers/arc-broadcast-service.ts:66](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/arc-broadcast-service.ts#L66)
+[providers/arc-broadcast-service.ts:66](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/arc-broadcast-service.ts#L66)
 
 ***
 
@@ -88,7 +88,7 @@
 
 #### Defined in
 
-[providers/arc-broadcast-service.ts:18](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/arc-broadcast-service.ts#L18)
+[providers/arc-broadcast-service.ts:18](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/arc-broadcast-service.ts#L18)
 
 ***
 
@@ -106,7 +106,7 @@
 
 #### Defined in
 
-[providers/arc-broadcast-service.ts:62](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/arc-broadcast-service.ts#L62)
+[providers/arc-broadcast-service.ts:62](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/arc-broadcast-service.ts#L62)
 
 ***
 
@@ -128,4 +128,4 @@
 
 #### Defined in
 
-[providers/arc-broadcast-service.ts:38](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/arc-broadcast-service.ts#L38)
+[providers/arc-broadcast-service.ts:38](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/arc-broadcast-service.ts#L38)

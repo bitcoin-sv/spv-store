@@ -75,5 +75,5 @@ Indexers parse transactions and identify if a transaction output fits a specifie
 ### Services
 - [Block Service](./src/services/block-service.ts)
 - [Broadcast Service](./src/services/broadcast-service.ts)
-- [Inventory Service](./src/services/inv-service.ts)
+- [Account Service](./src/services/account-service.ts)
 - [Transaction Service](./src/services/txn-service.ts)

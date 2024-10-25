@@ -1,8 +1,8 @@
-[**spv-store v0.1.23**](../README.md) • **Docs**
+[**spv-store v0.1.24**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.23](../globals.md) / Services
+[spv-store v0.1.24](../globals.md) / Services
 
 # Interface: Services
 
@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[spv-store.ts:33](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/spv-store.ts#L33)
+[spv-store.ts:33](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/spv-store.ts#L33)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[spv-store.ts:34](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/spv-store.ts#L34)
+[spv-store.ts:34](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/spv-store.ts#L34)
 
 ***
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[spv-store.ts:36](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/spv-store.ts#L36)
+[spv-store.ts:36](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/spv-store.ts#L36)
 
 ***
 
@@ -44,4 +44,4 @@
 
 #### Defined in
 
-[spv-store.ts:35](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/spv-store.ts#L35)
+[spv-store.ts:35](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/spv-store.ts#L35)

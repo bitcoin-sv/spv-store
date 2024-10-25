@@ -1,8 +1,8 @@
-[**spv-store v0.1.23**](../README.md) • **Docs**
+[**spv-store v0.1.24**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.23](../globals.md) / TxnService
+[spv-store v0.1.24](../globals.md) / TxnService
 
 # Interface: TxnService
 
@@ -22,7 +22,7 @@
 
 #### Defined in
 
-[services/txn-service.ts:6](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/txn-service.ts#L6)
+[services/txn-service.ts:6](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/services/txn-service.ts#L6)
 
 ***
 
@@ -40,4 +40,4 @@
 
 #### Defined in
 
-[services/txn-service.ts:4](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/txn-service.ts#L4)
+[services/txn-service.ts:4](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/services/txn-service.ts#L4)

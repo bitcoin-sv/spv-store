@@ -1,4 +1,4 @@
-**spv-store v0.1.23** • [**Docs**](globals.md)
+**spv-store v0.1.24** • [**Docs**](globals.md)
 
 ***
 
@@ -79,5 +79,5 @@ Indexers parse transactions and identify if a transaction output fits a specifie
 ### Services
 - [Block Service](_media/block-service.ts)
 - [Broadcast Service](_media/broadcast-service.ts)
-- [Inventory Service](./src/services/inv-service.ts)
+- [Account Service](_media/account-service.ts)
 - [Transaction Service](_media/txn-service.ts)

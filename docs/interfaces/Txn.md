@@ -1,8 +1,8 @@
-[**spv-store v0.1.23**](../README.md) • **Docs**
+[**spv-store v0.1.24**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.23](../globals.md) / Txn
+[spv-store v0.1.24](../globals.md) / Txn
 
 # Interface: Txn
 
@@ -20,7 +20,7 @@ The block containing the transaction.
 
 #### Defined in
 
-[stores/txn-store.ts:27](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txn-store.ts#L27)
+[stores/txn-store.ts:27](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/stores/txn-store.ts#L27)
 
 ***
 
@@ -32,7 +32,7 @@ Optional proof data for the transaction.
 
 #### Defined in
 
-[stores/txn-store.ts:26](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txn-store.ts#L26)
+[stores/txn-store.ts:26](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/stores/txn-store.ts#L26)
 
 ***
 
@@ -44,7 +44,7 @@ The raw transaction data.
 
 #### Defined in
 
-[stores/txn-store.ts:25](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txn-store.ts#L25)
+[stores/txn-store.ts:25](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/stores/txn-store.ts#L25)
 
 ***
 
@@ -56,7 +56,7 @@ The current status of the transaction.
 
 #### Defined in
 
-[stores/txn-store.ts:28](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txn-store.ts#L28)
+[stores/txn-store.ts:28](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/stores/txn-store.ts#L28)
 
 ***
 
@@ -68,4 +68,4 @@ The unique identifier for the transaction.
 
 #### Defined in
 
-[stores/txn-store.ts:24](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txn-store.ts#L24)
+[stores/txn-store.ts:24](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/stores/txn-store.ts#L24)

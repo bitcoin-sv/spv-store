@@ -1,8 +1,8 @@
-[**spv-store v0.1.23**](README.md) • **Docs**
+[**spv-store v0.1.24**](README.md) • **Docs**
 
 ***
 
-# spv-store v0.1.23
+# spv-store v0.1.24
 
 ## Enumerations
 

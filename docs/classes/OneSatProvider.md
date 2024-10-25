@@ -1,8 +1,8 @@
-[**spv-store v0.1.23**](../README.md) • **Docs**
+[**spv-store v0.1.24**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.23](../globals.md) / OneSatProvider
+[spv-store v0.1.24](../globals.md) / OneSatProvider
 
 # Class: OneSatProvider
 
@@ -31,7 +31,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:33](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L33)
+[providers/1sat-provider.ts:33](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L33)
 
 ## Properties
 
@@ -45,7 +45,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:35](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L35)
+[providers/1sat-provider.ts:35](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L35)
 
 ***
 
@@ -55,7 +55,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:31](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L31)
+[providers/1sat-provider.ts:31](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L31)
 
 ***
 
@@ -65,7 +65,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:34](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L34)
+[providers/1sat-provider.ts:34](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L34)
 
 ## Methods
 
@@ -87,7 +87,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:50](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L50)
+[providers/1sat-provider.ts:50](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L50)
 
 ***
 
@@ -109,7 +109,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:109](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L109)
+[providers/1sat-provider.ts:109](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L109)
 
 ***
 
@@ -131,7 +131,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:93](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L93)
+[providers/1sat-provider.ts:93](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L93)
 
 ***
 
@@ -155,7 +155,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:117](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L117)
+[providers/1sat-provider.ts:117](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L117)
 
 ***
 
@@ -173,7 +173,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:160](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L160)
+[providers/1sat-provider.ts:160](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L160)
 
 ***
 
@@ -191,7 +191,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:155](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L155)
+[providers/1sat-provider.ts:155](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L155)
 
 ***
 
@@ -209,7 +209,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:124](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L124)
+[providers/1sat-provider.ts:124](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L124)
 
 ***
 
@@ -227,7 +227,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:187](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L187)
+[providers/1sat-provider.ts:187](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L187)
 
 ***
 
@@ -245,7 +245,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:167](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L167)
+[providers/1sat-provider.ts:167](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L167)
 
 ***
 
@@ -263,7 +263,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:137](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L137)
+[providers/1sat-provider.ts:137](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L137)
 
 ***
 
@@ -281,7 +281,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:144](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L144)
+[providers/1sat-provider.ts:144](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L144)
 
 ***
 
@@ -303,7 +303,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:39](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L39)
+[providers/1sat-provider.ts:39](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L39)
 
 ***
 
@@ -325,7 +325,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:78](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L78)
+[providers/1sat-provider.ts:78](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L78)
 
 ***
 
@@ -347,7 +347,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:196](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L196)
+[providers/1sat-provider.ts:196](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L196)
 
 ***
 
@@ -365,7 +365,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:192](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L192)
+[providers/1sat-provider.ts:192](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L192)
 
 ***
 
@@ -387,7 +387,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:221](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L221)
+[providers/1sat-provider.ts:221](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L221)
 
 ***
 
@@ -405,7 +405,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:214](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L214)
+[providers/1sat-provider.ts:214](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L214)
 
 ***
 
@@ -423,4 +423,4 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:130](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/providers/1sat-provider.ts#L130)
+[providers/1sat-provider.ts:130](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/providers/1sat-provider.ts#L130)

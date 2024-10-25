@@ -1,8 +1,8 @@
-[**spv-store v0.1.23**](../README.md) • **Docs**
+[**spv-store v0.1.24**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.23](../globals.md) / TxnStatus
+[spv-store v0.1.24](../globals.md) / TxnStatus
 
 # Enumeration: TxnStatus
 
@@ -18,7 +18,7 @@ The transaction has been broadcasted to the network.
 
 #### Defined in
 
-[stores/txn-store.ts:44](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txn-store.ts#L44)
+[stores/txn-store.ts:44](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/stores/txn-store.ts#L44)
 
 ***
 
@@ -30,7 +30,7 @@ The transaction has been confirmed by the network, but could still be re-orged
 
 #### Defined in
 
-[stores/txn-store.ts:45](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txn-store.ts#L45)
+[stores/txn-store.ts:45](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/stores/txn-store.ts#L45)
 
 ***
 
@@ -42,7 +42,7 @@ The transaction is 6 blocks deep and is considered immutable.
 
 #### Defined in
 
-[stores/txn-store.ts:46](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txn-store.ts#L46)
+[stores/txn-store.ts:46](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/stores/txn-store.ts#L46)
 
 ***
 
@@ -54,7 +54,7 @@ The transaction is pending and awaiting further action.
 
 #### Defined in
 
-[stores/txn-store.ts:43](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txn-store.ts#L43)
+[stores/txn-store.ts:43](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/stores/txn-store.ts#L43)
 
 ***
 
@@ -66,4 +66,4 @@ The transaction has been rejected.
 
 #### Defined in
 
-[stores/txn-store.ts:42](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txn-store.ts#L42)
+[stores/txn-store.ts:42](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/stores/txn-store.ts#L42)

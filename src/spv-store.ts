@@ -166,8 +166,8 @@ export class SPVStore {
     return this.stores.txns!.loadTx(txid, fromRemote);
   }
 
-  async getRecentTxs(): Promise<TxLog[]> {
-    return this.stores.txos!.storage.getRecentTxLogs(10);
+  async getRecentTxs(limit = 100): Promise<TxLog[]> {
+    return this.stores.txos!.storage.getRecentTxLogs(limit);
   }
 
   async parseTx(tx: Transaction): Promise<IndexContext> {

@@ -1,8 +1,8 @@
-[**spv-store v0.1.23**](../README.md) • **Docs**
+[**spv-store v0.1.24**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.23](../globals.md) / AccountService
+[spv-store v0.1.24](../globals.md) / AccountService
 
 # Interface: AccountService
 
@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[services/account-service.ts:12](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/account-service.ts#L12)
+[services/account-service.ts:12](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/services/account-service.ts#L12)
 
 ## Methods
 
@@ -32,7 +32,7 @@
 
 #### Defined in
 
-[services/account-service.ts:13](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/account-service.ts#L13)
+[services/account-service.ts:13](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/services/account-service.ts#L13)
 
 ***
 
@@ -50,7 +50,7 @@
 
 #### Defined in
 
-[services/account-service.ts:16](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/account-service.ts#L16)
+[services/account-service.ts:16](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/services/account-service.ts#L16)
 
 ***
 
@@ -64,7 +64,7 @@
 
 #### Defined in
 
-[services/account-service.ts:15](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/account-service.ts#L15)
+[services/account-service.ts:15](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/services/account-service.ts#L15)
 
 ***
 
@@ -82,7 +82,7 @@
 
 #### Defined in
 
-[services/account-service.ts:14](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/account-service.ts#L14)
+[services/account-service.ts:14](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/services/account-service.ts#L14)
 
 ***
 
@@ -96,7 +96,7 @@
 
 #### Defined in
 
-[services/account-service.ts:17](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/account-service.ts#L17)
+[services/account-service.ts:17](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/services/account-service.ts#L17)
 
 ***
 
@@ -110,4 +110,4 @@
 
 #### Defined in
 
-[services/account-service.ts:18](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/account-service.ts#L18)
+[services/account-service.ts:18](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/services/account-service.ts#L18)

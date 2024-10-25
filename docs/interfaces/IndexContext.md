@@ -1,8 +1,8 @@
-[**spv-store v0.1.23**](../README.md) • **Docs**
+[**spv-store v0.1.24**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.23](../globals.md) / IndexContext
+[spv-store v0.1.24](../globals.md) / IndexContext
 
 # Interface: IndexContext
 
@@ -20,7 +20,7 @@ The block containing the transaction.
 
 #### Defined in
 
-[models/index-context.ts:63](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/index-context.ts#L63)
+[models/index-context.ts:63](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/index-context.ts#L63)
 
 ***
 
@@ -32,7 +32,7 @@ The dependency transactions to be ingested.
 
 #### Defined in
 
-[models/index-context.ts:66](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/index-context.ts#L66)
+[models/index-context.ts:66](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/index-context.ts#L66)
 
 ***
 
@@ -44,7 +44,7 @@ The spent transaction outputs (inputs).
 
 #### Defined in
 
-[models/index-context.ts:64](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/index-context.ts#L64)
+[models/index-context.ts:64](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/index-context.ts#L64)
 
 ***
 
@@ -56,7 +56,7 @@ The summary of the transaction after indexing.
 
 #### Defined in
 
-[models/index-context.ts:67](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/index-context.ts#L67)
+[models/index-context.ts:67](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/index-context.ts#L67)
 
 ***
 
@@ -68,7 +68,7 @@ The transaction being indexed.
 
 #### Defined in
 
-[models/index-context.ts:61](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/index-context.ts#L61)
+[models/index-context.ts:61](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/index-context.ts#L61)
 
 ***
 
@@ -80,7 +80,7 @@ The unique identifier of the transaction.
 
 #### Defined in
 
-[models/index-context.ts:62](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/index-context.ts#L62)
+[models/index-context.ts:62](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/index-context.ts#L62)
 
 ***
 
@@ -92,4 +92,4 @@ The transaction outputs.
 
 #### Defined in
 
-[models/index-context.ts:65](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/index-context.ts#L65)
+[models/index-context.ts:65](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/index-context.ts#L65)

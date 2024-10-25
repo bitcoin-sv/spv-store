@@ -1,8 +1,8 @@
-[**spv-store v0.1.23**](../README.md) • **Docs**
+[**spv-store v0.1.24**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.23](../globals.md) / InscriptionIndexer
+[spv-store v0.1.24](../globals.md) / InscriptionIndexer
 
 # Class: InscriptionIndexer
 
@@ -46,7 +46,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:56](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L56)
+[models/indexer.ts:56](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/indexer.ts#L56)
 
 ## Properties
 
@@ -62,7 +62,7 @@ The mode of the indexer.
 
 #### Defined in
 
-[models/indexer.ts:58](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L58)
+[models/indexer.ts:58](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/indexer.ts#L58)
 
 ***
 
@@ -78,7 +78,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[indexers/insc.ts:27](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/insc.ts#L27)
+[indexers/insc.ts:27](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/indexers/insc.ts#L27)
 
 ***
 
@@ -94,7 +94,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:59](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L59)
+[models/indexer.ts:59](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/indexer.ts#L59)
 
 ***
 
@@ -112,7 +112,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[models/indexer.ts:57](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L57)
+[models/indexer.ts:57](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/indexer.ts#L57)
 
 ***
 
@@ -128,7 +128,7 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[indexers/insc.ts:26](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/insc.ts#L26)
+[indexers/insc.ts:26](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/indexers/insc.ts#L26)
 
 ## Methods
 
@@ -161,7 +161,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[indexers/insc.ts:29](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/insc.ts#L29)
+[indexers/insc.ts:29](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/indexers/insc.ts#L29)
 
 ***
 
@@ -189,7 +189,7 @@ A promise that resolves when the pre-save evaluation is complete.
 
 #### Defined in
 
-[models/indexer.ts:81](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L81)
+[models/indexer.ts:81](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/indexer.ts#L81)
 
 ***
 
@@ -221,4 +221,4 @@ A promise that resolves when the synchronization is complete.
 
 #### Defined in
 
-[models/indexer.ts:92](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L92)
+[models/indexer.ts:92](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/indexer.ts#L92)
