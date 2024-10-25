@@ -1,8 +1,8 @@
-[**spv-store v0.0.1**](../README.md) • **Docs**
+[**spv-store v0.1.23**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.0.1](../globals.md) / BlockHeaderService
+[spv-store v0.1.23](../globals.md) / BlockHeaderService
 
 # Interface: BlockHeaderService
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[services/block-service.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/services/block-service.ts#L4)
+[services/block-service.ts:4](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/block-service.ts#L4)
 
 ***
 
@@ -38,4 +38,4 @@
 
 #### Defined in
 
-[services/block-service.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/services/block-service.ts#L5)
+[services/block-service.ts:5](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/block-service.ts#L5)

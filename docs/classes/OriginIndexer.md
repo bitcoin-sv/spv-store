@@ -1,8 +1,8 @@
-[**spv-store v0.0.1**](../README.md) • **Docs**
+[**spv-store v0.1.23**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.0.1](../globals.md) / OriginIndexer
+[spv-store v0.1.23](../globals.md) / OriginIndexer
 
 # Class: OriginIndexer
 
@@ -36,7 +36,7 @@ Abstract class representing an Indexer.
 
 #### Defined in
 
-[indexers/origin.ts:34](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/origin.ts#L34)
+[indexers/origin.ts:30](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/origin.ts#L30)
 
 ## Properties
 
@@ -52,7 +52,7 @@ The mode of the indexer.
 
 #### Defined in
 
-[indexers/origin.ts:36](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/origin.ts#L36)
+[indexers/origin.ts:32](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/origin.ts#L32)
 
 ***
 
@@ -68,7 +68,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[indexers/origin.ts:31](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/origin.ts#L31)
+[indexers/origin.ts:27](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/origin.ts#L27)
 
 ***
 
@@ -84,17 +84,17 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[indexers/origin.ts:37](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/origin.ts#L37)
+[indexers/origin.ts:33](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/origin.ts#L33)
 
 ***
 
 ### oneSat
 
-> **oneSat**: `OneSatProvider`
+> **oneSat**: [`OneSatProvider`](OneSatProvider.md)
 
 #### Defined in
 
-[indexers/origin.ts:32](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/origin.ts#L32)
+[indexers/origin.ts:28](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/origin.ts#L28)
 
 ***
 
@@ -112,7 +112,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[indexers/origin.ts:35](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/origin.ts#L35)
+[indexers/origin.ts:31](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/origin.ts#L31)
 
 ***
 
@@ -128,7 +128,7 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[indexers/origin.ts:30](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/origin.ts#L30)
+[indexers/origin.ts:26](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/origin.ts#L26)
 
 ## Methods
 
@@ -163,7 +163,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[indexers/origin.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/origin.ts#L43)
+[indexers/origin.ts:39](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/origin.ts#L39)
 
 ***
 
@@ -191,13 +191,13 @@ A promise that resolves when the pre-save evaluation is complete.
 
 #### Defined in
 
-[models/indexer.ts:79](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L79)
+[models/indexer.ts:81](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L81)
 
 ***
 
 ### sync()
 
-> **sync**(`txoStore`, `ingestQueue`): `Promise`\<`void`\>
+> **sync**(`txoStore`, `ingestQueue`): `Promise`\<`number`\>
 
 Synchronize txo data for indexer from a remote source.
 
@@ -213,14 +213,14 @@ A queue of transactions to be ingested, keyed by transaction ID.
 
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<`number`\>
 
 A promise that resolves when the synchronization is complete.
 
-#### Overrides
+#### Inherited from
 
 [`Indexer`](Indexer.md).[`sync`](Indexer.md#sync)
 
 #### Defined in
 
-[indexers/origin.ts:118](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/origin.ts#L118)
+[models/indexer.ts:92](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L92)

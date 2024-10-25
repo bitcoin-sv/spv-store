@@ -2,9 +2,9 @@
 
 ***
 
-[spv-store v0.1.23](../globals.md) / InscriptionIndexer
+[spv-store v0.1.23](../globals.md) / OneSatIndexer
 
-# Class: InscriptionIndexer
+# Class: OneSatIndexer
 
 Abstract class representing an Indexer.
 
@@ -14,9 +14,9 @@ Abstract class representing an Indexer.
 
 ## Constructors
 
-### new InscriptionIndexer()
+### new OneSatIndexer()
 
-> **new InscriptionIndexer**(`owners`, `indexMode`, `network`?): [`InscriptionIndexer`](InscriptionIndexer.md)
+> **new OneSatIndexer**(`owners`, `indexMode`, `network`?): [`OneSatIndexer`](OneSatIndexer.md)
 
 Creates an instance of the Indexer.
 
@@ -38,7 +38,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Returns
 
-[`InscriptionIndexer`](InscriptionIndexer.md)
+[`OneSatIndexer`](OneSatIndexer.md)
 
 #### Inherited from
 
@@ -68,7 +68,7 @@ The mode of the indexer.
 
 ### name
 
-> **name**: `string` = `"Inscriptions"`
+> **name**: `string` = `"1Sat"`
 
 Human readable name for this indexer.
 
@@ -78,7 +78,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[indexers/insc.ts:27](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/insc.ts#L27)
+[indexers/1sat.ts:8](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/1sat.ts#L8)
 
 ***
 
@@ -118,7 +118,7 @@ A set of owners that this indexer is interested in.
 
 ### tag
 
-> **tag**: `string` = `"insc"`
+> **tag**: `string` = `"1sat"`
 
 Unique identifier for this indexer.
 
@@ -128,13 +128,13 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[indexers/insc.ts:26](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/insc.ts#L26)
+[indexers/1sat.ts:7](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/1sat.ts#L7)
 
 ## Methods
 
 ### parse()
 
-> **parse**(`ctx`, `vout`): `Promise`\<`undefined` \| [`IndexData`](IndexData.md)\>
+> **parse**(`ctx`, `vout`, `parseMode`): `Promise`\<`undefined` \| [`IndexData`](IndexData.md)\>
 
 Parses an output and returns the index data if it is relevant to this indexer.
 If the output is not relevant, it returns undefined.
@@ -149,19 +149,21 @@ The context for the index operation.
 
 The output number to be parsed.
 
+• **parseMode**: [`ParseMode`](../enumerations/ParseMode.md) = `ParseMode.Persist`
+
 #### Returns
 
 `Promise`\<`undefined` \| [`IndexData`](IndexData.md)\>
 
 A promise that resolves to the index data if relevant, or undefined if not.
 
-#### Overrides
+#### Inherited from
 
 [`Indexer`](Indexer.md).[`parse`](Indexer.md#parse)
 
 #### Defined in
 
-[indexers/insc.ts:29](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/insc.ts#L29)
+[models/indexer.ts:71](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L71)
 
 ***
 
@@ -215,10 +217,10 @@ A queue of transactions to be ingested, keyed by transaction ID.
 
 A promise that resolves when the synchronization is complete.
 
-#### Inherited from
+#### Overrides
 
 [`Indexer`](Indexer.md).[`sync`](Indexer.md#sync)
 
 #### Defined in
 
-[models/indexer.ts:92](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L92)
+[indexers/1sat.ts:10](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/1sat.ts#L10)

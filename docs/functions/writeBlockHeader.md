@@ -1,8 +1,8 @@
-[**spv-store v0.0.1**](../README.md) • **Docs**
+[**spv-store v0.1.23**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.0.1](../globals.md) / writeBlockHeader
+[spv-store v0.1.23](../globals.md) / writeBlockHeader
 
 # Function: writeBlockHeader()
 
@@ -20,4 +20,4 @@
 
 ## Defined in
 
-[models/block-header.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/block-header.ts#L22)
+[models/block-header.ts:22](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/block-header.ts#L22)

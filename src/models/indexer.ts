@@ -1,4 +1,4 @@
-import type { SPVStore, Network } from "../spv-store";
+import type { Network } from "../spv-store";
 import type { TxoStore } from "../stores";
 import type { IndexContext } from "./index-context";
 import { IndexData } from "./index-data";
@@ -87,7 +87,9 @@ export abstract class Indexer {
    *
    * @param {TxoStore} txoStore - The store containing transaction outputs.
    * @param {{[txid: string]: Ingest}} ingestQueue - A queue of transactions to be ingested, keyed by transaction ID.
-   * @returns {Promise<void>} A promise that resolves when the synchronization is complete.
+   * @returns {Promise<number>} A promise that resolves when the synchronization is complete.
    */
-  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<void> { }
+  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<number> {
+    return 0;
+  }
 }

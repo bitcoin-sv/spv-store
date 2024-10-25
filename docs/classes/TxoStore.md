@@ -1,8 +1,8 @@
-[**spv-store v0.0.1**](../README.md) • **Docs**
+[**spv-store v0.1.23**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.0.1](../globals.md) / TxoStore
+[spv-store v0.1.23](../globals.md) / TxoStore
 
 # Class: TxoStore
 
@@ -32,7 +32,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L17)
+[stores/txo-store.ts:17](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L17)
 
 ## Properties
 
@@ -42,7 +42,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:23](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L23)
+[stores/txo-store.ts:23](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L23)
 
 ***
 
@@ -52,7 +52,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:21](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L21)
+[stores/txo-store.ts:21](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L21)
 
 ***
 
@@ -62,7 +62,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L22)
+[stores/txo-store.ts:22](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L22)
 
 ***
 
@@ -72,7 +72,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L19)
+[stores/txo-store.ts:19](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L19)
 
 ***
 
@@ -82,7 +82,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L18)
+[stores/txo-store.ts:18](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L18)
 
 ***
 
@@ -92,7 +92,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L20)
+[stores/txo-store.ts:20](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L20)
 
 ## Methods
 
@@ -110,7 +110,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:397](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L397)
+[stores/txo-store.ts:405](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L405)
 
 ***
 
@@ -129,7 +129,7 @@ A promise that resolves when the instance is destroyed.
 
 #### Defined in
 
-[stores/txo-store.ts:33](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L33)
+[stores/txo-store.ts:33](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L33)
 
 ***
 
@@ -173,7 +173,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:68](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L68)
+[stores/txo-store.ts:68](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L68)
 
 ***
 
@@ -187,7 +187,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:287](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L287)
+[stores/txo-store.ts:290](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L290)
 
 ***
 
@@ -201,7 +201,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:219](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L219)
+[stores/txo-store.ts:219](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L219)
 
 ***
 
@@ -215,7 +215,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:325](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L325)
+[stores/txo-store.ts:328](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L328)
 
 ***
 
@@ -229,7 +229,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:255](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L255)
+[stores/txo-store.ts:258](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L258)
 
 ***
 
@@ -243,7 +243,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:208](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L208)
+[stores/txo-store.ts:208](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L208)
 
 ***
 
@@ -261,7 +261,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:203](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L203)
+[stores/txo-store.ts:203](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L203)
 
 ***
 
@@ -297,7 +297,7 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:48](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L48)
+[stores/txo-store.ts:48](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L48)
 
 ***
 
@@ -311,7 +311,7 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:365](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L365)
+[stores/txo-store.ts:368](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L368)
 
 ***
 
@@ -325,4 +325,4 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:198](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/stores/txo-store.ts#L198)
+[stores/txo-store.ts:198](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/stores/txo-store.ts#L198)

@@ -1,4 +1,4 @@
-import type { TxLog } from "../services/inv-service";
+import type { TxLog } from "../models";
 import type { Ingest, IngestStatus } from "../models/ingest";
 import type { Outpoint } from "../models/outpoint";
 import type { TxoLookup, TxoResults, TxoSort } from "../models/search";

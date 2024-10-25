@@ -1,8 +1,8 @@
-[**spv-store v0.0.1**](../README.md) • **Docs**
+[**spv-store v0.1.23**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.0.1](../globals.md) / Indexer
+[spv-store v0.1.23](../globals.md) / Indexer
 
 # Class: `abstract` Indexer
 
@@ -10,6 +10,7 @@ Abstract class representing an Indexer.
 
 ## Extended by
 
+- [`OneSatIndexer`](OneSatIndexer.md)
 - [`Bsv20Indexer`](Bsv20Indexer.md)
 - [`Bsv21Indexer`](Bsv21Indexer.md)
 - [`FundIndexer`](FundIndexer.md)
@@ -18,6 +19,7 @@ Abstract class representing an Indexer.
 - [`OpNSIndexer`](OpNSIndexer.md)
 - [`OriginIndexer`](OriginIndexer.md)
 - [`MapIndexer`](MapIndexer.md)
+- [`SigmaIndexer`](SigmaIndexer.md)
 - [`OrdLockIndexer`](OrdLockIndexer.md)
 
 ## Constructors
@@ -50,7 +52,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:54](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L54)
+[models/indexer.ts:56](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L56)
 
 ## Properties
 
@@ -62,7 +64,7 @@ The mode of the indexer.
 
 #### Defined in
 
-[models/indexer.ts:56](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L56)
+[models/indexer.ts:58](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L58)
 
 ***
 
@@ -74,7 +76,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[models/indexer.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L43)
+[models/indexer.ts:45](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L45)
 
 ***
 
@@ -86,7 +88,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:57](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L57)
+[models/indexer.ts:59](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L59)
 
 ***
 
@@ -100,7 +102,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[models/indexer.ts:55](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L55)
+[models/indexer.ts:57](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L57)
 
 ***
 
@@ -112,7 +114,7 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[models/indexer.ts:42](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L42)
+[models/indexer.ts:44](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L44)
 
 ## Methods
 
@@ -143,7 +145,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[models/indexer.ts:69](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L69)
+[models/indexer.ts:71](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L71)
 
 ***
 
@@ -167,13 +169,13 @@ A promise that resolves when the pre-save evaluation is complete.
 
 #### Defined in
 
-[models/indexer.ts:79](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L79)
+[models/indexer.ts:81](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L81)
 
 ***
 
 ### sync()
 
-> **sync**(`txoStore`, `ingestQueue`): `Promise`\<`void`\>
+> **sync**(`txoStore`, `ingestQueue`): `Promise`\<`number`\>
 
 Synchronize txo data for indexer from a remote source.
 
@@ -189,10 +191,10 @@ A queue of transactions to be ingested, keyed by transaction ID.
 
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<`number`\>
 
 A promise that resolves when the synchronization is complete.
 
 #### Defined in
 
-[models/indexer.ts:90](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L90)
+[models/indexer.ts:92](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L92)

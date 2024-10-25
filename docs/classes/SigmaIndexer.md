@@ -2,9 +2,9 @@
 
 ***
 
-[spv-store v0.1.23](../globals.md) / InscriptionIndexer
+[spv-store v0.1.23](../globals.md) / SigmaIndexer
 
-# Class: InscriptionIndexer
+# Class: SigmaIndexer
 
 Abstract class representing an Indexer.
 
@@ -14,9 +14,9 @@ Abstract class representing an Indexer.
 
 ## Constructors
 
-### new InscriptionIndexer()
+### new SigmaIndexer()
 
-> **new InscriptionIndexer**(`owners`, `indexMode`, `network`?): [`InscriptionIndexer`](InscriptionIndexer.md)
+> **new SigmaIndexer**(`owners`, `indexMode`, `network`?): [`SigmaIndexer`](SigmaIndexer.md)
 
 Creates an instance of the Indexer.
 
@@ -38,7 +38,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Returns
 
-[`InscriptionIndexer`](InscriptionIndexer.md)
+[`SigmaIndexer`](SigmaIndexer.md)
 
 #### Inherited from
 
@@ -68,7 +68,7 @@ The mode of the indexer.
 
 ### name
 
-> **name**: `string` = `"Inscriptions"`
+> **name**: `string` = `"Sigma"`
 
 Human readable name for this indexer.
 
@@ -78,7 +78,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[indexers/insc.ts:27](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/insc.ts#L27)
+[indexers/sigma.ts:18](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/sigma.ts#L18)
 
 ***
 
@@ -118,7 +118,7 @@ A set of owners that this indexer is interested in.
 
 ### tag
 
-> **tag**: `string` = `"insc"`
+> **tag**: `string` = `"sigma"`
 
 Unique identifier for this indexer.
 
@@ -128,7 +128,7 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[indexers/insc.ts:26](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/insc.ts#L26)
+[indexers/sigma.ts:17](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/sigma.ts#L17)
 
 ## Methods
 
@@ -161,7 +161,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[indexers/insc.ts:29](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/insc.ts#L29)
+[indexers/sigma.ts:20](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/sigma.ts#L20)
 
 ***
 

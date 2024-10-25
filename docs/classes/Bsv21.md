@@ -1,8 +1,8 @@
-[**spv-store v0.0.1**](../README.md) • **Docs**
+[**spv-store v0.1.23**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.0.1](../globals.md) / Bsv21
+[spv-store v0.1.23](../globals.md) / Bsv21
 
 # Class: Bsv21
 
@@ -22,7 +22,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:27](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L27)
+[indexers/bsv21.ts:24](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L24)
 
 ## Properties
 
@@ -32,7 +32,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:18](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L18)
+[indexers/bsv21.ts:15](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L15)
 
 ***
 
@@ -42,7 +42,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:23](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L23)
+[indexers/bsv21.ts:20](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L20)
 
 ***
 
@@ -52,7 +52,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L19)
+[indexers/bsv21.ts:16](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L16)
 
 ***
 
@@ -62,7 +62,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:25](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L25)
+[indexers/bsv21.ts:22](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L22)
 
 ***
 
@@ -72,7 +72,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:21](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L21)
+[indexers/bsv21.ts:18](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L18)
 
 ***
 
@@ -82,7 +82,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L16)
+[indexers/bsv21.ts:13](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L13)
 
 ***
 
@@ -92,7 +92,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L17)
+[indexers/bsv21.ts:14](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L14)
 
 ***
 
@@ -102,7 +102,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:24](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L24)
+[indexers/bsv21.ts:21](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L21)
 
 ***
 
@@ -112,7 +112,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L15)
+[indexers/bsv21.ts:12](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L12)
 
 ***
 
@@ -122,7 +122,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L22)
+[indexers/bsv21.ts:19](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L19)
 
 ***
 
@@ -132,7 +132,7 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L20)
+[indexers/bsv21.ts:17](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L17)
 
 ## Methods
 
@@ -150,4 +150,4 @@
 
 #### Defined in
 
-[indexers/bsv21.ts:33](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv21.ts#L33)
+[indexers/bsv21.ts:30](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv21.ts#L30)

@@ -83,7 +83,7 @@ export class TxnStore {
     let saveTx = false;
     if (!txn && fromRemote) {
       this.events?.emit("fetchingTx", { txid });
-      txn = await this.services.txns.fetchTxn(txid);
+      txn = await this.services.txns?.fetchTxn(txid);
       saveTx = !!txn;
     }
     if (!txn) return;
@@ -111,7 +111,7 @@ export class TxnStore {
       txn.proof = tx.merklePath!.toBinary();
       txn.block.height = tx.merklePath!.blockHeight;
       txn.block.idx = BigInt(
-        tx.merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset!
+        tx.merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0
       );
       txn.status = TxnStatus.CONFIRMED;
     }
@@ -135,8 +135,8 @@ export class TxnStore {
       );
       if (txns.length) {
         for (const txn of txns) {
-          this.events?.emit("fetchingTx", { txid: txn.txid });
-          const proof = await this.services.txns.fetchProof(txn.txid);
+          // this.events?.emit("fetchingTx", { txid: txn.txid });
+          const proof = await this.services.txns?.fetchProof(txn.txid);
           if (!proof) {
             txn.block.height = Date.now();
             continue;
@@ -178,18 +178,30 @@ export class TxnStore {
       if (txns.length) {
         for (const txn of txns) {
           let merklePath = MerklePath.fromBinary(txn.proof!);
-          if (await merklePath.verify(txn.txid, this.stores.blocks!)) {
+          let verified = false;
+          try {
+            verified = await merklePath.verify(txn.txid, this.stores.blocks!);
+          } catch {
+            console.error("Failed to verify merkle path:", txn.txid);
+          }
+          if (verified) {
             txn.status = TxnStatus.IMMUTABLE;
             continue;
           }
-          this.events?.emit("fetchingTx", { txid: txn.txid });
-          const proof = await this.services.txns.fetchProof(txn.txid);
+          // this.events?.emit("fetchingTx", { txid: txn.txid });
+          const proof = await this.services.txns?.fetchProof(txn.txid);
           if (proof) {
             merklePath = MerklePath.fromBinary(proof);
-            if (await merklePath.verify(txn.txid, this.stores.blocks!)) {
+            
+            try {
+              verified = await merklePath.verify(txn.txid, this.stores.blocks!)
+            } catch {
+              console.error("Failed to verify merkle path:", txn.txid);
+            }
+            if (verified) {
               txn.block.height = merklePath!.blockHeight;
               txn.block.idx = BigInt(
-                merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0
+                merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0
               );
               txn.proof = proof;
               if (txn.block.height <= chaintip!.height - 5) {
@@ -214,27 +226,27 @@ export class TxnStore {
     return this.processConfirmed();
   }
 
-  async ensureTxns(txids: string[]) {
-    console.log("Downloading", txids.length, "txs");
-    const exists = await this.storage.exists(txids);
-    const missing: { [txid: string]: boolean } = {};
-    for (const [i, txid] of txids.entries()) {
-      if (!exists[i]) await this.loadTx(txid, true);
-    }
-    const missingTxids = Object.keys(missing);
-    if (missingTxids.length) {
-      const results = await this.services.txns.fetchTxns(missingTxids);
-      await Promise.all([
-        ...results.map((txn) => {
-          if (!txn.proof) return;
-          let merklePath = MerklePath.fromBinary(txn.proof);
-          txn.block.height = merklePath!.blockHeight;
-          txn.block.idx = BigInt(
-            merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0
-          );
-        }),
-      ]);
-      await this.storage.putMany(results);
-    }
-  }
+  // async ensureTxns(txids: string[]) {
+  //   console.log("Downloading", txids.length, "txs");
+  //   const exists = await this.storage.exists(txids);
+  //   const missing: { [txid: string]: boolean } = {};
+  //   for (const [i, txid] of txids.entries()) {
+  //     if (!exists[i]) await this.loadTx(txid, true);
+  //   }
+  //   const missingTxids = Object.keys(missing);
+  //   if (missingTxids.length) {
+  //     const results = await this.services.txns?.fetchTxns(missingTxids) || [];
+  //     await Promise.all([
+  //       ...results.map((txn) => {
+  //         if (!txn.proof) return;
+  //         let merklePath = MerklePath.fromBinary(txn.proof);
+  //         txn.block.height = merklePath!.blockHeight;
+  //         txn.block.idx = BigInt(
+  //           merklePath!.path[0].find((p) => p.hash == txn.txid)?.offset || 0
+  //         );
+  //       }),
+  //     ]);
+  //     await this.storage.putMany(results);
+  //   }
+  // }
 }

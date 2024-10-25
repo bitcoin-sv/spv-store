@@ -1,8 +1,8 @@
-[**spv-store v0.0.1**](../README.md) • **Docs**
+[**spv-store v0.1.23**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.0.1](../globals.md) / TxnService
+[spv-store v0.1.23](../globals.md) / TxnService
 
 # Interface: TxnService
 
@@ -22,7 +22,7 @@
 
 #### Defined in
 
-[services/txn-service.ts:7](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/services/txn-service.ts#L7)
+[services/txn-service.ts:6](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/txn-service.ts#L6)
 
 ***
 
@@ -40,22 +40,4 @@
 
 #### Defined in
 
-[services/txn-service.ts:5](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/services/txn-service.ts#L5)
-
-***
-
-### fetchTxns()
-
-> **fetchTxns**(`txids`): `Promise`\<[`Txn`](Txn.md)[]\>
-
-#### Parameters
-
-• **txids**: `string`[]
-
-#### Returns
-
-`Promise`\<[`Txn`](Txn.md)[]\>
-
-#### Defined in
-
-[services/txn-service.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/services/txn-service.ts#L6)
+[services/txn-service.ts:4](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/services/txn-service.ts#L4)

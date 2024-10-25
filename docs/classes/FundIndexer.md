@@ -1,8 +1,8 @@
-[**spv-store v0.0.1**](../README.md) • **Docs**
+[**spv-store v0.1.23**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.0.1](../globals.md) / FundIndexer
+[spv-store v0.1.23](../globals.md) / FundIndexer
 
 # Class: FundIndexer
 
@@ -46,7 +46,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:54](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L54)
+[models/indexer.ts:56](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L56)
 
 ## Properties
 
@@ -62,7 +62,7 @@ The mode of the indexer.
 
 #### Defined in
 
-[models/indexer.ts:56](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L56)
+[models/indexer.ts:58](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L58)
 
 ***
 
@@ -78,7 +78,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[indexers/fund.ts:20](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/fund.ts#L20)
+[indexers/fund.ts:11](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/fund.ts#L11)
 
 ***
 
@@ -94,7 +94,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:57](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L57)
+[models/indexer.ts:59](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L59)
 
 ***
 
@@ -112,7 +112,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[models/indexer.ts:55](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/indexer.ts#L55)
+[models/indexer.ts:57](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L57)
 
 ***
 
@@ -128,7 +128,7 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[indexers/fund.ts:19](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/fund.ts#L19)
+[indexers/fund.ts:10](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/fund.ts#L10)
 
 ## Methods
 
@@ -161,7 +161,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[indexers/fund.ts:22](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/fund.ts#L22)
+[indexers/fund.ts:13](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/fund.ts#L13)
 
 ***
 
@@ -189,13 +189,13 @@ A promise that resolves when the pre-save evaluation is complete.
 
 #### Defined in
 
-[indexers/fund.ts:34](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/fund.ts#L34)
+[indexers/fund.ts:25](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/fund.ts#L25)
 
 ***
 
 ### sync()
 
-> **sync**(`txoStore`, `ingestQueue`): `Promise`\<`void`\>
+> **sync**(`txoStore`, `ingestQueue`): `Promise`\<`number`\>
 
 Synchronize txo data for indexer from a remote source.
 
@@ -211,14 +211,14 @@ A queue of transactions to be ingested, keyed by transaction ID.
 
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<`number`\>
 
 A promise that resolves when the synchronization is complete.
 
-#### Overrides
+#### Inherited from
 
 [`Indexer`](Indexer.md).[`sync`](Indexer.md#sync)
 
 #### Defined in
 
-[indexers/fund.ts:55](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/fund.ts#L55)
+[models/indexer.ts:92](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/indexer.ts#L92)

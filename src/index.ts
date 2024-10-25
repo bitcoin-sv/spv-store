@@ -2,6 +2,7 @@ export * from "./spv-store";
 export * from "./indexers";
 export * from "./models";
 export * from "./pre-config";
+export * from "./providers";
 export * from "./services";
 export * from "./storage";
 export * from "./stores";

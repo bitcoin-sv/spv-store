@@ -1,8 +1,8 @@
-[**spv-store v0.0.1**](../README.md) • **Docs**
+[**spv-store v0.1.23**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.0.1](../globals.md) / Outpoint
+[spv-store v0.1.23](../globals.md) / Outpoint
 
 # Class: Outpoint
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:6](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/outpoint.ts#L6)
+[models/outpoint.ts:6](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/outpoint.ts#L6)
 
 ## Properties
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:3](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/outpoint.ts#L3)
+[models/outpoint.ts:3](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/outpoint.ts#L3)
 
 ***
 
@@ -44,7 +44,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:4](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/outpoint.ts#L4)
+[models/outpoint.ts:4](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/outpoint.ts#L4)
 
 ## Methods
 
@@ -58,7 +58,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:43](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/outpoint.ts#L43)
+[models/outpoint.ts:43](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/outpoint.ts#L43)
 
 ***
 
@@ -72,7 +72,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:36](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/outpoint.ts#L36)
+[models/outpoint.ts:36](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/outpoint.ts#L36)
 
 ***
 
@@ -86,7 +86,7 @@
 
 #### Defined in
 
-[models/outpoint.ts:50](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/outpoint.ts#L50)
+[models/outpoint.ts:50](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/outpoint.ts#L50)
 
 ***
 
@@ -100,4 +100,4 @@
 
 #### Defined in
 
-[models/outpoint.ts:32](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/models/outpoint.ts#L32)
+[models/outpoint.ts:32](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/models/outpoint.ts#L32)

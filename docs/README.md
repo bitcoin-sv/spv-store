@@ -1,4 +1,4 @@
-**spv-store v0.0.1** • [**Docs**](globals.md)
+**spv-store v0.1.23** • [**Docs**](globals.md)
 
 ***
 
@@ -7,6 +7,9 @@
 **SPV-Store** is a modular engine to used to locally store and index Bitcoin transaction history with pluggable support for custom indexers, persistance layers, and API providers.
 
 ## Usage
+
+### Install
+`npm install spv-store`
 
 ### Instantiate
 Initialize for use in web browser with OneSat API provider
@@ -76,5 +79,5 @@ Indexers parse transactions and identify if a transaction output fits a specifie
 ### Services
 - [Block Service](_media/block-service.ts)
 - [Broadcast Service](_media/broadcast-service.ts)
-- [Inventory Service](_media/inv-service.ts)
+- [Inventory Service](./src/services/inv-service.ts)
 - [Transaction Service](_media/txn-service.ts)

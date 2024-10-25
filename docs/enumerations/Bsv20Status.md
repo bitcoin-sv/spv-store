@@ -1,8 +1,8 @@
-[**spv-store v0.0.1**](../README.md) • **Docs**
+[**spv-store v0.1.23**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.0.1](../globals.md) / Bsv20Status
+[spv-store v0.1.23](../globals.md) / Bsv20Status
 
 # Enumeration: Bsv20Status
 
@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:15](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv20.ts#L15)
+[indexers/bsv20.ts:13](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv20.ts#L13)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:16](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv20.ts#L16)
+[indexers/bsv20.ts:14](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv20.ts#L14)
 
 ***
 
@@ -34,4 +34,4 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:17](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/indexers/bsv20.ts#L17)
+[indexers/bsv20.ts:15](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/indexers/bsv20.ts#L15)

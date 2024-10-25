@@ -5,8 +5,7 @@ import type { TxoStorage } from "../txo-storage";
 import { Outpoint } from "../../models/outpoint";
 import { TxoSort, type TxoLookup, type TxoResults } from "../../models/search";
 import type { Network } from "../../spv-store";
-import type { TxLog } from "../../services/inv-service";
-import { ParseMode } from "../../models";
+import { ParseMode, TxLog } from "../../models";
 
 const TXO_DB_VERSION = 1;
 
@@ -280,6 +279,7 @@ export class TxoStorageIDB implements TxoStorage {
   }
 
   async getTxLogs(txids: string[]): Promise<(TxLog | undefined)[]> {
+    if (!txids.length) return [];
     const t = this.db.transaction("txLog");
     const logs = await Promise.all(
       txids.map((txid) => t.store.get(txid).catch(() => undefined))

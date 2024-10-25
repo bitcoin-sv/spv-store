@@ -1,8 +1,8 @@
-[**spv-store v0.0.1**](../README.md) • **Docs**
+[**spv-store v0.1.23**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.0.1](../globals.md) / TxoSchema
+[spv-store v0.1.23](../globals.md) / TxoSchema
 
 # Interface: TxoSchema
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:24](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/storage/idb/idb-txos.ts#L24)
+[storage/idb/idb-txos.ts:23](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/storage/idb/idb-txos.ts#L23)
 
 ***
 
@@ -60,7 +60,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:38](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/storage/idb/idb-txos.ts#L38)
+[storage/idb/idb-txos.ts:37](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/storage/idb/idb-txos.ts#L37)
 
 ***
 
@@ -86,7 +86,7 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:31](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/storage/idb/idb-txos.ts#L31)
+[storage/idb/idb-txos.ts:30](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/storage/idb/idb-txos.ts#L30)
 
 ***
 
@@ -124,4 +124,4 @@
 
 #### Defined in
 
-[storage/idb/idb-txos.ts:14](https://github.com/shruggr/ts-casemod-spv/blob/e58946f83152e9deb265157899c0af08eff6c009/src/storage/idb/idb-txos.ts#L14)
+[storage/idb/idb-txos.ts:13](https://github.com/bitcoin-sv/spv-store/blob/63abe80bc44b9b9c7e00ccf1d6227aea5ee85646/src/storage/idb/idb-txos.ts#L13)
