@@ -73,7 +73,7 @@ export class OriginIndexer extends Indexer {
               [ParseMode.Persist, ParseMode.Deep].includes(parseMode) &&
               !origin.insc?.file?.type.startsWith("application/bsv-20")
             ) {
-              const ancestors = await this.oneSat.getOriginAncestors([txo.outpoint]);
+              const ancestors = await this.oneSat.getOriginAncestors(txo.outpoint);
               let hasAncestor = false;
               for (const [txid, block] of Object.entries(ancestors)) {
                 ctx.queue[txid] = block;
@@ -112,5 +112,41 @@ export class OriginIndexer extends Indexer {
       }
     }
     return new IndexData(origin, events, deps);
+  }
+
+  async preSave(ctx: IndexContext): Promise<void> {
+    let balance = 0;
+    let hasTag = false;
+    let icon: string | undefined;
+    for (const spend of ctx.spends) {
+      if(spend.data[this.tag]) {
+        let origin = spend.data[this.tag].data as Origin;
+        if (spend.owner && this.owners.has(spend.owner)) {
+          hasTag = true;
+          balance--;
+          if (!icon && origin?.insc?.file?.type.startsWith("image/")) {
+            icon = origin?.outpoint;
+          }
+        }
+      }
+    }
+    for (const txo of ctx.txos) {
+      if(txo.data[this.tag]) {
+        if (txo.owner && this.owners.has(txo.owner)) {
+          hasTag = true;
+          balance++;
+          let origin = txo.data.origin?.data as Origin;
+          if (!icon && origin?.insc?.file?.type.startsWith("image/")) {
+            icon = origin?.outpoint;
+          }
+        }
+      }
+    }
+    if (hasTag) {
+      ctx.summary[this.tag] = {
+        amount: balance,
+        icon,
+      };
+    }
   }
 }

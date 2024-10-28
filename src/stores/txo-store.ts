@@ -97,14 +97,16 @@ export class TxoStore {
             if (!sourceTx) {
               throw new Error(`Failed to load source tx: ${input.sourceTXID}`);
             }
-            spend = spend = new Txo(
-              new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
-              BigInt(
-                sourceTx.outputs[input.sourceOutputIndex].satoshis || 0,
-              ),
-              sourceTx.outputs[input.sourceOutputIndex]?.lockingScript.toBinary() || [],
-              TxoStatus.Unindexed,
-            )
+            const spendCtx = await this.ingest(sourceTx, "ancestor", ParseMode.Preview, false);
+            spend = spendCtx.txos[input.sourceOutputIndex]
+            // spend = new Txo(
+            //   new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
+            //   BigInt(
+            //     sourceTx.outputs[input.sourceOutputIndex].satoshis || 0,
+            //   ),
+            //   sourceTx.outputs[input.sourceOutputIndex]?.lockingScript.toBinary() || [],
+            //   TxoStatus.Unindexed,
+            // )
           } else {
             spend = new Txo(
               new Outpoint(input.sourceTXID!, input.sourceOutputIndex),

@@ -53,14 +53,12 @@ export type OrdinalData = {
   };
   b?: File;
   sigma?: Sigma[];
-  list?: Listing;
+  ordlock?: Listing;
   bsv20?: RemoteBsv20;
   lock?: Lock;
 };
 
 export type Ordinal = {
-  txid: string;
-  vout: number;
   outpoint: string;
   satoshis: number;
   owners?: string[];

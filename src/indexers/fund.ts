@@ -23,20 +23,20 @@ export class FundIndexer extends Indexer {
   }
 
   async preSave(ctx: IndexContext): Promise<void> {
-    let satsIn = ctx.spends.reduce((acc, spends) => {
+    let satsOut = ctx.spends.reduce((acc, spends) => {
       if (!spends.data[this.tag]) return acc;
       return acc + (spends.owner && this.owners.has(spends.owner) ?
         spends.satoshis :
         0n);
     }, 0n);
-    let satsOut = ctx.txos.reduce((acc, txo) => {
+    let satsIn = ctx.txos.reduce((acc, txo) => {
       if (!txo.data[this.tag]) return acc;
       return acc + (txo.owner && this.owners.has(txo.owner) ?
         txo.satoshis :
         0n);
     }, 0n);
-    const balance = satsIn - satsOut;
-    if (balance != 0n) {
+    const balance = Number(satsIn - satsOut);
+    if (balance) {
       ctx.summary[this.tag] = {
         amount: balance,
       };

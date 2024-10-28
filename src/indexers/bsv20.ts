@@ -88,6 +88,8 @@ export class Bsv20Indexer extends Indexer {
 
   async preSave(ctx: IndexContext) {
     const tokens = new Map<string, RemoteBsv20>();
+    let token: Bsv20 | undefined
+    let balance = 0;
     for (const spend of ctx.spends) {
       const bsv20 = spend.data.bsv20;
       if (!bsv20) continue;
@@ -97,13 +99,28 @@ export class Bsv20Indexer extends Indexer {
           tokens.set(bsv20.data.tick, remote);
           bsv20.data.status = remote.status;
           bsv20.data.dec = remote.dec;
+          if (!token) token = bsv20.data as Bsv20;
+          if (token.tick == remote.tick && spend.owner && this.owners.has(spend.owner)) {
+            balance -= Number(remote.amt)
+          }
         }
       }
     }
     for (const txo of ctx.txos) {
       const bsv20 = txo.data.bsv20;
+      if (!bsv20) continue;
+      if (!token) token = bsv20.data as Bsv20;
+      if (bsv20?.data?.tick == token?.tick && txo.owner && this.owners.has(txo.owner)) {
+        balance += Number(bsv20.data.amt)
+      }
       if (bsv20?.data?.tick && tokens.has(bsv20.data.tick)) {
         bsv20.data.dec = tokens.get(bsv20.data.tick)!.dec;
+      }
+    }
+    if(token) {
+      ctx.summary[this.tag] = {
+        id: token.tick,
+        amount: balance / Math.pow(10, token.dec || 0),
       }
     }
   }

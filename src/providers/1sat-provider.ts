@@ -129,27 +129,27 @@ export class OneSatProvider
 
   async utxos(): Promise<Ordinal[]> {
     const resp = await fetch(
-      `${APIS[this.network]}/v5/acct/${this.accountId}/utxos`,
+      `${APIS[this.network]}/v5/acct/${this.accountId}/utxos?txo=true&limit=0&tags=*`,
     );
     return ((await resp.json()) as Ordinal[]) || [];
   }
 
   async getTxo(outpoint: Outpoint): Promise<Ordinal | undefined> {
     const resp = await fetch(
-      `${APIS[this.network]}/api/txos/${outpoint.toString()}`
+      `${APIS[this.network]}/v5/txos/${outpoint.toString()}?txo=true`
     );
     return resp.ok ? (resp.json() as Promise<Ordinal>) : undefined;
   }
 
   async getTxos(outpoints: Outpoint[]): Promise<Ordinal[]> {
-    const resp = await fetch(`${APIS[this.network]}/api/txos/outpoints`, {
+    const resp = await fetch(`${APIS[this.network]}/v5/txos/outpoints?txo=true&tags=*`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(outpoints),
     });
-    return resp.ok ? (resp.json() as Promise<Ordinal[]>) : [];
+    return resp.ok ? (await resp.json() as Ordinal[]).map(o => o) : [];
   }
 
   async getBsv20Details(tick: string): Promise<RemoteBsv20 | undefined> {
@@ -164,14 +164,8 @@ export class OneSatProvider
     return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
   }
 
-  async getOriginAncestors(outpoints: Outpoint[]): Promise<IndexQueue> {
-    const resp = await fetch(`${APIS[this.network]}/api/inscriptions/ancestors`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(outpoints),
-      },
-    );
+  async getOriginAncestors(outpoint: Outpoint): Promise<IndexQueue> {
+    const resp = await fetch(`${APIS[this.network]}/v5/evt/origin/outpoint/${outpoint.toString()}`);
     const ancestors = (await resp.json()) as {
       txid: string;
       idx: string;
@@ -179,7 +173,7 @@ export class OneSatProvider
     }[];
 
     return ancestors.reduce((queue, u) => {
-      queue[u.txid] = new Block(u.height || 0, BigInt(u.idx || 0));
+      queue[u.txid.slice(0, 64)] = new Block(u.height || 0, BigInt(u.idx || 0));
       return queue;
     }, {} as IndexQueue);
   }

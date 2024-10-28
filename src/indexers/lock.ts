@@ -45,16 +45,20 @@ export class LockIndexer extends Indexer {
   }
 
   async preSave(ctx: IndexContext): Promise<void> {
-    const locksIn = ctx.spends.reduce((acc, spends) => {
+    const locksOut = ctx.spends.reduce((acc, spends) => {
       if (!spends.data[this.tag]) return acc;
-      return acc + spends.satoshis;
+      return acc + (spends.owner && this.owners.has(spends.owner) ?
+        spends.satoshis :
+        0n);
     }, 0n)
-    const locksOut = ctx.txos.reduce((acc, txo) => {
+    const locksIn = ctx.txos.reduce((acc, txo) => {
       if (!txo.data[this.tag]) return acc;
-      return acc + txo.satoshis;
+      return acc + (txo.owner && this.owners.has(txo.owner) ?
+        txo.satoshis :
+        0n);
     }, 0n);
-    const balance = locksIn - locksOut;
-    if (balance != 0n) {
+    const balance = Number(locksIn - locksOut);
+    if (balance) {
       ctx.summary[this.tag] = {
         amount: balance,
       };

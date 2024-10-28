@@ -36,8 +36,8 @@ export class OneSatIndexer extends Indexer {
           }
           txo.data["origin"] = idxData;
         }
-        if (u.data?.list) {
-          txo.data["list"] = new IndexData(u.data.list, []);
+        if (u.data?.ordlock) {
+          txo.data["list"] = new IndexData(u.data.ordlock, []);
         }
         if (u.data?.lock) {
           txo.data["lock"] = new IndexData(new Lock(u.data.lock.until), [

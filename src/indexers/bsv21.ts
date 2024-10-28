@@ -96,6 +96,9 @@ export class Bsv21Indexer extends Indexer {
   async preSave(ctx: IndexContext) {
     const balance: { [id: string]: bigint } = {};
     const tokensIn: { [id: string]: Txo[] } = {};
+    let summaryToken: Bsv21 | undefined;
+    let summaryBalance = 0;
+    let hasPending = false;
     for (const spend of ctx.spends) {
       const bsv21 = spend.data.bsv21;
       if (!bsv21) continue;
@@ -108,6 +111,10 @@ export class Bsv21Indexer extends Indexer {
           bsv21.data.dec = remote.dec;
         }
       }
+      if (!summaryToken) summaryToken = bsv21.data as Bsv21;
+      if (bsv21.data.id == summaryToken.id && spend.owner && this.owners.has(spend.owner)) {
+        summaryBalance -= Number(bsv21.data.amt)
+      }
       if (bsv21.data.status == Bsv20Status.Pending) {
         for (const txo of ctx.txos) {
           const outBsv21 = txo.data?.bsv21;
@@ -118,7 +125,7 @@ export class Bsv21Indexer extends Indexer {
             outBsv21.data.dec = bsv21.data.dec;
           }
         }
-        return
+        hasPending = true;
       } else if (bsv21.data.status == Bsv20Status.Valid) {
         if (!tokensIn[bsv21.data.id]) {
           tokensIn[bsv21.data.id] = [];
@@ -141,6 +148,10 @@ export class Bsv21Indexer extends Indexer {
       if ((balance[bsv21.data.id] || 0n) < bsv21.data.amt) {
         reasons[bsv21.data.id] = "Insufficient inputs";
       }
+      if (!summaryToken) summaryToken = bsv21.data as Bsv21;
+      if (bsv21.data.id == summaryToken?.id && txo.owner && this.owners.has(txo.owner)) {
+        summaryBalance += Number(bsv21.data.amt)
+      }
 
       if (token) {
         bsv21.data.sym = token.sym;
@@ -158,13 +169,22 @@ export class Bsv21Indexer extends Indexer {
         (balance[bsv21.data.id] || 0n) - BigInt(bsv21.data.amt);
     }
 
-    for (const [id, txos] of Object.entries(tokensOut)) {
-      const reason = reasons[id];
-      for (const txo of txos) {
-        txo.data.bsv21.data.status = reason
-          ? Bsv20Status.Invalid
-          : Bsv20Status.Valid;
-        txo.data.bsv21.data.reason = reason;
+    if (!hasPending) {
+      for (const [id, txos] of Object.entries(tokensOut)) {
+        const reason = reasons[id];
+        for (const txo of txos) {
+          txo.data.bsv21.data.status = reason
+            ? Bsv20Status.Invalid
+            : Bsv20Status.Valid;
+          txo.data.bsv21.data.reason = reason;
+        }
+      }
+    }
+    if (summaryToken) {
+      ctx.summary[this.tag] = {
+        id: summaryToken.id,
+        amount: summaryBalance / Math.pow(10, summaryToken.dec || 0),
+        icon: summaryToken.icon
       }
     }
   }

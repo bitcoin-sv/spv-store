@@ -55,4 +55,30 @@ export class OrdLockIndexer extends Indexer {
     }
     return new IndexData(listing, events);
   }
+
+  async preSave(ctx: IndexContext): Promise<void> {
+    for (const [vin, spend] of ctx.spends.entries()) {
+      if(spend.data[this.tag]) {
+        
+        if(Buffer.from(ctx.tx.inputs[vin].unlockingScript?.toBinary() || []).includes(SUFFIX)) {
+          ctx.summary[this.tag] = {
+            amount: 1,
+          }
+        } else {
+          ctx.summary[this.tag] = {
+            amount: 0,
+          }
+        }
+        return;
+      }
+    }
+    for (const txo of ctx.txos) {
+      if(txo.data[this.tag]) {
+        ctx.summary[this.tag] = {
+          amount: -1,
+        }
+        return;
+      }
+    }
+  }
 }
