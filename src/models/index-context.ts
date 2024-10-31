@@ -65,6 +65,5 @@ export interface IndexContext {
   block: Block;
   spends: Txo[]; //spent transaction outputs (inputs)
   txos: Txo[]; //transaction outputs
-  queue: IndexQueue; // dependency transactions to be ingested
   summary: IndexSummary // Summary of the transaction after indexing
 }

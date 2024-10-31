@@ -1,6 +1,7 @@
 import {
   type BroadcastFailure,
   type BroadcastResponse,
+  Hash,
   Transaction,
   Utils,
 } from "@bsv/sdk";
@@ -19,6 +20,7 @@ import type { Outpoint } from "../models/outpoint";
 import type { Ordinal, RemoteBsv20 } from "../indexers/remote-types";
 import type { Txn } from "../stores";
 import { Block, Txo, type IndexQueue } from "../models";
+import type { File } from "../indexers";
 
 const APIS = {
   mainnet: "https://ordinals.gorillapool.io",
@@ -129,14 +131,14 @@ export class OneSatProvider
 
   async utxos(): Promise<Ordinal[]> {
     const resp = await fetch(
-      `${APIS[this.network]}/v5/acct/${this.accountId}/utxos?txo=true&limit=0&tags=*`,
+      `${APIS[this.network]}/v5/acct/${this.accountId}/utxos?txo=true&limit=0&tags=*&script=true`,
     );
     return ((await resp.json()) as Ordinal[]) || [];
   }
 
   async getTxo(outpoint: Outpoint): Promise<Ordinal | undefined> {
     const resp = await fetch(
-      `${APIS[this.network]}/v5/txos/${outpoint.toString()}?txo=true`
+      `${APIS[this.network]}/v5/txo/${outpoint.toString()}?txo=true&tags=*`
     );
     return resp.ok ? (resp.json() as Promise<Ordinal>) : undefined;
   }
@@ -164,23 +166,36 @@ export class OneSatProvider
     return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
   }
 
-  async getOriginAncestors(outpoint: Outpoint): Promise<IndexQueue> {
-    const resp = await fetch(`${APIS[this.network]}/v5/evt/origin/outpoint/${outpoint.toString()}`);
+  async getOriginAncestors(outpoints: string[]): Promise<IndexQueue> {
+    const resp = await fetch(`${APIS[this.network]}/v5/origins/ancestors`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(outpoints),
+    });
     const ancestors = (await resp.json()) as {
-      txid: string;
+      outpoint: string;
       idx: string;
       height: number;
     }[];
 
     return ancestors.reduce((queue, u) => {
-      queue[u.txid.slice(0, 64)] = new Block(u.height || 0, BigInt(u.idx || 0));
+      queue[u.outpoint.slice(0, 64)] = new Block(u.height || 0, BigInt(u.idx || 0));
       return queue;
     }, {} as IndexQueue);
   }
 
-  async getInscriptionFile(outpoint: Outpoint): Promise<number[] | undefined> {
+  async getInscriptionFile(outpoint: Outpoint): Promise<File | undefined> {
     const resp = await fetch(`${APIS[this.network]}/content/${outpoint.toString()}`);
-    return resp.ok ? [...Buffer.from(await resp.arrayBuffer())] : undefined;
+    if (!resp.ok) return;
+    const content  = [...Buffer.from(await resp.arrayBuffer())];
+    return {
+      type: resp.headers.get("Content-Type") || "",
+      size: content.length,
+      content,
+      hash: Utils.toHex(Hash.sha256(content)),
+    }
   }
 
   subscribed() {

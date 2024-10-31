@@ -137,9 +137,6 @@ export class TxoStore {
       txo.satoshis = BigInt(output.satoshis!);
       txo.script = output.lockingScript.toBinary();
       ctx.txos.push(txo);
-      if (outputs && !outputs.includes(vout)) {
-        continue;
-      }
       for (const i of this.indexers) {
         try {
           const data = i.parse && (await i.parse(ctx, vout, parseMode));
@@ -184,16 +181,7 @@ export class TxoStore {
         source,
       });
     }
-    const toQueue = Object.entries(ctx.queue);
-    if (toQueue.length) {
-      await this.queue(toQueue.map(([txid, block]) => ({
-        txid: txid,
-        height: block.height,
-        idx: Number(block.idx),
-        source: "ancestor",
-        parseMode: ParseMode.Dependency,
-      })));
-    }
+
     return ctx;
   }
 
@@ -209,6 +197,7 @@ export class TxoStore {
 
   async processQueue() {
     if (this.syncRunning) return;
+
     await this.updateQueueStats();
     this.syncRunning = Promise.all([
       this.processDownloads(),
@@ -266,15 +255,19 @@ export class TxoStore {
       if (ingests.length) {
         console.log("Ingesting", ingests.length, "txs");
         for await (const ingest of ingests) {
-          const tx = await this.stores.txns!.loadTx(ingest.txid);
-          if (!tx) {
-            console.error("Failed to get tx", ingest.txid);
-            continue;
+          try {
+            const tx = await this.stores.txns!.loadTx(ingest.txid);
+            if (!tx) {
+              console.error("Failed to get tx", ingest.txid);
+              continue;
+            }
+            await this.ingest(tx, ingest.source, ingest.parseMode, true, ingest.outputs);
+            ingest.status = IngestStatus.INGESTED;
+            await this.storage.putIngest(ingest);
+            await this.updateQueueStats();
+          } catch (e) {
+            console.error("Failed to ingest tx", ingest.txid, e);
           }
-          await this.ingest(tx, ingest.source, ingest.parseMode, true, ingest.outputs);
-          ingest.status = IngestStatus.INGESTED;
-          await this.storage.putIngest(ingest);
-          await this.updateQueueStats();
         }
       } else {
         await new Promise((r) => setTimeout(r, 1000));
@@ -307,7 +300,7 @@ export class TxoStore {
           if (!tx.merklePath) {
             ingest.height = Date.now();
           } else {
-            const ctx = await this.ingest(tx, ingest.source, ingest.parseMode, false, ingest.outputs);
+            const ctx = await this.ingest(tx, ingest.source, ingest.parseMode, true, ingest.outputs);
             ingest.status = IngestStatus.CONFIRMED;
             ingest.height = ctx.block.height;
             ingest.idx = Number(ctx.block.idx);
@@ -370,36 +363,36 @@ export class TxoStore {
   async syncTxLogs() {
     if (!this.services.account) return
     let syncedState = await this.storage.getState("lastSync");
-    if(!syncedState) {
+    if (!syncedState) {
       console.log("No initial sync. Skipping sync for", this.services.account.accountId);
       return;
     };
     let lastSync = Number(syncedState || 0);
     // while (true) {
-      console.log("Syncing logs from", lastSync, "for", this.services.account.accountId);
-      const txSyncs = await this.services.account?.syncTxLogs(lastSync) || [];
-      const oldLogs = await this.storage.getTxLogs(
-        txSyncs.map((log) => log.txid),
-      );
-      const puts: TxSyncLog[] = [];
-      for (const [i, txLog] of txSyncs.entries()) {
-        if (!oldLogs[i]) {
-          puts.push(txLog);
-          if(txLog.score) {
-            lastSync = Math.max(lastSync, txLog.score);
-          }
+    console.log("Syncing logs from", lastSync, "for", this.services.account.accountId);
+    const txSyncs = await this.services.account?.syncTxLogs(lastSync) || [];
+    const oldLogs = await this.storage.getTxLogs(
+      txSyncs.map((log) => log.txid),
+    );
+    const puts: TxSyncLog[] = [];
+    for (const [i, txLog] of txSyncs.entries()) {
+      if (!oldLogs[i]) {
+        puts.push(txLog);
+        if (txLog.score) {
+          lastSync = Math.max(lastSync, txLog.score);
         }
       }
-      console.log("Queueing new logs:", puts);
-      await this.queue(puts.map((p) => ({
-        txid: p.txid,
-        height: Number(p.height),
-        idx: Number(p.idx || 0),
-        outputs: p.outs,
-        source: "sync",
-        parseMode: ParseMode.Persist,
-      })));
-      await this.storage.setState("lastSync", lastSync.toString());
+    }
+    console.log("Queueing new logs:", puts);
+    await this.queue(puts.map((p) => ({
+      txid: p.txid,
+      height: Number(p.height),
+      idx: Number(p.idx || 0),
+      outputs: p.outs,
+      source: "sync",
+      parseMode: ParseMode.Persist,
+    })));
+    await this.storage.setState("lastSync", lastSync.toString());
     //   if (!puts.length) break;
     // }
   }
@@ -411,7 +404,6 @@ export class TxoStore {
       block: new Block(),
       txos: [],
       spends: [],
-      queue: {},
       summary: {},
     };
     if (tx.merklePath) {
@@ -424,4 +416,11 @@ export class TxoStore {
     return ctx
   }
 
+  async resolveBlock() {
+    const chaintip = await this.services.blocks.getChaintip();
+    if (!chaintip) return;
+    for (const indexer of this.stores.txos!.indexers) {
+      await indexer.resolve(this.stores.txos!, chaintip);
+    }
+  }
 }

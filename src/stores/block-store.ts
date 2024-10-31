@@ -39,7 +39,7 @@ export class BlockStore implements ChainTracker {
 
   private async doSync(returnOnChaintip = true): Promise<void> {
     let lastHeight = 1;
-    const syncedBlock = await this.storage.getSynced();
+    let syncedBlock = await this.storage.getSynced();
     if (syncedBlock) {
       lastHeight = syncedBlock.height > 5 ? syncedBlock.height - 5 : 1;
     }
@@ -54,10 +54,12 @@ export class BlockStore implements ChainTracker {
         );
         await this.storage.putMany(blocks);
         if (blocks.length == 0) break;
-        const lastBlock = blocks[blocks.length - 1];
-        this.emitter?.emit("syncedBlockHeight", lastBlock.height);
+        if (syncedBlock?.hash != blocks[blocks.length - 1].hash) {
+          this.emitter?.emit("syncedBlockHeight", blocks[blocks.length - 1].height);
+        }
+        syncedBlock = blocks[blocks.length - 1];
         if (blocks.length < PAGE_SIZE) break;
-        lastHeight = lastBlock.height + 1;
+        lastHeight = syncedBlock.height + 1;
       } catch (e) {
         if (returnOnChaintip) {
           throw e;

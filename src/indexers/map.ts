@@ -1,11 +1,11 @@
 import type { IndexContext } from "../models/index-context";
-import { OP, Utils } from "@bsv/sdk";
+import { OP, Script, Utils } from "@bsv/sdk";
 import {
   Indexer,
   IndexData,
 } from "../models";
 
-const MAP = "1PuQa7K62MiKCtssSLKy1kh56WWU7MtUR5"
+export const MAP_PROTO = "1PuQa7K62MiKCtssSLKy1kh56WWU7MtUR5"
 export class MapIndexer extends Indexer {
   tag = "map";
   name = "MAP";
@@ -14,7 +14,6 @@ export class MapIndexer extends Indexer {
     const script = ctx.tx.outputs[vout].lockingScript;
 
     let retPos = 0
-    const map: { [key: string]: any } = {};
     let mapPos = 0;
     for (let i = retPos + 1; i < script.chunks.length; i++) {
       const chunk = script.chunks[i];
@@ -24,16 +23,24 @@ export class MapIndexer extends Indexer {
         continue;
       }
 
-      if (Utils.toUTF8(script.chunks[++i]?.data || []) !== MAP) {
-        continue;
-      } else if (Utils.toUTF8(script.chunks[++i]?.data || []) !== "SET") {
+      if (Utils.toUTF8(script.chunks[++i]?.data || []) !== MAP_PROTO) {
         continue;
       }
       mapPos = ++i;
       break;
     }
     if (!mapPos) return;
-    for (let i = mapPos; i < script.chunks.length; i += 2) {
+    const map = MapIndexer.parseMap(script, mapPos);
+    if (!map) return;
+    return new IndexData(map);
+  }
+
+  static parseMap(script: Script, mapPos: number): { [key: string]: any } | undefined {
+    if (Utils.toUTF8(script.chunks[mapPos]?.data || []) !== "SET") {
+      return;
+    }
+    const map: { [key: string]: any } = {};
+    for (let i = mapPos+1; i < script.chunks.length; i += 2) {
       const chunk = script.chunks[i];
       if (chunk.op === OP.OP_RETURN || (chunk.data?.length == 1 && chunk.data[0] !== 0x7c)) break;
       const key = Utils.toUTF8(chunk.data || []);
@@ -44,6 +51,6 @@ export class MapIndexer extends Indexer {
         map[key] = value;
       }
     }
-    return new IndexData(map);
+    return map;
   }
 }

@@ -132,6 +132,7 @@ export class SPVStore {
         }
       });
     }
+    this.stores.blocks!.sync(false);
     this.stores.txns!.processQueue();
     this.stores.txos!.processQueue();
     await this.stores.txos!.syncTxLogs();
@@ -140,6 +141,9 @@ export class SPVStore {
       () => this.stores.txos!.syncTxLogs(),
       60 * 1000
     );
+    this.events.on("syncedBlockHeight", async () => {
+      this.stores.txos!.resolveBlock();
+    });
   }
 
   async search(

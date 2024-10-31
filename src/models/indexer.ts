@@ -1,5 +1,6 @@
 import type { Network } from "../spv-store";
 import type { TxoStore } from "../stores";
+import type { BlockHeader } from "./block-header";
 import type { IndexContext } from "./index-context";
 import { IndexData } from "./index-data";
 import type { Ingest } from "./ingest";
@@ -91,5 +92,14 @@ export abstract class Indexer {
    */
   async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<number> {
     return 0;
+  }
+
+  /**
+   * Resolve asynchronous validations on new block
+   *
+   * @returns {Promise<void>} A promise that resolves when the indexer is resolved.
+   */
+  async resolve(txoStore: TxoStore, block: BlockHeader): Promise<void> {
+    return;
   }
 }

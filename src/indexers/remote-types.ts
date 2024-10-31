@@ -39,6 +39,7 @@ export type Inscription = {
 export type Listing = {
   price: number;
   payout: string;
+  status: number;
 };
 
 export type Lock = {
@@ -46,6 +47,7 @@ export type Lock = {
 };
 
 export type OrdinalData = {
+  origin?: Origin;
   types?: string[];
   insc?: Inscription;
   map?: {
@@ -64,7 +66,6 @@ export type Ordinal = {
   owners?: string[];
   script?: string;
   spend?: string;
-  origin?: Origin;
   height: number;
   idx: number;
   data: OrdinalData;
@@ -73,9 +74,8 @@ export type Ordinal = {
 export type Origin = {
   outpoint: string;
   nonce?: number;
-  data?: OrdinalData;
-  num?: string;
   map?: {
     [key: string]: any;
   };
+  type?: string;
 };

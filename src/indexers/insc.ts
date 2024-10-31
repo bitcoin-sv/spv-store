@@ -1,4 +1,4 @@
-import { Hash, OP, Utils } from "@bsv/sdk";
+import { Hash, OP, Script, Utils } from "@bsv/sdk";
 import type { IndexContext } from "../models/index-context";
 
 import {
@@ -8,6 +8,7 @@ import {
   parseAddress,
   type Event,
 } from "../models";
+import { MAP_PROTO, MapIndexer } from "./map";
 
 export interface File {
   hash: string;
@@ -67,9 +68,21 @@ export class InscriptionIndexer extends Indexer {
       const value = script.chunks[i + 1];
       if (value.op > OP.OP_PUSHDATA4) return;
 
-      if (field.data?.length || 0 > 1) {
-        if (!insc.fields) insc.fields = {};
-        insc.fields[Buffer.from(field.data!).toString()] = value.data;
+      if (field.data?.length || 0 > 1 && Buffer.from(field.data || []).toString() == MAP_PROTO) {
+        const map = MapIndexer.parseMap(Script.fromBinary(value.data || []), 0);
+        if (map) {
+          txo.data["map"] = new IndexData(map);
+        }
+        // if bitcomData != nil {
+        //   b := append(bitcomData.Data.([]*bitcom.Bitcom), &bitcom.Bitcom{
+        //     Protocol: string(op.Data),
+        //     Script:   op2.Data,
+        //     Pos:      pos,
+        //   })
+        //   bitcomData.Data = b
+        // }
+        // if (!insc.fields) insc.fields = {};
+        // insc.fields[Buffer.from(field.data!).toString()] = value.data;
         continue;
       }
       // TODO: handle MAP
