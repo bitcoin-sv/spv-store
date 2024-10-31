@@ -97,16 +97,16 @@ export class TxoStore {
             if (!sourceTx) {
               throw new Error(`Failed to load source tx: ${input.sourceTXID}`);
             }
-            // const spendCtx = await this.ingest(sourceTx, "ancestor", ParseMode.Preview, false);
-            // spend = spendCtx.txos[input.sourceOutputIndex]
-            spend = new Txo(
-              new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
-              BigInt(
-                sourceTx.outputs[input.sourceOutputIndex].satoshis || 0,
-              ),
-              sourceTx.outputs[input.sourceOutputIndex]?.lockingScript.toBinary() || [],
-              TxoStatus.Dependency,
-            )
+            const spendCtx = await this.ingest(sourceTx, "ancestor", ParseMode.Dependency, false, [input.sourceOutputIndex]);
+            spend = spendCtx.txos[input.sourceOutputIndex]
+            // spend = new Txo(
+            //   new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
+            //   BigInt(
+            //     sourceTx.outputs[input.sourceOutputIndex].satoshis || 0,
+            //   ),
+            //   sourceTx.outputs[input.sourceOutputIndex]?.lockingScript.toBinary() || [],
+            //   TxoStatus.Dependency,
+            // )
           } else {
             spend = new Txo(
               new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
@@ -182,6 +182,17 @@ export class TxoStore {
         summary: ctx.summary,
         source,
       });
+    }
+
+    const toQueue = Object.entries(ctx.queue);
+    if (toQueue.length) {
+      await this.queue(toQueue.map(([txid, block]) => ({
+        txid: txid,
+        height: block.height,
+        idx: Number(block.idx),
+        source: "ancestor",
+        parseMode: ParseMode.Dependency,
+      })));
     }
 
     return ctx;
@@ -406,6 +417,7 @@ export class TxoStore {
       block: new Block(),
       txos: [],
       spends: [],
+      queue: {},
       summary: {},
     };
     if (tx.merklePath) {
