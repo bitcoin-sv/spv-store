@@ -131,7 +131,7 @@ export class OneSatProvider
 
   async utxos(): Promise<Ordinal[]> {
     const resp = await fetch(
-      `${APIS[this.network]}/v5/acct/${this.accountId}/utxos?txo=true&limit=0&tags=*&script=true`,
+      `${APIS[this.network]}/v5/acct/${this.accountId}/utxos?txo=true&limit=0&tags=*`,
     );
     return ((await resp.json()) as Ordinal[]) || [];
   }

@@ -57,6 +57,7 @@ export type OrdinalData = {
   sigma?: Sigma[];
   ordlock?: Listing;
   bsv20?: RemoteBsv20;
+  bsv21?: RemoteBsv20;
   lock?: Lock;
 };
 

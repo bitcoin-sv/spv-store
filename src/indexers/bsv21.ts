@@ -182,7 +182,7 @@ export class Bsv21Indexer extends Indexer {
     }
     if (summaryToken) {
       ctx.summary[this.tag] = {
-        id: summaryToken.id,
+        id: summaryToken.sym,
         amount: summaryBalance / Math.pow(10, summaryToken.dec || 0),
         icon: summaryToken.icon
       }

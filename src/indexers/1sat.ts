@@ -18,9 +18,9 @@ export class OneSatIndexer extends Indexer {
       const outpoint = new Outpoint(u.outpoint);
       const txo = new Txo(outpoint, BigInt(u.satoshis), [], 0);
       txo.owner = u.owners?.find(o => txoStore.owners.has(o));
-      if (u.script) {
-        txo.script = [...Buffer.from(u.script, "base64")];
-      }
+      // if (u.script) {
+      //   txo.script = [...Buffer.from(u.script, "base64")];
+      // }
       if (txo.owner) {
         if (txo.satoshis > 1n && !u.data?.lock) {
           txo.data["fund"] = new IndexData(txo.owner, [{ id: "address", value: txo.owner }])
@@ -44,9 +44,9 @@ export class OneSatIndexer extends Indexer {
           if (origin.outpoint) {
             // const outpoint = new Outpoint(origin.outpoint)
             idxData.events.push({ id: "outpoint", value: origin.outpoint });
-            originOutpoints.push(u.outpoint);
-            // origin.insc!.file = await oneSat.getInscriptionFile(outpoint);
-
+            if (!u.data?.insc?.file?.type.startsWith('application/bsv-20')) {
+              originOutpoints.push(u.outpoint);
+            }
           }
           if (origin.insc?.file?.type) {
             idxData.events.push({ id: "type", value: origin.insc.file.type });
@@ -72,9 +72,9 @@ export class OneSatIndexer extends Indexer {
       if (!ingest) {
         ingest = {
           txid: outpoint.txid,
-          height: 0,
+          height: u.height || 0,
           source: "1sat",
-          idx: 0,
+          idx: u.idx || 0,
           parseMode: ParseMode.Persist,
           outputs: [outpoint.vout],
         };

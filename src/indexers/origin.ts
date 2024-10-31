@@ -97,6 +97,7 @@ export class OriginIndexer extends Indexer {
     let balance = 0;
     let hasTag = false;
     let icon: string | undefined;
+    let id = "";
     for (const spend of ctx.spends) {
       if (spend.data[this.tag]) {
         let origin = spend.data[this.tag].data as Origin;
@@ -105,6 +106,7 @@ export class OriginIndexer extends Indexer {
           balance--;
           if (!icon && origin?.insc?.file?.type.startsWith("image/")) {
             icon = origin?.outpoint;
+            id = origin.map?.name || "";
           }
         }
       }
@@ -123,6 +125,7 @@ export class OriginIndexer extends Indexer {
     }
     if (hasTag) {
       ctx.summary[this.tag] = {
+        id,
         amount: balance,
         icon,
       };
