@@ -9,6 +9,7 @@ import {
   TxoSort,
   type BlockHeader,
   type Event,
+  type Ingest,
 } from "../models";
 import { OneSatProvider } from "../providers/1sat-provider";
 import type { Inscription } from "./insc";
@@ -41,8 +42,7 @@ export class OriginIndexer extends Indexer {
 
   async parse(ctx: IndexContext, vout: number, parseMode = ParseMode.Persist): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
-    if (txo.satoshis != 1n || ctx.block.height < TRIGGER) return;
-
+    if (txo.satoshis != 1n || ctx.block.height < TRIGGER || txo.data.insc?.data?.file?.type == "application/bsv-20") return;
     let outSat = 0n;
     for (let i = 0; i < vout; i++) {
       outSat += ctx.txos[i].satoshis;
@@ -75,10 +75,6 @@ export class OriginIndexer extends Indexer {
         break;
       }
     }
-
-    // if (!origin.outpoint && spendOutpoint && this.indexMode !== IndexMode.Verify) {
-
-    // }
     const events: Event[] = [];
     origin.map = {
       ...origin.map || {},
@@ -135,6 +131,9 @@ export class OriginIndexer extends Indexer {
   async resolve(txoStore: TxoStore, block: BlockHeader): Promise<void> {
     if (this.indexMode === IndexMode.Verify) return;
     const results = await txoStore.search(new TxoLookup(this.tag, 'outpoint', ':'), TxoSort.ASC, 1000)
+
+    const ingestQueue: {[txid: string]:Ingest} = {};
+    const originOutpoints: string[] = [];
     for (const txo of results.txos) {
       const originData = txo.data.origin;
       originData.events = originData?.events.filter(e => e.id != "outpoint");
@@ -151,30 +150,48 @@ export class OriginIndexer extends Indexer {
           origin.nonce = (remote.data.origin.nonce || 0) + 1;
           originData.events.push({ id: "outpoint", value: origin.outpoint });
           await txoStore.storage.put(txo)
-          if (this.indexMode == IndexMode.TrustAndVerify)
-          {
-            const ancestors = await this.oneSat.getOriginAncestors([txo.outpoint.toString()]);
-            let hasAncestor = false;
-            for (const [txid, block] of Object.entries(ancestors)) {
-              await txoStore.queue([{
-                txid: txid,
-                height: block.height,
-                idx: Number(block.idx),
-                parseMode: ParseMode.Dependency,
-                source: 'ancestor',
-              }])
-              hasAncestor = true;
-            }
-            if (hasAncestor) {
-              await txoStore.queue([{
-                txid: txo.outpoint.txid,
+          if (this.indexMode == IndexMode.TrustAndVerify) {
+            let ingest = ingestQueue[outpoint.txid];
+            originOutpoints.push(origin.outpoint);
+            if (!ingest) {
+              ingest = {
+                txid: outpoint.txid,
                 height: txo.block.height,
                 idx: Number(txo.block.idx),
                 parseMode: ParseMode.Persist,
-              }])
+                outputs: [outpoint.vout],
+                source: "origin",
+              };
+              ingestQueue[outpoint.txid] = ingest;
+            } else {
+              ingest.outputs!.push(outpoint.vout);
             }
           }
         }
+      }
+    }
+    if (this.indexMode == IndexMode.TrustAndVerify) {
+      const ancestors = await this.oneSat.getOriginAncestors(originOutpoints);
+      for (const ancestor of ancestors) {
+        const [txid, vout] = ancestor.outpoint.split("_");
+        let ingest = ingestQueue[txid];
+        if (!ingest) {
+          ingest = {
+            txid: txid,
+            height: ancestor.height,
+            idx: Number(ancestor.idx),
+            parseMode: ParseMode.Dependency,
+            outputs: [parseInt(vout)],
+            source: 'ancestor',
+          }
+          ingestQueue[txid] = ingest;
+        } else {
+          ingest.outputs!.push(parseInt(vout));
+        }
+      }
+      const ingests = Object.values(ingestQueue);
+      if (ingests.length > 0) {
+        await txoStore.queue(ingests);
       }
     }
   }

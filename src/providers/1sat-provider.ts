@@ -166,7 +166,7 @@ export class OneSatProvider
     return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
   }
 
-  async getOriginAncestors(outpoints: string[]): Promise<IndexQueue> {
+  async getOriginAncestors(outpoints: string[]): Promise<Ordinal[]> {
     const resp = await fetch(`${APIS[this.network]}/v5/origins/ancestors`, {
       method: "POST",
       headers: {
@@ -174,16 +174,17 @@ export class OneSatProvider
       },
       body: JSON.stringify(outpoints),
     });
-    const ancestors = (await resp.json()) as {
-      outpoint: string;
-      idx: string;
-      height: number;
-    }[];
+    return resp.ok ? (await resp.json() as Ordinal[]) : [];
+    // const ancestors = (await resp.json()) as {
+    //   outpoint: string;
+    //   idx: string;
+    //   height: number;
+    // }[];
 
-    return ancestors.reduce((queue, u) => {
-      queue[u.outpoint.slice(0, 64)] = new Block(u.height || 0, BigInt(u.idx || 0));
-      return queue;
-    }, {} as IndexQueue);
+    // return ancestors.reduce((queue, u) => {
+    //   queue[u.outpoint.slice(0, 64)] = new Block(u.height || 0, BigInt(u.idx || 0));
+    //   return queue;
+    // }, {} as IndexQueue);
   }
 
   async getInscriptionFile(outpoint: Outpoint): Promise<File | undefined> {

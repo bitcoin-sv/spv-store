@@ -97,22 +97,22 @@ export class TxoStore {
             if (!sourceTx) {
               throw new Error(`Failed to load source tx: ${input.sourceTXID}`);
             }
-            const spendCtx = await this.ingest(sourceTx, "ancestor", ParseMode.Preview, false);
-            spend = spendCtx.txos[input.sourceOutputIndex]
-            // spend = new Txo(
-            //   new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
-            //   BigInt(
-            //     sourceTx.outputs[input.sourceOutputIndex].satoshis || 0,
-            //   ),
-            //   sourceTx.outputs[input.sourceOutputIndex]?.lockingScript.toBinary() || [],
-            //   TxoStatus.Unindexed,
-            // )
+            // const spendCtx = await this.ingest(sourceTx, "ancestor", ParseMode.Preview, false);
+            // spend = spendCtx.txos[input.sourceOutputIndex]
+            spend = new Txo(
+              new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
+              BigInt(
+                sourceTx.outputs[input.sourceOutputIndex].satoshis || 0,
+              ),
+              sourceTx.outputs[input.sourceOutputIndex]?.lockingScript.toBinary() || [],
+              TxoStatus.Dependency,
+            )
           } else {
             spend = new Txo(
               new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
               0n,
               [],
-              TxoStatus.Unindexed,
+              TxoStatus.Dependency,
             );
           }
         }
@@ -131,7 +131,9 @@ export class TxoStore {
           new Outpoint(ctx.txid, vout),
           0n,
           [],
-          TxoStatus.Unindexed,
+          parseMode == ParseMode.Dependency || (outputs && !outputs.includes(vout)) ?
+            TxoStatus.Dependency :
+            TxoStatus.Validated,
         );
       }
       txo.satoshis = BigInt(output.satoshis!);
@@ -157,14 +159,14 @@ export class TxoStore {
     await this.storage.putMany(ctx.spends);
     ctx.txos.forEach((txo) => {
       txo.block = ctx.block;
-      if (
-        txo.status == TxoStatus.Unindexed ||
-        txo.status == TxoStatus.Dependency
-      ) {
-        txo.status = parseMode == ParseMode.Dependency ?
-          TxoStatus.Dependency :
-          TxoStatus.Validated;
-      }
+      // if (
+      //   txo.status == TxoStatus.Unindexed ||
+      //   txo.status == TxoStatus.Dependency
+      // ) {
+      //   txo.status = parseMode == ParseMode.Dependency ?
+      //     TxoStatus.Dependency :
+      //     TxoStatus.Validated;
+      // }
     });
 
     if (outputs) {

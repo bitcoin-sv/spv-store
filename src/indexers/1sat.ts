@@ -25,7 +25,7 @@ export class OneSatIndexer extends Indexer {
         if (txo.satoshis > 1n && !u.data?.lock) {
           txo.data["fund"] = new IndexData(txo.owner, [{ id: "address", value: txo.owner }])
         }
-        if (u.data?.origin) {
+        if (u.data?.origin && !u.data?.insc?.file?.type.startsWith('application/bsv-20')) {
           const origin: Origin = {
             outpoint: u.data.origin.outpoint,
             nonce: 0,
@@ -39,14 +39,11 @@ export class OneSatIndexer extends Indexer {
               },
             }
           };
+          originOutpoints.push(u.outpoint);
 
           const idxData = new IndexData(origin, []);
           if (origin.outpoint) {
-            // const outpoint = new Outpoint(origin.outpoint)
             idxData.events.push({ id: "outpoint", value: origin.outpoint });
-            if (!u.data?.insc?.file?.type.startsWith('application/bsv-20')) {
-              originOutpoints.push(u.outpoint);
-            }
           }
           if (origin.insc?.file?.type) {
             idxData.events.push({ id: "type", value: origin.insc.file.type });
@@ -88,14 +85,22 @@ export class OneSatIndexer extends Indexer {
     }
     if (originOutpoints.length > 0) {
       const ancestors = await oneSat.getOriginAncestors(originOutpoints);
-      for (const [txid, block] of Object.entries(ancestors)) {
-        await txoStore.queue([{
-          txid: txid,
-          height: block.height,
-          idx: Number(block.idx),
-          parseMode: ParseMode.Dependency,
-          source: 'ancestor',
-        }]);
+      for (const ancestor of ancestors) {
+        const [txid, vout] = ancestor.outpoint.split("_");
+        let ingest = ingestQueue[txid];
+        if (!ingest) {
+          ingest = {
+            txid: txid,
+            height: ancestor.height,
+            idx: Number(ancestor.idx),
+            parseMode: ParseMode.Dependency,
+            outputs: [parseInt(vout)],
+            source: 'ancestor',
+          }
+          ingestQueue[txid] = ingest;
+        } else {
+          ingest.outputs!.push(parseInt(vout));
+        }
       }
     }
     return maxScore;

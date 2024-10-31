@@ -2,7 +2,7 @@
   "name": "spv-store",
   "author": "David Case",
   "license": "MIT",
-  "version": "0.1.39",
+  "version": "0.1.40",
   "type": "module",
   "source": "src/index.ts",
   "exports": {
