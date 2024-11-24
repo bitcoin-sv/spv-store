@@ -52,9 +52,8 @@ function hydrateTxo(obj: Txo) {
 }
 
 function buildTxoIndex(txo: Txo) {
-  txo.tags = [];
-  txo.events = [];
-  txo.deps = [];
+  const tags: string[] = [];
+  const events: string[] = [];
   const blockStr = txo.block.height.toString(10).padStart(7, "0");
   const idxStr = txo.block.idx.toString(10).padStart(9, "0");
   const sort = `${blockStr}.${idxStr}`;
@@ -64,13 +63,15 @@ function buildTxoIndex(txo: Txo) {
       deps.add(dep.toString());
     }
     if (txo.spend || txo.status == TxoStatus.Dependency) continue;
-    if (data.events.length) txo.tags.push(`${tag}:${sort}`);
+    if (data.events.length) tags.push(`${tag}:${sort}`);
     for (const e of data.events) {
-      txo.events.push(`${tag}:${e.id}:${e.value}:${sort}`);
+      events.push(`${tag}:${e.id}:${e.value}:${sort}`);
     }
   }
+  txo.tags = tags;
+  txo.events = events;
   txo.deps = Array.from(deps);
-  txo.hasEvents = txo.events.length;
+  txo.hasEvents = events.length;
 }
 
 export class TxoStorageIDB implements TxoStorage {
@@ -141,6 +142,7 @@ export class TxoStorageIDB implements TxoStorage {
     const t = this.db.transaction("txos", "readwrite");
     await Promise.all(
       txos.map((txo) => {
+        if (!txo) return;
         buildTxoIndex(txo);
         return t.store.put(txo);
       })

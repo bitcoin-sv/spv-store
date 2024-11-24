@@ -1,8 +1,8 @@
-[**spv-store v0.1.24**](README.md) • **Docs**
+[**spv-store v0.1.44**](README.md) • **Docs**
 
 ***
 
-# spv-store v0.1.24
+# spv-store v0.1.44
 
 ## Enumerations
 
@@ -89,6 +89,7 @@
 - [FEE\_XPUB](variables/FEE_XPUB.md)
 - [lockPrefix](variables/lockPrefix.md)
 - [lockSuffix](variables/lockSuffix.md)
+- [MAP\_PROTO](variables/MAP_PROTO.md)
 
 ## Functions
 

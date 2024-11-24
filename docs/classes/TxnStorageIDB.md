@@ -1,8 +1,8 @@
-[**spv-store v0.1.24**](../README.md) • **Docs**
+[**spv-store v0.1.44**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.24](../globals.md) / TxnStorageIDB
+[spv-store v0.1.44](../globals.md) / TxnStorageIDB
 
 # Class: TxnStorageIDB
 
@@ -20,7 +20,7 @@ Interface representing a transaction storage system.
 
 #### Defined in
 
-[storage/idb/idb-txns.ts:19](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/storage/idb/idb-txns.ts#L19)
+[storage/idb/idb-txns.ts:19](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-txns.ts#L19)
 
 ## Methods
 
@@ -42,7 +42,7 @@ A promise that resolves when the storage is destroyed.
 
 #### Defined in
 
-[storage/idb/idb-txns.ts:34](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/storage/idb/idb-txns.ts#L34)
+[storage/idb/idb-txns.ts:34](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-txns.ts#L34)
 
 ***
 
@@ -70,7 +70,7 @@ A promise that resolves to an array of booleans indicating the existence of each
 
 #### Defined in
 
-[storage/idb/idb-txns.ts:70](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/storage/idb/idb-txns.ts#L70)
+[storage/idb/idb-txns.ts:70](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-txns.ts#L70)
 
 ***
 
@@ -98,7 +98,7 @@ A promise that resolves to the transaction if found, or undefined if not found.
 
 #### Defined in
 
-[storage/idb/idb-txns.ts:38](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/storage/idb/idb-txns.ts#L38)
+[storage/idb/idb-txns.ts:38](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-txns.ts#L38)
 
 ***
 
@@ -134,7 +134,7 @@ A promise that resolves to an array of transactions matching the criteria.
 
 #### Defined in
 
-[storage/idb/idb-txns.ts:79](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/storage/idb/idb-txns.ts#L79)
+[storage/idb/idb-txns.ts:79](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-txns.ts#L79)
 
 ***
 
@@ -162,7 +162,7 @@ A promise that resolves to an array of transactions, with undefined for any tran
 
 #### Defined in
 
-[storage/idb/idb-txns.ts:42](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/storage/idb/idb-txns.ts#L42)
+[storage/idb/idb-txns.ts:42](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-txns.ts#L42)
 
 ***
 
@@ -190,7 +190,7 @@ A promise that resolves when the transaction is stored.
 
 #### Defined in
 
-[storage/idb/idb-txns.ts:51](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/storage/idb/idb-txns.ts#L51)
+[storage/idb/idb-txns.ts:51](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-txns.ts#L51)
 
 ***
 
@@ -218,7 +218,7 @@ A promise that resolves when all transactions are stored.
 
 #### Defined in
 
-[storage/idb/idb-txns.ts:59](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/storage/idb/idb-txns.ts#L59)
+[storage/idb/idb-txns.ts:59](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-txns.ts#L59)
 
 ***
 
@@ -236,4 +236,4 @@ A promise that resolves when all transactions are stored.
 
 #### Defined in
 
-[storage/idb/idb-txns.ts:21](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/storage/idb/idb-txns.ts#L21)
+[storage/idb/idb-txns.ts:21](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-txns.ts#L21)

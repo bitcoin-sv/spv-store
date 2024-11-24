@@ -79,7 +79,7 @@ export class OriginIndexer extends Indexer {
             origin.map = remote.data.origin.map;
             origin.nonce = (remote.data.origin.nonce || 0) + 1;
           }
-          if (this.indexMode == IndexMode.TrustAndVerify) {
+          if (parseMode == ParseMode.Persist && this.indexMode == IndexMode.TrustAndVerify) {
             let hasDeps = false;
             const ancestors = await this.oneSat.getOriginAncestors([spend.outpoint.toString()]);
             for (const ancestor of ancestors) {

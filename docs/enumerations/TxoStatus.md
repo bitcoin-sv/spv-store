@@ -1,8 +1,8 @@
-[**spv-store v0.1.24**](../README.md) • **Docs**
+[**spv-store v0.1.44**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.24](../globals.md) / TxoStatus
+[spv-store v0.1.44](../globals.md) / TxoStatus
 
 # Enumeration: TxoStatus
 
@@ -18,7 +18,7 @@ The transaction output is a dependency.
 
 #### Defined in
 
-[models/txo.ts:17](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/txo.ts#L17)
+[models/txo.ts:17](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/txo.ts#L17)
 
 ***
 
@@ -30,7 +30,7 @@ The transaction output is trusted.
 
 #### Defined in
 
-[models/txo.ts:16](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/txo.ts#L16)
+[models/txo.ts:16](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/txo.ts#L16)
 
 ***
 
@@ -42,7 +42,7 @@ The transaction output is not indexed.
 
 #### Defined in
 
-[models/txo.ts:15](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/txo.ts#L15)
+[models/txo.ts:15](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/txo.ts#L15)
 
 ***
 
@@ -54,4 +54,4 @@ The transaction output is validated.
 
 #### Defined in
 
-[models/txo.ts:18](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/txo.ts#L18)
+[models/txo.ts:18](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/txo.ts#L18)

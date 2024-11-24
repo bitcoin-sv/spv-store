@@ -1,8 +1,8 @@
-[**spv-store v0.1.24**](../README.md) • **Docs**
+[**spv-store v0.1.44**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.24](../globals.md) / IndexMode
+[spv-store v0.1.44](../globals.md) / IndexMode
 
 # Enumeration: IndexMode
 
@@ -18,7 +18,7 @@ Rely on an external indexer.
 
 #### Defined in
 
-[models/indexer.ts:30](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/indexer.ts#L30)
+[models/indexer.ts:31](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L31)
 
 ***
 
@@ -30,7 +30,7 @@ Initially rely on an external indexer, but also load and verify all data locally
 
 #### Defined in
 
-[models/indexer.ts:34](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/indexer.ts#L34)
+[models/indexer.ts:35](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L35)
 
 ***
 
@@ -42,4 +42,4 @@ Verify all data locally. This requires all dependent data to be indexed as well.
 
 #### Defined in
 
-[models/indexer.ts:32](https://github.com/bitcoin-sv/spv-store/blob/03686d41c08cfcf21568a9b1fd3404a8ac07fb36/src/models/indexer.ts#L32)
+[models/indexer.ts:33](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L33)

@@ -1,4 +1,4 @@
-**spv-store v0.1.24** • [**Docs**](globals.md)
+**spv-store v0.1.44** • [**Docs**](globals.md)
 
 ***
 
