@@ -167,6 +167,7 @@ export class OneSatProvider
   }
 
   async getOriginAncestors(outpoints: string[]): Promise<Ordinal[]> {
+    if (!outpoints.length) return [];
     const resp = await fetch(`${APIS[this.network]}/v5/origins/ancestors`, {
       method: "POST",
       headers: {
