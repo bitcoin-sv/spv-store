@@ -421,11 +421,10 @@ export class TxoStore {
       summary: {},
     };
     if (tx.merklePath) {
-      if (!await tx.merklePath.verify(ctx.txid, this.stores.blocks!)) {
-        throw new Error("Failed to verify merkle path");
+      if (await tx.merklePath.verify(ctx.txid, this.stores.blocks!)) {
+        ctx.block.height = tx.merklePath.blockHeight;
+        ctx.block.idx = BigInt(tx.merklePath.path[0].find((p) => p.hash == ctx.txid)!.offset || 0);
       }
-      ctx.block.height = tx.merklePath.blockHeight;
-      ctx.block.idx = BigInt(tx.merklePath.path[0].find((p) => p.hash == ctx.txid)!.offset || 0);
     }
     return ctx
   }
