@@ -111,6 +111,10 @@ export class OriginIndexer extends Indexer {
         events.push({ id: "type", value: origin.insc.file.type });
       }
     }
+    const file = origin.insc?.file;
+    if (file && file.size && file.size > 4096) {
+      file.content = [];
+    }
     return new IndexData(origin, events, deps);
   }
 
