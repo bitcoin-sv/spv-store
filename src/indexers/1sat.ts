@@ -10,7 +10,7 @@ export class OneSatIndexer extends Indexer {
 
   async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<number> {
     const oneSat = new OneSatProvider(this.network, txoStore.services.account?.accountId || '');
-    const utxos = await oneSat.utxos();
+    const utxos = await oneSat.utxos(true);
     let maxScore = 0;
     console.log("Syncing", utxos.length, "utxos for ", [...txoStore.owners]);
     let originOutpoints: string[] = [];

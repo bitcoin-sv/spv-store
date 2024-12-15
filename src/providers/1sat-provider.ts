@@ -19,7 +19,7 @@ import type { Network } from "../spv-store";
 import type { Outpoint } from "../models/outpoint";
 import type { Ordinal, RemoteBsv20 } from "../indexers/remote-types";
 import type { Txn } from "../stores";
-import { Block, Txo, type IndexQueue } from "../models";
+// import { Block, Txo, type IndexQueue } from "../models";
 import type { File } from "../indexers";
 
 const APIS = {
@@ -129,9 +129,9 @@ export class OneSatProvider
     return resp.json() as Promise<BlockHeader>;
   }
 
-  async utxos(): Promise<Ordinal[]> {
+  async utxos(refresh = false): Promise<Ordinal[]> {
     const resp = await fetch(
-      `${APIS[this.network]}/v5/acct/${this.accountId}/utxos?txo=true&limit=0&tags=*`,
+      `${APIS[this.network]}/v5/acct/${this.accountId}/utxos?txo=true&limit=0&tags=*${refresh ? "&refresh=true" : ""}`,
     );
     return ((await resp.json()) as Ordinal[]) || [];
   }
