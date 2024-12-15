@@ -188,16 +188,13 @@ export class OneSatProvider
     // }, {} as IndexQueue);
   }
 
-  async getInscriptionFile(outpoint: Outpoint): Promise<File | undefined> {
-    const resp = await fetch(`${APIS[this.network]}/content/${outpoint.toString()}`);
+  async getInscriptionFile(outpoint: string): Promise<File | undefined> {
+    const [txid, vout] = outpoint.split("_");
+    const resp = await fetch(`${APIS[this.network]}/v5/tx/${txid}/parse`);
     if (!resp.ok) return;
-    const content  = [...Buffer.from(await resp.arrayBuffer())];
-    return {
-      type: resp.headers.get("Content-Type") || "",
-      size: content.length,
-      content,
-      hash: Utils.toHex(Hash.sha256(content)),
-    }
+    const idxCtx = await resp.json();
+    
+    return idxCtx.txos[parseInt(vout)]?.data?.insc?.file;
   }
 
   subscribed() {

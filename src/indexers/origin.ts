@@ -74,7 +74,7 @@ export class OriginIndexer extends Indexer {
             origin.outpoint = remote?.data?.origin?.outpoint;
             const outpoint = new Outpoint(origin.outpoint);
             origin.insc = {
-              file: await this.oneSat.getInscriptionFile(outpoint)
+              file: await this.oneSat.getInscriptionFile(origin.outpoint)
             }
             origin.map = remote.data.origin.map;
             origin.nonce = (remote.data.origin.nonce || 0) + 1;
@@ -173,7 +173,7 @@ export class OriginIndexer extends Indexer {
           origin.outpoint = remote?.data?.origin?.outpoint;
           const outpoint = new Outpoint(origin.outpoint);
           origin.insc = {
-            file: await this.oneSat.getInscriptionFile(outpoint)
+            file: await this.oneSat.getInscriptionFile(origin.outpoint)
           }
           origin.map = remote.data.origin.map;
           origin.nonce = (remote.data.origin.nonce || 0) + 1;
