@@ -94,7 +94,7 @@ export class LockTemplate {
           outputs: tx.outputs,
           inputIndex,
           subscript: lockingScript,
-          inputSequence: input.sequence || 0xffffffff,
+          inputSequence: input.sequence === undefined ? 0xffffffff : input.sequence,
           lockTime: tx.lockTime,
           scope: signatureScope
         })
