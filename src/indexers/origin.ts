@@ -72,7 +72,6 @@ export class OriginIndexer extends Indexer {
           const remote = await this.oneSat.getTxo(txo.outpoint);
           if (remote?.data?.origin?.outpoint) {
             origin.outpoint = remote?.data?.origin?.outpoint;
-            const outpoint = new Outpoint(origin.outpoint);
             origin.insc = {
               file: await this.oneSat.getInscriptionFile(origin.outpoint)
             }

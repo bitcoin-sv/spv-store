@@ -97,7 +97,7 @@ export class InscriptionIndexer extends Indexer {
         case 0:
           insc.file!.size = value.data?.length || 0;
           if (!value.data?.length) break;
-          insc.file!.hash = Utils.toHex(Hash.sha256(value.data));
+          insc.file!.hash = Utils.toBase64(Hash.sha256(value.data));
           insc.file!.content = value.data;
           break;
         case 1:
