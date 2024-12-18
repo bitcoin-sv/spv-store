@@ -5,6 +5,7 @@ import {
   Indexer,
   IndexMode,
   Outpoint,
+  parseAddress,
   ParseMode,
   TxoLookup,
   TxoSort,
@@ -44,12 +45,16 @@ export class OriginIndexer extends Indexer {
   async parse(ctx: IndexContext, vout: number, parseMode = ParseMode.Persist): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     if (txo.satoshis != 1n || ctx.block.height < TRIGGER || txo.data.insc?.data?.file?.type == "application/bsv-20") return;
+    if(!txo.owner) {
+      txo.owner = parseAddress(ctx.tx.outputs[vout].lockingScript, 0, this.network);;
+    }
     let outSat = 0n;
     for (let i = 0; i < vout; i++) {
       outSat += ctx.txos[i].satoshis;
     }
     let satsIn = 0n;
     let origin: Origin = {
+      outpoint: "",
       insc: txo.data.insc?.data,
       nonce: 0,
       sigma: txo.data.sigma?.data
@@ -68,29 +73,29 @@ export class OriginIndexer extends Indexer {
             origin.nonce++;
           }
         }
-        if (!origin.outpoint && this.indexMode != IndexMode.Verify) {
-          const remote = await this.oneSat.getTxo(txo.outpoint);
-          if (remote?.data?.origin?.outpoint) {
-            origin.outpoint = remote?.data?.origin?.outpoint;
-            origin.insc = {
-              file: await this.oneSat.getInscriptionFile(origin.outpoint)
-            }
-            origin.map = remote.data.origin.map;
-            origin.nonce = (remote.data.origin.nonce || 0) + 1;
-          }
-          if (parseMode == ParseMode.Persist && this.indexMode == IndexMode.TrustAndVerify) {
-            let hasDeps = false;
-            const ancestors = await this.oneSat.getOriginAncestors([spend.outpoint.toString()]);
-            for (const ancestor of ancestors) {
-              const [txid] = ancestor.outpoint.split("_");
-              ctx.queue[txid] = new Block(ancestor.height, BigInt(ancestor.idx));
-              hasDeps = true;
-            }
-            if (hasDeps) {
-              ctx.queue[ctx.txid] = new Block(ctx.block.height, BigInt(ctx.block.idx));
-            }
-          }
-        }
+        // if (!origin.outpoint && this.indexMode != IndexMode.Verify) {
+        //   // const remote = await this.oneSat.getTxo(txo.outpoint);
+        //   // if (remote?.data?.origin?.outpoint) {
+        //   //   origin.outpoint = remote?.data?.origin?.outpoint;
+        //   //   origin.insc = {
+        //   //     file: await this.oneSat.getInscriptionFile(origin.outpoint)
+        //   //   }
+        //   //   origin.map = remote.data.origin.map;
+        //   //   origin.nonce = (remote.data.origin.nonce || 0) + 1;
+        //   // }
+        //   if (parseMode == ParseMode.Persist && this.indexMode == IndexMode.TrustAndVerify) {
+        //     let hasDeps = false;
+        //     const ancestors = await this.oneSat.getOriginAncestors([spend.outpoint.toString()]);
+        //     for (const ancestor of ancestors) {
+        //       const [txid] = ancestor.outpoint.split("_");
+        //       ctx.queue[txid] = new Block(ancestor.height, BigInt(ancestor.idx));
+        //       hasDeps = true;
+        //     }
+        //     if (hasDeps) {
+        //       ctx.queue[ctx.txid] = new Block(ctx.block.height, BigInt(ctx.block.idx));
+        //     }
+        //   }
+        // }
         break;
       }
       satsIn += spend.satoshis;
@@ -171,14 +176,14 @@ export class OriginIndexer extends Indexer {
         if (remote?.data?.origin?.outpoint) {
           origin.outpoint = remote?.data?.origin?.outpoint;
           const outpoint = new Outpoint(origin.outpoint);
-          origin.insc = {
-            file: await this.oneSat.getInscriptionFile(origin.outpoint)
-          }
-          origin.map = remote.data.origin.map;
-          origin.nonce = (remote.data.origin.nonce || 0) + 1;
-          originData.events.push({ id: "outpoint", value: origin.outpoint });
-          await txoStore.storage.put(txo)
-          if (this.indexMode == IndexMode.TrustAndVerify) {
+          if (this.indexMode == IndexMode.Trust) {
+            const file = await this.oneSat.getInscriptionFile(origin.outpoint);
+            origin.insc = {file};
+            origin.map = remote.data.origin.map;
+            origin.nonce = (remote.data.origin.nonce || 0) + 1;
+            originData.events.push({ id: "outpoint", value: origin.outpoint });
+            await txoStore.storage.put(txo)
+          } else if (this.indexMode == IndexMode.TrustAndVerify) {
             let ingest = ingestQueue[outpoint.txid];
             originOutpoints.push(origin.outpoint);
             if (!ingest) {
@@ -201,7 +206,7 @@ export class OriginIndexer extends Indexer {
     if (this.indexMode == IndexMode.TrustAndVerify) {
       const ancestors = await this.oneSat.getOriginAncestors(originOutpoints);
       for (const ancestor of ancestors) {
-        const [txid, vout] = ancestor.outpoint.split("_");
+        const txid = ancestor.outpoint.slice(0, 64);
         let ingest = ingestQueue[txid];
         if (!ingest) {
           ingest = {
@@ -209,12 +214,12 @@ export class OriginIndexer extends Indexer {
             height: ancestor.height,
             idx: Number(ancestor.idx),
             parseMode: ParseMode.Dependency,
-            outputs: [parseInt(vout)],
+            outputs: [],
             source: 'ancestor',
           }
           ingestQueue[txid] = ingest;
         } else {
-          ingest.outputs!.push(parseInt(vout));
+          ingest.outputs!.push();
         }
       }
       const ingests = Object.values(ingestQueue);

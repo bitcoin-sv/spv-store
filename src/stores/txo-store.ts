@@ -99,14 +99,6 @@ export class TxoStore {
             }
             const spendCtx = await this.ingest(sourceTx, "ancestor", ParseMode.Dependency, false, [input.sourceOutputIndex]);
             spend = spendCtx.txos[input.sourceOutputIndex]
-            // spend = new Txo(
-            //   new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
-            //   BigInt(
-            //     sourceTx.outputs[input.sourceOutputIndex].satoshis || 0,
-            //   ),
-            //   sourceTx.outputs[input.sourceOutputIndex]?.lockingScript.toBinary() || [],
-            //   TxoStatus.Dependency,
-            // )
           } else {
             spend = new Txo(
               new Outpoint(input.sourceTXID!, input.sourceOutputIndex),
@@ -124,6 +116,7 @@ export class TxoStore {
     const txos = await this.storage.getMany(
       tx.outputs.map((_, i) => new Outpoint(ctx.txid, i)),
     );
+    let hasEvents = false;
     for (const [vout, output] of tx.outputs.entries()) {
       let txo = txos[vout];
       if (!txo) {
@@ -144,6 +137,9 @@ export class TxoStore {
           const data = i.parse && (await i.parse(ctx, vout, parseMode));
           if (data) {
             txo.data[i.tag] = data;
+            if(data.events.length) {
+              hasEvents = true;
+            }
           }
         } catch (e) {
           console.error("indexer error: continuing", i.tag, e);
@@ -159,22 +155,10 @@ export class TxoStore {
     await this.storage.putMany(ctx.spends);
     ctx.txos.forEach((txo) => {
       txo.block = ctx.block;
-      // if (
-      //   txo.status == TxoStatus.Unindexed ||
-      //   txo.status == TxoStatus.Dependency
-      // ) {
-      //   txo.status = parseMode == ParseMode.Dependency ?
-      //     TxoStatus.Dependency :
-      //     TxoStatus.Validated;
-      // }
     });
 
-    if (outputs) {
-      await this.storage.putMany(outputs.map((i) => ctx.txos[i]));
-    } else {
-      await this.storage.putMany(ctx.txos);
-    }
-    if ([ParseMode.Persist, ParseMode.Deep].includes(parseMode)) {
+    await this.storage.putMany(ctx.txos);
+    if(Object.keys(ctx.summary).length) {
       this.storage.putTxLog({
         txid: ctx.txid,
         height: ctx.block.height,
@@ -358,7 +342,8 @@ export class TxoStore {
           if (!tx.merklePath.verify(ingest.txid, this.stores.blocks!)) {
             continue;
           }
-          await this.storage.delIngest(ingest.txid);
+          ingest.status = IngestStatus.IMMUTABLE;
+          await this.storage.putIngest(ingest);
         }
       } else {
         await new Promise((r) => setTimeout(r, 1000));

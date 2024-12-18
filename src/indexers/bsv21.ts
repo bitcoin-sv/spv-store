@@ -94,6 +94,7 @@ export class Bsv21Indexer extends Indexer {
   }
 
   async preSave(ctx: IndexContext) {
+    if (this.indexMode == IndexMode.Trust) return;
     const balance: { [id: string]: bigint } = {};
     const tokensIn: { [id: string]: Txo[] } = {};
     let summaryToken: Bsv21 | undefined;
@@ -102,15 +103,15 @@ export class Bsv21Indexer extends Indexer {
     for (const spend of ctx.spends) {
       const bsv21 = spend.data.bsv21;
       if (!bsv21) continue;
-      if (bsv21.data.status != Bsv20Status.Valid && this.indexMode == IndexMode.Trust) {
-        const remote = await this.provider.getBsv2021Txo(spend.outpoint);
-        if (remote) {
-          bsv21.data.status = remote.status;
-          bsv21.data.sym = remote.sym;
-          bsv21.data.icon = remote.icon;
-          bsv21.data.dec = remote.dec;
-        }
-      }
+      // if (bsv21.data.status != Bsv20Status.Valid && this.indexMode == IndexMode.Trust) {
+      //   const remote = await this.provider.getBsv2021Txo(spend.outpoint);
+      //   if (remote) {
+      //     bsv21.data.status = remote.status;
+      //     bsv21.data.sym = remote.sym;
+      //     bsv21.data.icon = remote.icon;
+      //     bsv21.data.dec = remote.dec;
+      //   }
+      // }
       if (!summaryToken) summaryToken = bsv21.data as Bsv21;
       if (bsv21.data.id == summaryToken.id && spend.owner && this.owners.has(spend.owner)) {
         summaryBalance -= Number(bsv21.data.amt)

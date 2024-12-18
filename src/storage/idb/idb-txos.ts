@@ -253,14 +253,36 @@ export class TxoStorageIDB implements TxoStorage {
     await Promise.all(
       ingests.map(async (ingest) => {
         const prev = await t.store.get(ingest.txid).catch(() => undefined);
-        if (prev?.outputs) {
-          const outputs = new Set<number>(prev.outputs);
-          for (const idx of ingest.outputs || []) {
-            outputs.add(idx);
-          }
-          ingest.outputs = Array.from(outputs);
+        if (prev && Number(prev.status) >= Number(ingest.status)) {
+          console.log("Skipping ingest", ingest.txid, "already ingested");
+          return;
+          // const outputs = new Set(prev.outputs || []);
+          // for (let out of ingest.outputs || []) {
+          //   if (!outputs.has(out)) {
+          //     outputs.add(out);
+          //     prev.status = ingest.status;
+          //   }
+          // }
+          // if(outputs.size >  (prev.outputs || []).length) {
+          //   prev.outputs = Array.from(outputs);
+          //   prev.status = ingest.status;
+          //   await t.store.put(prev);
+          // }
+        } else {
+          await t.store.put(ingest);
         }
-        t.store.put(ingest);
+        // if (prev) {
+        //   console.log("Skipping ingest", ingest.txid, "already ingested");
+        //   return;
+        // }
+        // if (prev?.outputs) {
+        //   const outputs = new Set<number>(prev.outputs);
+        //   for (const idx of ingest.outputs || []) {
+        //     outputs.add(idx);
+        //   }
+        //   ingest.outputs = Array.from(outputs);
+        // }
+        // t.store.put(ingest);
       })
     );
     await t.done;

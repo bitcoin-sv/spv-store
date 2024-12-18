@@ -18,9 +18,6 @@ export class OneSatIndexer extends Indexer {
       const outpoint = new Outpoint(u.outpoint);
       const txo = new Txo(outpoint, BigInt(u.satoshis), [], 0);
       txo.owner = u.owners?.find(o => txoStore.owners.has(o));
-      // if (u.script) {
-      //   txo.script = [...Buffer.from(u.script, "base64")];
-      // }
       if (txo.owner) {
         if (txo.satoshis > 1n && !u.data?.lock) {
           txo.data["fund"] = new IndexData(txo.owner, [{ id: "address", value: txo.owner }])
@@ -102,6 +99,35 @@ export class OneSatIndexer extends Indexer {
           ingest.outputs!.push(parseInt(vout));
         }
       }
+    }
+    const txSyncs = await oneSat.syncTxLogs() || [];
+    for (const sync of txSyncs) {
+      let ingest = ingestQueue[sync.txid];
+      if (!ingest) {
+        ingest = {
+          txid: sync.txid,
+          height: sync.height,
+          idx: Number(sync.idx),
+          parseMode: ParseMode.Persist,
+          outputs: sync.outs,
+          source: 'history',
+        };
+        ingestQueue[sync.txid] = ingest;
+      } else {
+        ingest.outputs = [...new Set([...ingest.outputs || [], ...sync.outs || []])];
+      }
+      // if (!ingestQueue[sync.txid]) {
+      //   ingestQueue[sync.txid] = {
+      //     txid: sync.txid,
+      //     height: sync.height,
+      //     idx: Number(sync.idx),
+      //     parseMode: ParseMode.Dependency,
+      //     outputs: [],
+      //     source: 'history',
+      //   };
+      // } else {
+
+      // }
     }
     return maxScore;
   }

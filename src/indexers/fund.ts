@@ -13,11 +13,11 @@ export class FundIndexer extends Indexer {
   async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     const script = ctx.tx.outputs[vout].lockingScript;
-    txo.owner = parseAddress(script, 0, this.network);
+    const address = parseAddress(script, 0, this.network);
     if (txo.satoshis < 2n) return;
     const events: Event[] = [];
-    if (txo.owner && this.owners.has(txo.owner)) {
-      events.push({ id: "address", value: txo.owner });
+    if (address && this.owners.has(address)) {
+      events.push({ id: "address", value: address });
     }
     return new IndexData(txo.owner, events);
   }

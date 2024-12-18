@@ -226,9 +226,9 @@ export class OneSatProvider
     }
   };
 
-  async syncTxLogs(from = 0): Promise<TxSyncLog[]> {
+  async syncTxLogs(from = 0, limit=0, reverse = false): Promise<TxSyncLog[]> {
     const resp = await fetch(
-      `${APIS[this.network]}/v5/acct/${this.accountId}/${from}`
+      `${APIS[this.network]}/v5/acct/${this.accountId}/${from}?limit=${limit}&rev=${reverse}`
     );
     if (!resp.ok) throw new Error("Failed to fetch tx logs");
     const logs = await resp.json() as TxSyncLog[];
