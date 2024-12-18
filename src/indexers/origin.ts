@@ -73,29 +73,6 @@ export class OriginIndexer extends Indexer {
             origin.nonce++;
           }
         }
-        // if (!origin.outpoint && this.indexMode != IndexMode.Verify) {
-        //   // const remote = await this.oneSat.getTxo(txo.outpoint);
-        //   // if (remote?.data?.origin?.outpoint) {
-        //   //   origin.outpoint = remote?.data?.origin?.outpoint;
-        //   //   origin.insc = {
-        //   //     file: await this.oneSat.getInscriptionFile(origin.outpoint)
-        //   //   }
-        //   //   origin.map = remote.data.origin.map;
-        //   //   origin.nonce = (remote.data.origin.nonce || 0) + 1;
-        //   // }
-        //   if (parseMode == ParseMode.Persist && this.indexMode == IndexMode.TrustAndVerify) {
-        //     let hasDeps = false;
-        //     const ancestors = await this.oneSat.getOriginAncestors([spend.outpoint.toString()]);
-        //     for (const ancestor of ancestors) {
-        //       const [txid] = ancestor.outpoint.split("_");
-        //       ctx.queue[txid] = new Block(ancestor.height, BigInt(ancestor.idx));
-        //       hasDeps = true;
-        //     }
-        //     if (hasDeps) {
-        //       ctx.queue[ctx.txid] = new Block(ctx.block.height, BigInt(ctx.block.idx));
-        //     }
-        //   }
-        // }
         break;
       }
       satsIn += spend.satoshis;

@@ -52,10 +52,6 @@ export class TxnStorageIDB implements TxnStorage {
     await this.db.put("txns", txn);
   }
 
-  // async getTxids(): Promise<string[]> {
-  //   return this.db.getAllKeys("txns");
-  // }
-
   async putMany(txns: Txn[]): Promise<void> {
     if (!txns.length) return;
     const t = this.db.transaction("txns", "readwrite");

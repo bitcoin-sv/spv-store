@@ -277,18 +277,6 @@ export class TxoStorageIDB implements TxoStorage {
     await Promise.all(
       ingests.map(async (ingest) => {
         await this.putIngest(ingest, t);
-        // const prev = await t.store.get(ingest.txid).catch(() => undefined);
-        // if (prev && Number(prev.status) >= Number(ingest.status)) {
-        //   if(ingest.reprocess) {
-        //     ingest.outputs = [...new Set([...(prev.outputs || []), ...(ingest.outputs || [])])];
-        //     await t.store.put(ingest);
-        //   } else {
-        //     console.log("Skipping ingest", ingest.txid, "already ingested");
-        //     return;
-        //   }
-        // } else {
-        //   await t.store.put(ingest);
-        // }
       })
     );
     await t.done;

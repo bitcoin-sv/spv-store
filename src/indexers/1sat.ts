@@ -116,18 +116,6 @@ export class OneSatIndexer extends Indexer {
       } else {
         ingest.outputs = [...new Set([...ingest.outputs || [], ...sync.outs || []])];
       }
-      // if (!ingestQueue[sync.txid]) {
-      //   ingestQueue[sync.txid] = {
-      //     txid: sync.txid,
-      //     height: sync.height,
-      //     idx: Number(sync.idx),
-      //     parseMode: ParseMode.Dependency,
-      //     outputs: [],
-      //     source: 'history',
-      //   };
-      // } else {
-
-      // }
     }
     return maxScore;
   }

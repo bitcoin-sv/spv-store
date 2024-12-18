@@ -176,16 +176,7 @@ export class OneSatProvider
       body: JSON.stringify(outpoints),
     });
     return resp.ok ? (await resp.json() as Ordinal[]) : [];
-    // const ancestors = (await resp.json()) as {
-    //   outpoint: string;
-    //   idx: string;
-    //   height: number;
-    // }[];
 
-    // return ancestors.reduce((queue, u) => {
-    //   queue[u.outpoint.slice(0, 64)] = new Block(u.height || 0, BigInt(u.idx || 0));
-    //   return queue;
-    // }, {} as IndexQueue);
   }
 
   async getInscriptionFile(outpoint: string): Promise<File | undefined> {
