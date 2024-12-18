@@ -116,7 +116,6 @@ export class TxoStore {
     const txos = await this.storage.getMany(
       tx.outputs.map((_, i) => new Outpoint(ctx.txid, i)),
     );
-    let hasEvents = false;
     for (const [vout, output] of tx.outputs.entries()) {
       let txo = txos[vout];
       if (!txo) {
@@ -137,9 +136,6 @@ export class TxoStore {
           const data = i.parse && (await i.parse(ctx, vout, parseMode));
           if (data) {
             txo.data[i.tag] = data;
-            if(data.events.length) {
-              hasEvents = true;
-            }
           }
         } catch (e) {
           console.error("indexer error: continuing", i.tag, e);

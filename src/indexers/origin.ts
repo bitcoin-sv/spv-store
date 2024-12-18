@@ -163,10 +163,10 @@ export class OriginIndexer extends Indexer {
 
   async resolve(txoStore: TxoStore, block: BlockHeader): Promise<void> {
     if (this.indexMode === IndexMode.Verify) return;
-    const results = await txoStore.search(new TxoLookup(this.tag, 'outpoint', ':'), TxoSort.ASC, 1000)
+    const results = await txoStore.search(new TxoLookup(this.tag, 'outpoint', ':', undefined, true), TxoSort.ASC, 1000)
 
     const ingestQueue: {[txid: string]:Ingest} = {};
-    const originOutpoints: string[] = [];
+    const originOutpoints = new Set<string>();
     for (const txo of results.txos) {
       const originData = txo.data.origin;
       originData.events = originData?.events.filter(e => e.id != "outpoint");
@@ -175,7 +175,6 @@ export class OriginIndexer extends Indexer {
         const remote = await this.oneSat.getTxo(txo.outpoint);
         if (remote?.data?.origin?.outpoint) {
           origin.outpoint = remote?.data?.origin?.outpoint;
-          const outpoint = new Outpoint(origin.outpoint);
           if (this.indexMode == IndexMode.Trust) {
             const file = await this.oneSat.getInscriptionFile(origin.outpoint);
             origin.insc = {file};
@@ -184,42 +183,44 @@ export class OriginIndexer extends Indexer {
             originData.events.push({ id: "outpoint", value: origin.outpoint });
             await txoStore.storage.put(txo)
           } else if (this.indexMode == IndexMode.TrustAndVerify) {
-            let ingest = ingestQueue[outpoint.txid];
-            originOutpoints.push(origin.outpoint);
+            let ingest = ingestQueue[txo.outpoint.txid];
+            originOutpoints.add(origin.outpoint);
             if (!ingest) {
               ingest = {
-                txid: outpoint.txid,
+                txid: txo.outpoint.txid,
                 height: txo.block.height,
                 idx: Number(txo.block.idx),
                 parseMode: ParseMode.Persist,
-                outputs: [outpoint.vout],
+                outputs: [txo.outpoint.vout],
                 source: "origin",
+                reprocess: true,
               };
-              ingestQueue[outpoint.txid] = ingest;
+              ingestQueue[txo.outpoint.txid] = ingest;
             } else {
-              ingest.outputs!.push(outpoint.vout);
+              ingest.outputs!.push(txo.outpoint.vout);
             }
           }
         }
       }
     }
     if (this.indexMode == IndexMode.TrustAndVerify) {
-      const ancestors = await this.oneSat.getOriginAncestors(originOutpoints);
+      const ancestors = await this.oneSat.getOriginAncestors([...originOutpoints]);
       for (const ancestor of ancestors) {
-        const txid = ancestor.outpoint.slice(0, 64);
+        const [txid, vout] = ancestor.outpoint.split("_");
         let ingest = ingestQueue[txid];
         if (!ingest) {
           ingest = {
             txid: txid,
             height: ancestor.height,
             idx: Number(ancestor.idx),
-            parseMode: ParseMode.Dependency,
-            outputs: [],
+            parseMode: ParseMode.Persist,
+            outputs: [parseInt(vout)],
             source: 'ancestor',
+            reprocess: true,
           }
           ingestQueue[txid] = ingest;
         } else {
-          ingest.outputs!.push();
+          ingest.outputs!.push(parseInt(vout));
         }
       }
       const ingests = Object.values(ingestQueue);

@@ -1,4 +1,4 @@
-import { openDB, type DBSchema, type IDBPDatabase } from "@tempfix/idb";
+import { openDB, type DBSchema, type IDBPDatabase, type IDBPTransaction } from "@tempfix/idb";
 import { Txo, TxoStatus } from "../../models/txo";
 import { IngestStatus, type Ingest } from "../../models/ingest";
 import type { TxoStorage } from "../txo-storage";
@@ -17,6 +17,7 @@ export interface TxoSchema extends DBSchema {
       spend: [string, number];
       events: string;
       tags: string;
+      logs: string;
       deps: string;
     };
   };
@@ -54,6 +55,7 @@ function hydrateTxo(obj: Txo) {
 function buildTxoIndex(txo: Txo) {
   const tags: string[] = [];
   const events: string[] = [];
+  const logs: string[] = [];
   const blockStr = txo.block.height.toString(10).padStart(7, "0");
   const idxStr = txo.block.idx.toString(10).padStart(9, "0");
   const sort = `${blockStr}.${idxStr}`;
@@ -62,7 +64,11 @@ function buildTxoIndex(txo: Txo) {
     for (const dep of data.deps) {
       deps.add(dep.toString());
     }
-    if (txo.spend || txo.status == TxoStatus.Dependency) continue;
+    if (txo.status == TxoStatus.Dependency) continue;
+    for (const e of data.events) {
+      logs.push(`${tag}:${e.id}:${e.value}:${sort}`);
+    }
+    if (txo.spend) continue;
     if (data.events.length) tags.push(`${tag}:${sort}`);
     for (const e of data.events) {
       events.push(`${tag}:${e.id}:${e.value}:${sort}`);
@@ -70,6 +76,7 @@ function buildTxoIndex(txo: Txo) {
   }
   txo.tags = tags;
   txo.events = events;
+  txo.logs = logs;
   txo.deps = Array.from(deps);
   txo.hasEvents = events.length;
 }
@@ -91,6 +98,7 @@ export class TxoStorageIDB implements TxoStorage {
           txos.createIndex("spend", ["spend", "hasEvents"]);
           txos.createIndex("events", "events", { multiEntry: true });
           txos.createIndex("tags", "tags", { multiEntry: true });
+          txos.createIndex("logs", "logs", { multiEntry: true });
           txos.createIndex("deps", "deps", { multiEntry: true });
           const ingestQueue = db.createObjectStore("ingestQueue", {
             keyPath: "txid",
@@ -154,7 +162,7 @@ export class TxoStorageIDB implements TxoStorage {
     lookup: TxoLookup,
     sort = TxoSort.DESC,
     limit = 10,
-    from?: string
+    from?: string,
   ): Promise<TxoResults> {
     const dbkey = lookup.toQueryKey();
     let lower = dbkey
@@ -171,7 +179,11 @@ export class TxoStorageIDB implements TxoStorage {
       true
     );
 
-    const indexName = lookup.id ? "events" : "tags";
+    const indexName = lookup.includeSpent ? 
+      "logs" :
+      lookup.id ? 
+        "events" : 
+        "tags";
     const results: TxoResults = { txos: [] };
     const t = this.db.transaction("txos");
     const index = t.store.index(indexName);
@@ -233,18 +245,30 @@ export class TxoStorageIDB implements TxoStorage {
     return ingests;
   }
 
-  async putIngest(ingest: Ingest): Promise<void> {
-    const t = this.db.transaction("ingestQueue", "readwrite");
-    const prev = await t.store.get(ingest.txid).catch(() => undefined);
-    if (prev?.outputs) {
-      const outputs = new Set<number>(prev.outputs);
-      for (const idx of ingest.outputs || []) {
-        outputs.add(idx);
-      }
-      ingest.outputs = Array.from(outputs);
+  async putIngest(ingest: Ingest, t?: IDBPTransaction<TxoSchema, ["ingestQueue"], "readwrite">): Promise<void> {
+    const tProvided = !!t;
+    if (!t) {
+      t = this.db.transaction("ingestQueue", "readwrite");
     }
-    await t.done;
-    await this.db.put("ingestQueue", ingest);
+    const prev = await t.store.get(ingest.txid).catch(() => undefined);
+    if (prev && Number(prev.status) >= Number(ingest.status)) {
+      if(ingest.reprocess) {
+        ingest.outputs = [...new Set([
+          ...(prev.outputs || []), 
+          ...(ingest.outputs || [])
+        ])];
+        await t.store.put(ingest);
+      } else {
+        console.log("Skipping ingest", ingest.txid, "already ingested");
+        return;
+      }
+    } else {
+      await t.store.put(ingest);
+    }
+    await t.store.put(ingest);
+    if (!tProvided) {
+      await t.done;
+    }
   }
 
   async putIngests(ingests: Ingest[]): Promise<void> {
@@ -252,37 +276,19 @@ export class TxoStorageIDB implements TxoStorage {
     const t = this.db.transaction("ingestQueue", "readwrite");
     await Promise.all(
       ingests.map(async (ingest) => {
-        const prev = await t.store.get(ingest.txid).catch(() => undefined);
-        if (prev && Number(prev.status) >= Number(ingest.status)) {
-          console.log("Skipping ingest", ingest.txid, "already ingested");
-          return;
-          // const outputs = new Set(prev.outputs || []);
-          // for (let out of ingest.outputs || []) {
-          //   if (!outputs.has(out)) {
-          //     outputs.add(out);
-          //     prev.status = ingest.status;
-          //   }
-          // }
-          // if(outputs.size >  (prev.outputs || []).length) {
-          //   prev.outputs = Array.from(outputs);
-          //   prev.status = ingest.status;
-          //   await t.store.put(prev);
-          // }
-        } else {
-          await t.store.put(ingest);
-        }
-        // if (prev) {
-        //   console.log("Skipping ingest", ingest.txid, "already ingested");
-        //   return;
-        // }
-        // if (prev?.outputs) {
-        //   const outputs = new Set<number>(prev.outputs);
-        //   for (const idx of ingest.outputs || []) {
-        //     outputs.add(idx);
+        await this.putIngest(ingest, t);
+        // const prev = await t.store.get(ingest.txid).catch(() => undefined);
+        // if (prev && Number(prev.status) >= Number(ingest.status)) {
+        //   if(ingest.reprocess) {
+        //     ingest.outputs = [...new Set([...(prev.outputs || []), ...(ingest.outputs || [])])];
+        //     await t.store.put(ingest);
+        //   } else {
+        //     console.log("Skipping ingest", ingest.txid, "already ingested");
+        //     return;
         //   }
-        //   ingest.outputs = Array.from(outputs);
+        // } else {
+        //   await t.store.put(ingest);
         // }
-        // t.store.put(ingest);
       })
     );
     await t.done;

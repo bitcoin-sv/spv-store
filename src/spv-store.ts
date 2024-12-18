@@ -141,6 +141,7 @@ export class SPVStore {
       () => this.stores.txos!.syncTxLogs(),
       60 * 1000
     );
+    this.stores.txos!.resolveBlock();
     this.events.on("syncedBlockHeight", async () => {
       this.stores.txos!.resolveBlock();
     });

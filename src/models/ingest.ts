@@ -20,4 +20,5 @@ export interface Ingest {
   // validateInputs?: boolean;
   outputs?: number[];
   status?: IngestStatus;
+  reprocess?: boolean;
 }

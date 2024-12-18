@@ -17,9 +17,10 @@ export class FundIndexer extends Indexer {
     if (txo.satoshis < 2n) return;
     const events: Event[] = [];
     if (address && this.owners.has(address)) {
+      txo.owner = address;
       events.push({ id: "address", value: address });
+      return new IndexData(txo.owner, events);
     }
-    return new IndexData(txo.owner, events);
   }
 
   async preSave(ctx: IndexContext): Promise<void> {

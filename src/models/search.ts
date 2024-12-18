@@ -19,6 +19,7 @@ export class TxoLookup {
     public id?: string,
     public value?: string,
     public owner?: string,
+    public includeSpent?: boolean,
   ) { }
 
   toQueryKey(): string {

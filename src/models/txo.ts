@@ -45,6 +45,11 @@ export class Txo {
   events: string[] = [];
 
   /**
+   * A list of events associated with the transaction output.
+   */
+  logs: string[] = [];
+
+  /**
    * A list of tags associated with the transaction output. 
    */
   tags: string[] = [];
