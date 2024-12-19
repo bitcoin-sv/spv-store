@@ -41,7 +41,7 @@ export class OrdLockIndexer extends Indexer {
     if (!dataScript.chunks[1]!.data || !dataScript.chunks[1]!.data) return;
     listing.payout = dataScript.chunks[1]!.data;
     listing.price = BigInt(
-      BigNumber.fromScriptNum(dataScript.chunks[1]!.data!).toString(),
+      BigNumber.fromScriptNum(dataScript.chunks[1]!.data!.slice(0, 8)).toString(),
     );
     txo.owner =
       dataScript.chunks[0]?.data &&
