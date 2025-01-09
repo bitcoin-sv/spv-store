@@ -22,7 +22,7 @@ import type { Txn } from "../stores";
 // import { Block, Txo, type IndexQueue } from "../models";
 import type { File } from "../indexers";
 
-const APIS = {
+export const APIS = {
   mainnet: "https://ordinals.gorillapool.io",
   testnet: "https://testnet.ordinals.gorillapool.io",
 };

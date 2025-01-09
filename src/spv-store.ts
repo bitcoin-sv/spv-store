@@ -88,7 +88,6 @@ export class SPVStore {
       await this.stores.txos!.ingest(tx, source, isBeefy ? ParseMode.Deep : ParseMode.Persist, true)
     }
     return resp;
-
   }
 
   async sync(): Promise<void> {

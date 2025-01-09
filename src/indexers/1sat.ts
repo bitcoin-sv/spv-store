@@ -1,5 +1,5 @@
 import { IndexData, Indexer, Outpoint, ParseMode, Txo, type Ingest } from "../models";
-import { OneSatProvider } from "../providers";
+import { APIS, OneSatProvider } from "../providers";
 import type { TxoStore } from "../stores";
 import { Lock } from "./lock";
 import type { Origin } from "./origin";
@@ -100,6 +100,7 @@ export class OneSatIndexer extends Indexer {
         }
       }
     }
+
     const txSyncs = await oneSat.syncTxLogs() || [];
     for (const sync of txSyncs) {
       let ingest = ingestQueue[sync.txid];
@@ -115,6 +116,44 @@ export class OneSatIndexer extends Indexer {
         ingestQueue[sync.txid] = ingest;
       } else {
         ingest.outputs = [...new Set([...ingest.outputs || [], ...sync.outs || []])];
+      }
+    }
+
+    // temporary hack to sync from legacy api
+    for (const address of txoStore.owners) {
+      const txos = await fetch(`${APIS[this.network]}/api/txos/address/${address}/sync`).then(r => r.json());
+      for (const txo of txos) {
+        let ingest = ingestQueue[txo.txid];
+        if (!ingest) {
+          ingest = {
+            txid: txo.txid,
+            height: txo.height,
+            idx: Number(txo.idx),
+            parseMode: ParseMode.Persist,
+            outputs: [parseInt(txo.vout)],
+            source: 'legacy',
+          };
+          ingestQueue[txo.txid] = ingest;
+        } else {
+          ingest.outputs = [...new Set([...(ingest.outputs || []), parseInt(txo.vout)])]
+        }
+      }
+
+      for (const txo of txos) {
+        if (txo.spend) {
+          let ingest = ingestQueue[txo.spend];
+          if (!ingest) {
+            ingest = {
+              txid: txo.spend,
+              height: txo.height,
+              idx: Number(txo.idx),
+              parseMode: ParseMode.Dependency,
+              outputs: [],
+              source: 'legacy',
+            };
+            ingestQueue[txo.spend] = ingest;
+          }
+        }
       }
     }
     return maxScore;
