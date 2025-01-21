@@ -16,4 +16,5 @@ export interface AccountService {
     subscribe(cb: (topic: string, data: string) => void ): void;
     unsubscribe(): void;
     utxos(): Promise<Ordinal[]>;
+    spends(outpoints: string[]): Promise<string[]>;
 }

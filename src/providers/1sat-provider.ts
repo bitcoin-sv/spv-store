@@ -19,7 +19,6 @@ import type { Network } from "../spv-store";
 import type { Outpoint } from "../models/outpoint";
 import type { Ordinal, RemoteBsv20 } from "../indexers/remote-types";
 import type { Txn } from "../stores";
-// import { Block, Txo, type IndexQueue } from "../models";
 import type { File } from "../indexers";
 
 export const APIS = {
@@ -136,6 +135,13 @@ export class OneSatProvider
     return ((await resp.json()) as Ordinal[]) || [];
   }
 
+  async utxosByAddress(address: string, refresh = false): Promise<Ordinal[]> {
+    const resp = await fetch(
+      `${APIS[this.network]}/v5/own/${address}/utxos?txo=true&limit=0&tags=*${refresh ? "&refresh=true" : ""}`,
+    );
+    return ((await resp.json()) as Ordinal[]) || [];
+  }
+
   async getTxo(outpoint: Outpoint): Promise<Ordinal | undefined> {
     const resp = await fetch(
       `${APIS[this.network]}/v5/txo/${outpoint.toString()}?txo=true&tags=*`
@@ -229,5 +235,16 @@ export class OneSatProvider
       }
       return log;
     });
+  }
+
+  async spends(outpoints: string[]): Promise<string[]> {
+    const resp = await fetch(`${APIS[this.network]}/v5/spends`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(outpoints),
+    });
+    return resp.ok ? (await resp.json() as string[]) : [];
   }
 }

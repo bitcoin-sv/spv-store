@@ -417,4 +417,21 @@ export class TxoStore {
       await indexer.resolve(this.stores.txos!, chaintip);
     }
   }
+
+  async refreshSpends() {
+    if(!this.services.account) return;
+    const utxos = await this.storage.getUtxos();
+    for(let i = 0; i < utxos.length; i += 50) {
+
+      const outpoints = utxos.slice(i, i + 50).map((txo) => txo.outpoint.toString())
+      const spends = await this.services.account.spends(outpoints)
+      for(const [j, spend] of spends.entries()) {
+        const txo = utxos[i + j];
+        if(spend) {
+          txo.spend = spend;
+          await this.storage.put( txo)
+        }
+      }
+    }
+  }
 }

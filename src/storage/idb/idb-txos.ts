@@ -382,6 +382,17 @@ export class TxoStorageIDB implements TxoStorage {
       }
     }
   }
+
+  async getUtxos(): Promise<Txo[]> {
+    const t = this.db.transaction("txos");
+    const utxos: Txo[] = [];
+    for await (const cursor of t.store
+      .index("spend")
+      .iterate(IDBKeyRange.bound(["", 1], ["", Number.MAX_SAFE_INTEGER]))) {
+        utxos.push(cursor.value);
+    }
+    return utxos.map(hydrateTxo);
+  }
 }
 
 type DepLog = {

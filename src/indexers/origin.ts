@@ -190,7 +190,7 @@ export class OriginIndexer extends Indexer {
             txid: txid,
             height: ancestor.height,
             idx: Number(ancestor.idx),
-            parseMode: ParseMode.Persist,
+            parseMode: ParseMode.Dependency,
             outputs: [parseInt(vout)],
             source: 'ancestor',
             reprocess: true,
