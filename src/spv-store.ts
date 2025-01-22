@@ -98,7 +98,7 @@ export class SPVStore {
 
       ingests.push({
         txid,
-        height: tx.merklePath?.blockHeight  || Date.now(),
+        height: tx.merklePath?.blockHeight || Date.now(),
         idx: tx.merklePath?.path[0].find((p) => p.hash == txid)?.offset || 0,
         source: "sync",
         parseMode: ParseMode.Persist,
@@ -109,23 +109,23 @@ export class SPVStore {
   async ingest(ingests: Ingest[]): Promise<void> {
     await this.stores.txos?.queue(ingests);
   }
-  
+
   async refreshSpends(): Promise<void> {
     return this.stores.txos!.refreshSpends();
   }
 
-  async sync(): Promise<void> {
+  async sync(resync = false): Promise<void> {
     await this.stores.blocks!.sync(true);
     this.events.emit("blocksSynced");
     await this.services.account?.register([...this.stores.txos?.owners || []]);
     const isSynced = await this.stores.txos!.storage.getState("lastSync");
-    
+
     console.log("Syncing wallet", isSynced);
-    if (!isSynced) {
+    if (!isSynced || resync) {
       const ingestQueue: { [txid: string]: Ingest } = {};
       let lastSync = 0;
       for (const indexer of this.stores.txos!.indexers) {
-        this.events.emit("importing", {tag: indexer.tag, name: indexer.name});
+        this.events.emit("importing", { tag: indexer.tag, name: indexer.name });
         const score = await indexer.sync(this.stores.txos!, ingestQueue);
         lastSync = Math.max(lastSync, score);
       }
@@ -133,41 +133,44 @@ export class SPVStore {
       await this.stores.txos!.storage.setState("lastSync", lastSync.toString());
       this.events.emit("txosSynced");
     }
-    
+
     // This does not work in a service worker and should be disabled
-    if (this.subscribe) {
-      this.services.account?.subscribe(async (topic, data: string) => {
-        switch (topic) {
-          case "tx":
-            const txSyncLog = JSON.parse(data) as TxSyncLog;
-            this.stores.txos!.queue([{
-              txid: txSyncLog.txid,
-              height: Number(txSyncLog.height),
-              idx: Number(txSyncLog.idx || 0),
-              outputs: txSyncLog.outs,
-              source: "sync",
-              parseMode: ParseMode.Persist,
-            }])
-            break;
-          case "block":
-            this.stores.blocks!.sync(true);
-            break;
-        }
+    if (!resync) {
+      if (this.subscribe) {
+        this.services.account?.subscribe(async (topic, data: string) => {
+          switch (topic) {
+            case "tx":
+              const txSyncLog = JSON.parse(data) as TxSyncLog;
+              this.stores.txos!.queue([{
+                txid: txSyncLog.txid,
+                height: Number(txSyncLog.height),
+                idx: Number(txSyncLog.idx || 0),
+                outputs: txSyncLog.outs,
+                source: "sync",
+                parseMode: ParseMode.Persist,
+              }])
+              break;
+            case "block":
+              this.stores.blocks!.sync(true);
+              break;
+          }
+        });
+      }
+
+      this.stores.blocks!.sync(false);
+      this.stores.txns!.processQueue();
+      this.stores.txos!.processQueue();
+      await this.stores.txos!.syncTxLogs();
+      if (this.interval) clearInterval(this.interval);
+      this.interval = setInterval(
+        () => this.stores.txos!.syncTxLogs(),
+        60 * 1000
+      );
+      this.stores.txos!.resolveBlock();
+      this.events.on("syncedBlockHeight", async () => {
+        this.stores.txos!.resolveBlock();
       });
     }
-    this.stores.blocks!.sync(false);
-    this.stores.txns!.processQueue();
-    this.stores.txos!.processQueue();
-    await this.stores.txos!.syncTxLogs();
-    if (this.interval) clearInterval(this.interval);
-    this.interval = setInterval(
-      () => this.stores.txos!.syncTxLogs(),
-      60 * 1000
-    );
-    this.stores.txos!.resolveBlock();
-    this.events.on("syncedBlockHeight", async () => {
-      this.stores.txos!.resolveBlock();
-    });
   }
 
   async search(
