@@ -170,7 +170,7 @@ export class OriginIndexer extends Indexer {
                 parseMode: ParseMode.Persist,
                 outputs: [txo.outpoint.vout],
                 source: "origin",
-                reprocess: true,
+                // reprocess: true,
               };
               ingestQueue[txo.outpoint.txid] = ingest;
             } else {
@@ -193,7 +193,7 @@ export class OriginIndexer extends Indexer {
             parseMode: ParseMode.Dependency,
             outputs: [parseInt(vout)],
             source: 'ancestor',
-            reprocess: true,
+            // reprocess: true,
           }
           ingestQueue[txid] = ingest;
         } else {
