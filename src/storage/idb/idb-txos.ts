@@ -179,10 +179,10 @@ export class TxoStorageIDB implements TxoStorage {
       true
     );
 
-    const indexName = lookup.includeSpent ? 
+    const indexName = lookup.includeSpent ?
       "logs" :
-      lookup.id ? 
-        "events" : 
+      lookup.id ?
+        "events" :
         "tags";
     const results: TxoResults = { txos: [] };
     const t = this.db.transaction("txos");
@@ -251,18 +251,19 @@ export class TxoStorageIDB implements TxoStorage {
       t = this.db.transaction("ingestQueue", "readwrite");
     }
     const prev = await t.store.get(ingest.txid).catch(() => undefined);
-    if (prev && Number(prev.status) >= Number(ingest.status)) {
-        ingest.outputs = [...new Set([
-          ...(prev.outputs || []), 
-          ...(ingest.outputs || [])
-        ])];
-        // await t.store.put(ingest);
-      // } else {
-      //   console.log("Skipping ingest", ingest.txid, "already ingested");
-      //   return;
-      // }
-    // } else {
-    //   await t.store.put(ingest);
+    if (prev) {
+      const outputs = new Set(prev.outputs || []);
+      let updated = prev.height < ingest.height || Number(prev.status) < Number(ingest.status);
+      for (const output of ingest.outputs || []) {
+        if (!outputs.has(output)) {
+          outputs.add(output);
+          updated = true;
+        }
+      }
+      if (!updated) {
+        return
+      }
+      ingest.outputs = Array.from(outputs);
     }
     await t.store.put(ingest);
     if (!tProvided) {
@@ -388,7 +389,7 @@ export class TxoStorageIDB implements TxoStorage {
     for await (const cursor of t.store
       .index("spend")
       .iterate(IDBKeyRange.bound(["", 1], ["", Number.MAX_SAFE_INTEGER]))) {
-        utxos.push(cursor.value);
+      utxos.push(cursor.value);
     }
     return utxos.map(hydrateTxo);
   }

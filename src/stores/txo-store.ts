@@ -154,7 +154,7 @@ export class TxoStore {
     });
 
     await this.storage.putMany(ctx.txos);
-    if(Object.keys(ctx.summary).length) {
+    if (Object.keys(ctx.summary).length) {
       this.storage.putTxLog({
         txid: ctx.txid,
         height: ctx.block.height,
@@ -377,6 +377,21 @@ export class TxoStore {
       }
     }
     console.log("Queueing new logs:", puts);
+    const ingestsByTxid = new Map<string, Ingest>();
+    for (const put of puts) {
+      const ingest = ingestsByTxid.get(put.txid)
+      if (ingest) {
+        ingest.outputs!.push(put.idx);
+      } else {
+        ingestsByTxid.set(put.txid, {
+          txid: put.txid,
+          height: put.height,
+          idx: 0,
+          source: "sync",
+          parseMode: ParseMode.Persist,
+        });
+      }
+    }
     await this.queue(puts.map((p) => ({
       txid: p.txid,
       height: Number(p.height),
@@ -419,17 +434,17 @@ export class TxoStore {
   }
 
   async refreshSpends() {
-    if(!this.services.account) return;
+    if (!this.services.account) return;
     const utxos = await this.storage.getUtxos();
-    for(let i = 0; i < utxos.length; i += 50) {
+    for (let i = 0; i < utxos.length; i += 50) {
 
       const outpoints = utxos.slice(i, i + 50).map((txo) => txo.outpoint.toString())
       const spends = await this.services.account.spends(outpoints)
-      for(const [j, spend] of spends.entries()) {
+      for (const [j, spend] of spends.entries()) {
         const txo = utxos[i + j];
-        if(spend) {
+        if (spend) {
           txo.spend = spend;
-          await this.storage.put( txo)
+          await this.storage.put(txo)
         }
       }
     }

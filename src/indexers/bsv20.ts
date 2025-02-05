@@ -87,7 +87,7 @@ export class Bsv20Indexer extends Indexer {
   }
 
   async preSave(ctx: IndexContext) {
-    if(this.indexMode == IndexMode.Trust) return;
+    // if(this.indexMode == IndexMode.Trust) return;
     const tokens = new Map<string, RemoteBsv20>();
     let token: Bsv20 | undefined
     let balance = 0;
