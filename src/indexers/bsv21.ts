@@ -7,7 +7,7 @@ import { Utils } from "@bsv/sdk";
 import { Bsv20Status, deriveFundAddress } from "./bsv20";
 import { OneSatProvider } from "../providers/1sat-provider";
 import type { Network } from "../spv-store";
-import { Outpoint } from "../models";
+import { Outpoint, ParseMode } from "../models";
 
 export class Bsv21 {
   status = Bsv20Status.Pending;
@@ -43,14 +43,17 @@ export class Bsv21 {
 export class Bsv21Indexer extends Indexer {
   tag = "bsv21";
   name = "Bsv21s";
+  tokens: { [id: string]: Bsv21 } = {};
 
   provider: OneSatProvider;
   constructor(
     public owners = new Set<string>(),
     public indexMode: IndexMode,
+    tokens: Bsv21[] = [],
     public network: Network = "mainnet",
   ) {
     super(owners, indexMode, network);
+    tokens.forEach((token) => this.tokens[token.id] = token);
     this.provider = new OneSatProvider(network);
   }
 
@@ -65,7 +68,6 @@ export class Bsv21Indexer extends Indexer {
       return;
     }
     if (bsv21.amt <= 0n || bsv21.amt > 2 ** 64 - 1) return;
-    const deps: Outpoint[] = [];
     switch (bsv21.op) {
       case "deploy+mint":
         if (bsv21.dec > 18) return;
@@ -78,14 +80,13 @@ export class Bsv21Indexer extends Indexer {
         if (!bsv21.id) {
           return;
         }
-        deps.push(new Outpoint(bsv21.id));
         break;
       default:
         return;
     }
 
     bsv21.fundAddress = deriveFundAddress(txo.outpoint.toBEBinary());
-    const data = new IndexData(bsv21, [], deps);
+    const data = new IndexData(bsv21);
     if (txo.owner && this.owners.has(txo.owner)) {
       data.events.push({ id: "address", value: txo.owner });
       data.events.push({ id: "id", value: bsv21.id });
@@ -97,7 +98,7 @@ export class Bsv21Indexer extends Indexer {
     return data;
   }
 
-  async preSave(ctx: IndexContext) {
+  async preSave(ctx: IndexContext, parseMode: ParseMode): Promise<void> {
     // if (this.indexMode == IndexMode.Trust) return;
     const balance: { [id: string]: bigint } = {};
     const tokensIn: { [id: string]: Txo[] } = {};
@@ -107,14 +108,23 @@ export class Bsv21Indexer extends Indexer {
     for (const spend of ctx.spends) {
       const bsv21 = spend.data.bsv21;
       if (!bsv21) continue;
+
       if (bsv21.data.status != Bsv20Status.Valid && this.indexMode == IndexMode.Trust) {
-        
-        const remote = await this.provider.getBsv2021Txo(spend.outpoint);
-        if (remote) {
-          bsv21.data.status = remote.status;
-          bsv21.data.sym = remote.sym;
-          bsv21.data.icon = remote.icon;
-          bsv21.data.dec = remote.dec;
+        if (parseMode == ParseMode.Preview) {
+          const token = this.tokens[bsv21.data.id];
+          if (token) {
+            bsv21.data.sym = token.sym;
+            bsv21.data.icon = token.icon;
+            bsv21.data.dec = token.dec;
+          }
+        } else {
+          const remote = await this.provider.getBsv2021Txo(spend.outpoint);
+          if (remote) {
+            bsv21.data.status = remote.status;
+            bsv21.data.sym = remote.sym;
+            bsv21.data.icon = remote.icon;
+            bsv21.data.dec = remote.dec;
+          }
         }
       }
       if (!summaryToken) summaryToken = bsv21.data as Bsv21;

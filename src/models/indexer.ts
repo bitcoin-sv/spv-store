@@ -79,7 +79,7 @@ export abstract class Indexer {
    * @param {IndexContext} ctx - The context of the index operation.
    * @returns {Promise<void>} A promise that resolves when the pre-save evaluation is complete.
    */
-  async preSave(ctx: IndexContext): Promise<void> {
+  async preSave(ctx: IndexContext, parseMode  = ParseMode.Persist): Promise<void> {
     return;
   }
 

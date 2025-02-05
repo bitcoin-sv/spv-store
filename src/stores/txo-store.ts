@@ -144,7 +144,7 @@ export class TxoStore {
     }
 
     for (const i of this.indexers) {
-      i.preSave && await i.preSave(ctx)
+      i.preSave && await i.preSave(ctx, parseMode);
     }
 
     if (parseMode == ParseMode.Preview) return ctx
