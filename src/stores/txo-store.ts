@@ -381,12 +381,16 @@ export class TxoStore {
     for (const put of puts) {
       const ingest = ingestsByTxid.get(put.txid)
       if (ingest) {
-        ingest.outputs!.push(put.idx);
+        ingest.outputs = Array.from(new Set([
+          ...(ingest.outputs || []),
+          ...put.outs,
+        ]));
       } else {
         ingestsByTxid.set(put.txid, {
           txid: put.txid,
           height: put.height,
           idx: 0,
+          outputs: put.outs,
           source: "sync",
           parseMode: ParseMode.Persist,
         });

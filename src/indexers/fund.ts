@@ -16,8 +16,8 @@ export class FundIndexer extends Indexer {
     const address = parseAddress(script, 0, this.network);
     if (txo.satoshis < 2n) return;
     const events: Event[] = [];
+    txo.owner = address;
     if (address && this.owners.has(address)) {
-      txo.owner = address;
       events.push({ id: "address", value: address });
       return new IndexData(txo.owner, events);
     }

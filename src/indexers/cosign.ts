@@ -34,40 +34,8 @@ export class CosignIndexer extends Indexer {
           address: Utils.toBase58Check(chunks[2 + i].data || [], this.network == 'mainnet' ? [0] : [111]),
         };
         txo.owner = cosign.address;
-        // if (cosign.address && this.owners.has(cosign.address)) {
-        // }
         return new IndexData(cosign);
       }
     }
-
-    // const address = parseAddress(script, 0, this.network);
-    // if (txo.satoshis < 2n) return;
-    // const events: Event[] = [];
-    // if (address && this.owners.has(address)) {
-    //   txo.owner = address;
-    //   events.push({ id: "address", value: address });
-      
-    // }
   }
-
-  // async preSave(ctx: IndexContext): Promise<void> {
-  //   let satsOut = ctx.spends.reduce((acc, spends) => {
-  //     if (!spends.data[this.tag]) return acc;
-  //     return acc + (spends.owner && this.owners.has(spends.owner) ?
-  //       spends.satoshis :
-  //       0n);
-  //   }, 0n);
-  //   let satsIn = ctx.txos.reduce((acc, txo) => {
-  //     if (!txo.data[this.tag]) return acc;
-  //     return acc + (txo.owner && this.owners.has(txo.owner) ?
-  //       txo.satoshis :
-  //       0n);
-  //   }, 0n);
-  //   const balance = Number(satsIn - satsOut);
-  //   if (balance) {
-  //     ctx.summary[this.tag] = {
-  //       amount: balance,
-  //     };
-  //   }
-  // }
 }
