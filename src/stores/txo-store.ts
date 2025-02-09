@@ -175,6 +175,7 @@ export class TxoStore {
       })));
     }
 
+    this.stores.txns!.saveTx(tx);
     return ctx;
   }
 
