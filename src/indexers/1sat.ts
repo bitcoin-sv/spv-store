@@ -123,45 +123,32 @@ export class OneSatIndexer extends Indexer {
     // }
 
     // temporary hack to sync from legacy api
-    for (const address of txoStore.owners) {
-      const txos = await fetch(`${APIS[this.network]}/api/txos/address/${address}/sync?unspent=true`).then(r => r.json());
-      for (const txo of txos) {
-        let ingest = ingestQueue[txo.txid];
-        if (!ingest) {
-          ingest = {
-            txid: txo.txid,
-            height: txo.height,
-            idx: Number(txo.idx),
-            parseMode: ParseMode.Persist,
-            outputs: [parseInt(txo.vout)],
-            source: 'legacy',
-          };
-          ingestQueue[txo.txid] = ingest;
-        } else {
-          ingest.outputs = [...new Set([...(ingest.outputs || []), parseInt(txo.vout)])]
-        }
-        if (ingest.height < 50000000) {
-          maxScore = Math.max(maxScore, ingest.height * 1000000000 + ingest.idx);
-        }
-      }
-
-      // for (const txo of txos) {
-      //   if (txo.spend) {
-      //     let ingest = ingestQueue[txo.spend];
-      //     if (!ingest) {
-      //       ingest = {
-      //         txid: txo.spend,
-      //         height: txo.height,
-      //         idx: Number(txo.idx),
-      //         parseMode: ParseMode.Dependency,
-      //         outputs: [],
-      //         source: 'legacy',
-      //       };
-      //       ingestQueue[txo.spend] = ingest;
-      //     }
-      //   }
-      // }
-    }
+    // for (const address of txoStore.owners) {
+    //   try {
+    //     const txos = await fetch(`${APIS[this.network]}/api/txos/address/${address}/sync?unspent=true`).then(r => r.json());
+    //     for (const txo of txos) {
+    //       let ingest = ingestQueue[txo.txid];
+    //       if (!ingest) {
+    //         ingest = {
+    //           txid: txo.txid,
+    //           height: txo.height,
+    //           idx: Number(txo.idx),
+    //           parseMode: ParseMode.Persist,
+    //           outputs: [parseInt(txo.vout)],
+    //           source: 'legacy',
+    //         };
+    //         ingestQueue[txo.txid] = ingest;
+    //       } else {
+    //         ingest.outputs = [...new Set([...(ingest.outputs || []), parseInt(txo.vout)])]
+    //       }
+    //       if (ingest.height < 50000000) {
+    //         maxScore = Math.max(maxScore, ingest.height * 1000000000 + ingest.idx);
+    //       }
+    //     }
+    //   } catch(e) {
+    //     console.error("Failed to sync legacy txos for", address, e);
+    //   }
+    // }
     return maxScore;
   }
 }

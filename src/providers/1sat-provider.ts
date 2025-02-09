@@ -22,7 +22,8 @@ import type { Txn } from "../stores";
 import type { File } from "../indexers";
 
 export const APIS = {
-  mainnet: "https://ordinals.gorillapool.io",
+  mainnet: "https://ordinals.1sat.app",
+  // mainnet: "https://ordinals.gorillapool.io",
   testnet: "https://testnet.ordinals.gorillapool.io",
 };
 

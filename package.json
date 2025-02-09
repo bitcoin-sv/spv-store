@@ -26,6 +26,7 @@
   "dependencies": {
     "@tempfix/idb": "^8.0.3",
     "buffer": "^6.0.3",
+    "caniuse-lite": "",
     "microbundle": "^0.15.1",
     "rollup-plugin-polyfill-node": "github:FredKSchott/rollup-plugin-polyfill-node"
   },
