@@ -1,4 +1,4 @@
-import { openDB, type DBSchema, type IDBPDatabase } from "@tempfix/idb";
+import { openDB, type DBSchema, type IDBPDatabase } from "idb";
 import { TxnStatus, type Txn } from "../../stores/txn-store";
 import type { TxnStorage } from "../txn-storage";
 import type { Network } from "../../spv-store";

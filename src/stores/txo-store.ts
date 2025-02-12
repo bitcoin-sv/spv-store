@@ -10,6 +10,7 @@ import type { Services, Stores } from "../spv-store";
 import type { EventEmitter } from "../lib/event-emitter";
 import { ParseMode, TxoSort, type TxoLookup, type TxoResults } from "../models";
 import type { TxSyncLog } from "../services";
+import { NotFoundError } from "../lib/errors";
 
 export class TxoStore {
   private syncRunning: Promise<void> | undefined;
@@ -215,8 +216,15 @@ export class TxoStore {
               ingest.status = IngestStatus.DOWNLOADED;
               updates.push(ingest)
             }
-          } catch (e) {
-            console.error("Failed to download tx", ingest.txid, e);
+          } catch (e: unknown) {
+            if (e == NotFoundError) {
+              console.error("NOT FOUND!!!!", ingest.txid)
+              ingest.status = IngestStatus.FAILED;
+              dels.push(ingest.txid)
+              // updates.push(ingest)
+            } else {
+              console.error("Failed to download tx", ingest.txid, e);
+            }
           }
         }
         if (dels.length) {

@@ -1,4 +1,4 @@
-import { openDB, type DBSchema, type IDBPDatabase, type IDBPTransaction } from "@tempfix/idb";
+import { openDB, type DBSchema, type IDBPDatabase, type IDBPTransaction } from "idb";
 import { Txo, TxoStatus } from "../../models/txo";
 import { IngestStatus, type Ingest } from "../../models/ingest";
 import type { TxoStorage } from "../txo-storage";

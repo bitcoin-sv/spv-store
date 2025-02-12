@@ -1,7 +1,6 @@
 import {
   type BroadcastFailure,
   type BroadcastResponse,
-  Hash,
   Transaction,
   Utils,
 } from "@bsv/sdk";
@@ -20,10 +19,17 @@ import type { Outpoint } from "../models/outpoint";
 import type { Ordinal, RemoteBsv20 } from "../indexers/remote-types";
 import type { Txn } from "../stores";
 import type { File } from "../indexers";
+import { NotFoundError } from "../lib/errors";
 
 export const APIS = {
-  mainnet: "https://ordinals.1sat.app",
+  mainnet: "http://morovol:8081",
+  // mainnet: "https://ordinals.1sat.app",
   // mainnet: "https://ordinals.gorillapool.io",
+  testnet: "https://testnet.ordinals.gorillapool.io",
+};
+
+export const LEGACY_APIS = {
+  mainnet: "https://ordinals.gorillapool.io",
   testnet: "https://testnet.ordinals.gorillapool.io",
 };
 
@@ -95,6 +101,7 @@ export class OneSatProvider
   async fetchTxn(txid: string): Promise<Txn> {
     const resp = await fetch(`${APIS[this.network]}/v5/tx/${txid}`);
     console.log("Fetching", txid);
+    if (resp.status == 404) throw NotFoundError;
     if (resp.status !== 200)
       throw new Error(`${resp.status} - Failed to fetch tx ${txid}`);
     const data = await resp.arrayBuffer();
@@ -162,13 +169,13 @@ export class OneSatProvider
   }
 
   async getBsv20Details(tick: string): Promise<RemoteBsv20 | undefined> {
-    const resp = await fetch(`${APIS[this.network]}/api/bsv20/tick/${tick}`);
+    const resp = await fetch(`${LEGACY_APIS[this.network]}/api/bsv20/tick/${tick}`);
     return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
   }
   
   async getBsv2021Txo(outpoint: Outpoint): Promise<RemoteBsv20 | undefined> {
     const resp = await fetch(
-      `${APIS[this.network]}/api/bsv20/outpoint/${outpoint.toString()}`
+      `${LEGACY_APIS[this.network]}/api/bsv20/outpoint/${outpoint.toString()}`
     );
     return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
   }

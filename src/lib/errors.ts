@@ -1,0 +1,1 @@
+export const NotFoundError = new Error("not-found");
