@@ -49,7 +49,8 @@ export class SPVStore {
     public stores: Stores,
     public events = new EventEmitter(),
     startSync = false,
-    public subscribe = false
+    public syncTags?: Set<string>,
+    public subscribe = false,
   ) {
     if (startSync) this.sync();
   }
@@ -124,7 +125,9 @@ export class SPVStore {
     if (!isSynced || resync) {
       const ingestQueue: { [txid: string]: Ingest } = {};
       let lastSync = 0;
+
       for (const indexer of this.stores.txos!.indexers) {
+        if (this.syncTags && !this.syncTags.has(indexer.tag)) continue;
         this.events.emit("importing", { tag: indexer.tag, name: indexer.name });
         const score = await indexer.sync(this.stores.txos!, ingestQueue);
         lastSync = Math.max(lastSync, score);
@@ -161,11 +164,11 @@ export class SPVStore {
       this.stores.txns!.processQueue();
       this.stores.txos!.processQueue();
       await this.stores.txos!.syncTxLogs();
-      if (this.interval) clearInterval(this.interval);
-      this.interval = setInterval(
-        () => this.stores.txos!.syncTxLogs(),
-        60 * 1000
-      );
+      // if (this.interval) clearInterval(this.interval);
+      // this.interval = setInterval(
+      //   () => this.stores.txos!.syncTxLogs(),
+      //   60 * 1000
+      // );
       this.stores.txos!.resolveBlock();
       this.events.on("syncedBlockHeight", async () => {
         this.stores.txos!.resolveBlock();

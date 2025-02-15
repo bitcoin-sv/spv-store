@@ -4,7 +4,12 @@ import {
   type Event,
   Indexer,
   IndexData,
+  type Ingest,
+  Outpoint,
+  ParseMode,
 } from "../models";
+import type { TxoStore } from "../stores";
+import { OneSatProvider } from "../providers";
 
 export class FundIndexer extends Indexer {
   tag = "fund";
@@ -43,4 +48,36 @@ export class FundIndexer extends Indexer {
       };
     }
   }
+
+  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<number> {
+      const oneSat = new OneSatProvider(this.network, txoStore.services.account?.accountId || '');
+      let maxScore = 0;
+      for (const address of txoStore.owners) {
+        const utxos = await oneSat.txosByAddress(address, true);
+        console.log("Syncing", utxos.length, "utxos for ", [...txoStore.owners]);
+        for (const u of utxos) {
+          if (!u.owners?.includes(address) || u.satoshis < 2n || u.data?.lock) continue;
+          const outpoint = new Outpoint(u.outpoint);
+          let ingest = ingestQueue[outpoint.txid];
+          if (!ingest) {
+            ingest = {
+              txid: outpoint.txid,
+              height: u.height || 0,
+              source: "1sat",
+              idx: u.idx || 0,
+              parseMode: ParseMode.Persist,
+              outputs: [],
+            };
+            ingestQueue[outpoint.txid] = ingest;
+          }
+          if (!u.spend) {
+            ingest.outputs!.push(outpoint.vout);
+          }
+          if (u.height < 50000000) {
+            maxScore = Math.max(maxScore, u.height * 1000000000 + u.idx);
+          }
+        }
+      }
+      return maxScore;
+    }
 }

@@ -4,6 +4,9 @@ import { IndexData } from "../models/index-data";
 import { Script, Utils } from "@bsv/sdk";
 import { lockPrefix, lockSuffix } from "../templates/lock";
 import type { Event } from "../models/event";
+import type { TxoStore } from "../stores";
+import { Outpoint, ParseMode, type Ingest } from "../models";
+import { OneSatProvider } from "../providers";
 
 const PREFIX = Buffer.from(lockPrefix, "hex");
 const SUFFIX = Buffer.from(Utils.toArray(lockSuffix, "hex"));
@@ -63,5 +66,42 @@ export class LockIndexer extends Indexer {
         amount: balance,
       };
     }
+  }
+
+  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<number> {
+    const oneSat = new OneSatProvider(this.network, txoStore.services.account?.accountId || '');
+    let maxScore = 0;
+    for (const address of txoStore.owners) {
+      const utxos = await oneSat.search({
+        tag: 'lock',
+        id: 'owner',
+        value: address,
+        limit: 0,
+      });
+      console.log("Syncing", utxos.length, "utxos for ", [...txoStore.owners]);
+      for (const u of utxos) {
+        const outpoint = new Outpoint(u.outpoint);
+        let ingest = ingestQueue[outpoint.txid];
+        if (!ingest) {
+          ingest = {
+            txid: outpoint.txid,
+            height: u.height || 0,
+            source: "1sat",
+            idx: u.idx || 0,
+            parseMode: ParseMode.Persist,
+            outputs: [],
+          };
+          ingestQueue[outpoint.txid] = ingest;
+        }
+        if (!u.spend) {
+          ingest.outputs!.push(outpoint.vout);
+        }
+        
+        if (u.height < 50000000) {
+          maxScore = Math.max(maxScore, u.height * 1000000000 + u.idx);
+        }
+      }
+    }
+    return maxScore;
   }
 }

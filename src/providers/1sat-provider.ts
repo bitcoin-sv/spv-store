@@ -10,6 +10,7 @@ import {
   type BroadcastService,
   BroadcastStatus,
   type BroadcastStatusResponse,
+  type Query,
   type TxnService,
   type TxSyncLog,
 } from "../services";
@@ -22,8 +23,8 @@ import type { File } from "../indexers";
 import { NotFoundError } from "../lib/errors";
 
 export const APIS = {
-  mainnet: "http://morovol:8081",
-  // mainnet: "https://ordinals.1sat.app",
+  // mainnet: "http://morovol:8081",
+  mainnet: "https://ordinals.1sat.app",
   // mainnet: "https://ordinals.gorillapool.io",
   testnet: "https://testnet.ordinals.gorillapool.io",
 };
@@ -143,9 +144,9 @@ export class OneSatProvider
     return ((await resp.json()) as Ordinal[]) || [];
   }
 
-  async utxosByAddress(address: string, refresh = false): Promise<Ordinal[]> {
+  async txosByAddress(address: string, refresh = false, unspent = true): Promise<Ordinal[]> {
     const resp = await fetch(
-      `${APIS[this.network]}/v5/own/${address}/utxos?txo=true&limit=0&tags=*${refresh ? "&refresh=true" : ""}`,
+      `${APIS[this.network]}/v5/own/${address}/txos?txo=true&limit=0&tags=*&refresh=${refresh}}&unspent=${unspent}`,
     );
     return ((await resp.json()) as Ordinal[]) || [];
   }
@@ -254,5 +255,18 @@ export class OneSatProvider
       body: JSON.stringify(outpoints),
     });
     return resp.ok ? (await resp.json() as string[]) : [];
+  }
+
+  async search(q: Query): Promise<Ordinal[]> {
+    let url = `${APIS[this.network]}/v5/evt/${q.tag}/${q.id}/${q.value}?`
+    const params: { [key: string]: string } = {};
+    if (q.tags) params.tags = q.tags.join(",");
+    if (q.unspent) params.unspent = "true";
+    if (q.limit) params.limit = q.limit.toString();
+    if (q.from) params.from = q.from.toString();
+    if (q.spend) params.spend = "true";
+    url += new URLSearchParams(params);
+    const resp = await fetch(url);
+    return resp.ok ? (await resp.json() as Ordinal[]) : [];
   }
 }

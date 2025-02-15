@@ -16,8 +16,9 @@ export class OneSatWebSPV extends SPVStore {
     public stores: Stores,
     public events: EventEmitter,
     startSync = false,
+    syncTags?: Set<string>,
   ) {
-    super(services, stores, events, startSync);
+    super(services, stores, events, startSync, syncTags);
   }
 
   static async init(
@@ -25,6 +26,7 @@ export class OneSatWebSPV extends SPVStore {
     indexers: Indexer[],
     owners = new Set<string>(),
     startSync = false,
+    syncTags?: Set<string>,
     network: Network = "mainnet",
   ) {
     const oneSatService = new OneSatProvider(network, accountId);
@@ -53,6 +55,6 @@ export class OneSatWebSPV extends SPVStore {
       emitter,
     );
 
-    return new SPVStore(services, stores, emitter, startSync);
+    return new SPVStore(services, stores, emitter, startSync, syncTags);
   }
 }
