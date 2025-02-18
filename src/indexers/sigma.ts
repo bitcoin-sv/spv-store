@@ -2,7 +2,7 @@ import type { IndexContext } from "../models/index-context";
 import { BigNumber, BSM, Hash, OP, type PublicKey, Script, Signature, Utils } from "@bsv/sdk";
 import {
   Indexer,
-  IndexData,
+  type IndexData,
 } from "../models";
 
 type Sigma = {
@@ -71,8 +71,6 @@ export class SigmaIndexer extends Indexer {
     }
     if (!sigmas.length) return;
 
-    return new IndexData(
-      sigmas,
-    );
+    return {data: sigmas}
   }
 }

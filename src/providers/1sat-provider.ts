@@ -1,8 +1,8 @@
 import {
   type BroadcastFailure,
   type BroadcastResponse,
+  MerklePath,
   Transaction,
-  Utils,
 } from "@bsv/sdk";
 import {
   type AccountService,
@@ -18,7 +18,6 @@ import type { BlockHeader } from "../models/block-header";
 import type { Network } from "../spv-store";
 import type { Outpoint } from "../models/outpoint";
 import type { Ordinal, RemoteBsv20 } from "../indexers/remote-types";
-import type { Txn } from "../stores";
 import type { File } from "../indexers";
 import { NotFoundError } from "../lib/errors";
 
@@ -99,29 +98,22 @@ export class OneSatProvider
     }
   }
 
-  async fetchTxn(txid: string): Promise<Txn> {
-    const resp = await fetch(`${APIS[this.network]}/v5/tx/${txid}`);
-    console.log("Fetching", txid);
+  async fetchBeef(txid: string): Promise<Transaction> {
+    const resp = await fetch(`${APIS[this.network]}/v5/tx/${txid}/beef`);
     if (resp.status == 404) throw NotFoundError;
-    if (resp.status !== 200)
-      throw new Error(`${resp.status} - Failed to fetch tx ${txid}`);
-    const data = await resp.arrayBuffer();
-    const reader = new Utils.Reader([...Buffer.from(data)]);
-    let len = reader.readVarIntNum();
-    const txn = {
-      rawtx: reader.read(len),
-    } as Txn;
-    len = reader.readVarIntNum();
-    if (len) txn.proof = reader.read(len);
-    return txn;
+    if (resp.status !== 200){
+      throw new Error(`${resp.status} - Failed to fetch beef for tx ${txid}`);
+    }
+    const beef = [...Buffer.from(await resp.arrayBuffer())]
+    return Transaction.fromAtomicBEEF(beef);
   }
 
-  async fetchProof(txid: string): Promise<number[] | undefined> {
+  async fetchProof(txid: string): Promise<MerklePath | undefined> {
     const resp = await fetch(`${APIS[this.network]}/v5/tx/${txid}/proof`);
     console.log("Fetching", txid);
     if (resp.status !== 200) return;
     const proof = await resp.arrayBuffer();
-    return [...Buffer.from(proof)];
+    return MerklePath.fromBinary([...Buffer.from(proof)]);
   }
 
   async getBlocks(lastHeight: number, limit = 1000): Promise<BlockHeader[]> {
@@ -144,9 +136,9 @@ export class OneSatProvider
     return ((await resp.json()) as Ordinal[]) || [];
   }
 
-  async txosByAddress(address: string, refresh = false, unspent = true): Promise<Ordinal[]> {
+  async txosByAddress(address: string, unspent = true): Promise<Ordinal[]> {
     const resp = await fetch(
-      `${APIS[this.network]}/v5/own/${address}/txos?txo=true&limit=0&tags=*&refresh=${refresh}}&unspent=${unspent}`,
+      `${APIS[this.network]}/v5/own/${address}/txos?txo=true&limit=0&tags=*&unspent=${unspent}`,
     );
     return ((await resp.json()) as Ordinal[]) || [];
   }

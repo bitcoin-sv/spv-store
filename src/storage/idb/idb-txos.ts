@@ -47,7 +47,7 @@ export interface TxoSchema extends DBSchema {
 function hydrateTxo(obj: Txo) {
   obj.outpoint = new Outpoint(obj.outpoint.txid, obj.outpoint.vout);
   for (const data of Object.values(obj.data)) {
-    data.deps = data.deps.map((dep) => new Outpoint(dep));
+    data.deps = (data.deps || []).map((dep) => new Outpoint(dep));
   }
   return obj;
 }
@@ -61,16 +61,16 @@ function buildTxoIndex(txo: Txo) {
   const sort = `${blockStr}.${idxStr}`;
   const deps = new Set<string>();
   for (const [tag, data] of Object.entries(txo.data)) {
-    for (const dep of data.deps) {
+    for (const dep of data.deps || []) {
       deps.add(dep.toString());
     }
     if (txo.status == TxoStatus.Dependency) continue;
-    for (const e of data.events) {
+    for (const e of data.events || []) {
       logs.push(`${tag}:${e.id}:${e.value}:${sort}`);
     }
     if (txo.spend) continue;
-    if (data.events.length) tags.push(`${tag}:${sort}`);
-    for (const e of data.events) {
+    if (data.events?.length) tags.push(`${tag}:${sort}`);
+    for (const e of data.events || []) {
       events.push(`${tag}:${e.id}:${e.value}:${sort}`);
     }
   }
@@ -253,15 +253,11 @@ export class TxoStorageIDB implements TxoStorage {
     const prev = await t.store.get(ingest.txid).catch(() => undefined);
     if (prev) {
       const outputs = new Set(prev.outputs || []);
-      let updated = prev.height < ingest.height || Number(prev.status) < Number(ingest.status);
+      // let updated = prev.height < ingest.height || Number(prev.status) < Number(ingest.status);
       for (const output of ingest.outputs || []) {
         if (!outputs.has(output)) {
           outputs.add(output);
-          updated = true;
         }
-      }
-      if (!updated) {
-        return
       }
       ingest.outputs = Array.from(outputs);
     }
@@ -377,7 +373,7 @@ export class TxoStorageIDB implements TxoStorage {
     }
 
     for (const data of Object.values(txo.data)) {
-      for (const dep of data.deps) {
+      for (const dep of data.deps || []) {
         await this.loadDeps(dep, deps);
       }
     }

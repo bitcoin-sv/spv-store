@@ -2,7 +2,7 @@ import type { IndexContext } from "../models/index-context";
 import { OP, Script, Utils } from "@bsv/sdk";
 import {
   Indexer,
-  IndexData,
+  type IndexData,
 } from "../models";
 
 export const MAP_PROTO = "1PuQa7K62MiKCtssSLKy1kh56WWU7MtUR5"
@@ -32,7 +32,7 @@ export class MapIndexer extends Indexer {
     if (!mapPos) return;
     const map = MapIndexer.parseMap(script, mapPos);
     if (!map) return;
-    return new IndexData(map);
+    return { data: map };
   }
 
   static parseMap(script: Script, mapPos: number): { [key: string]: any } | undefined {
@@ -40,16 +40,18 @@ export class MapIndexer extends Indexer {
       return;
     }
     const map: { [key: string]: any } = {};
-    for (let i = mapPos+1; i < script.chunks.length; i += 2) {
+    for (let i = mapPos + 1; i < script.chunks.length; i += 2) {
       const chunk = script.chunks[i];
       if (chunk.op === OP.OP_RETURN || (chunk.data?.length == 1 && chunk.data[0] !== 0x7c)) break;
       const key = Utils.toUTF8(chunk.data || []);
-      const value = Utils.toUTF8(script.chunks[i+1]?.data || []);
+      const value = Utils.toUTF8(script.chunks[i + 1]?.data || []);
       if (key == 'subTypeData') {
-        map[key] = JSON.parse(value);
-      } else {
-        map[key] = value;
+        try {
+          map[key] = JSON.parse(value)
+          continue;
+        } catch (e) { }
       }
+      map[key] = value;
     }
     return map;
   }

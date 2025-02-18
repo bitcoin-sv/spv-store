@@ -1,6 +1,6 @@
-import type { IndexContext } from "../models/index-context";
+import type { IndexContext, IndexSummary } from "../models/index-context";
 import { Indexer } from "../models/indexer";
-import { IndexData } from "../models/index-data";
+import { type IndexData } from "../models/index-data";
 import { BigNumber, Script, Utils } from "@bsv/sdk";
 import type { Event } from "../models/event";
 
@@ -53,31 +53,32 @@ export class OrdLockIndexer extends Indexer {
         value: listing.price.toString(16).padStart(16, "0"),
       });
     }
-    return new IndexData(listing, events);
+    return {
+      data: listing, 
+      events,
+    };
   }
 
-  async preSave(ctx: IndexContext): Promise<void> {
+  async summerize(ctx: IndexContext): Promise<IndexSummary | undefined> {
     for (const [vin, spend] of ctx.spends.entries()) {
+      if (!spend.script.length) return;
       if(spend.data[this.tag]) {
-        
         if(Buffer.from(ctx.tx.inputs[vin].unlockingScript?.toBinary() || []).includes(SUFFIX)) {
-          ctx.summary[this.tag] = {
+          return {
             amount: 1,
           }
         } else {
-          ctx.summary[this.tag] = {
+          return {
             amount: 0,
           }
         }
-        return;
       }
     }
     for (const txo of ctx.txos) {
       if(txo.data[this.tag]) {
-        ctx.summary[this.tag] = {
+        return {
           amount: -1,
         }
-        return;
       }
     }
   }

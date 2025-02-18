@@ -1,13 +1,12 @@
 
-import type { IndexContext } from "../models/index-context";
-import { IndexData } from "../models/index-data";
+import type { IndexContext, IndexSummary } from "../models/index-context";
+import { type IndexData } from "../models/index-data";
 import { Indexer, IndexMode } from "../models/indexer";
-import { Txo } from "../models/txo";
 import { Utils } from "@bsv/sdk";
 import { Bsv20Status, deriveFundAddress } from "./bsv20";
 import { OneSatProvider } from "../providers/1sat-provider";
 import type { Network } from "../spv-store";
-import { Outpoint, ParseMode } from "../models";
+import { ParseMode } from "../models";
 
 export class Bsv21 {
   status = Bsv20Status.Pending;
@@ -25,7 +24,6 @@ export class Bsv21 {
   constructor(props: Bsv21) {
     this.id = props.id || "";
     Object.assign(this, props);
-
   }
 
   static fromJSON(obj: any): Bsv21 {
@@ -52,7 +50,7 @@ export class Bsv21Indexer extends Indexer {
     tokens: Bsv21[] = [],
     public network: Network = "mainnet",
   ) {
-    super(owners, indexMode, network);
+    super(owners, network);
     tokens.forEach((token) => this.tokens[token.id] = token);
     this.provider = new OneSatProvider(network);
   }
@@ -63,7 +61,13 @@ export class Bsv21Indexer extends Indexer {
     if (txo.data.insc?.data.file.type !== "application/bsv-20") return;
     let bsv21: Bsv21;
     try {
-      bsv21 = Bsv21.fromJSON(JSON.parse(Utils.toUTF8(txo.data.insc?.data.file.content)));
+      let j: any
+      try {
+        j = JSON.parse(Utils.toUTF8(txo.data.insc?.data.file.content))
+      } catch (e) {
+        return
+      }
+      bsv21 = Bsv21.fromJSON(j);
     } catch (e) {
       return;
     }
@@ -86,26 +90,28 @@ export class Bsv21Indexer extends Indexer {
     }
 
     bsv21.fundAddress = deriveFundAddress(txo.outpoint.toBEBinary());
-    const data = new IndexData(bsv21);
+    const idxData: IndexData = {
+      data: bsv21,
+      events: [],
+    };
     if (txo.owner && this.owners.has(txo.owner)) {
-      data.events.push({ id: "address", value: txo.owner });
-      data.events.push({ id: "id", value: bsv21.id });
+      idxData.events!.push({ id: "address", value: txo.owner });
+      idxData.events!.push({ id: "id", value: bsv21.id });
       if (bsv21.contract) {
-        data.events.push({ id: "contract", value: bsv21.contract });
+        idxData.events!.push({ id: "contract", value: bsv21.contract });
       }
     }
 
-    return data;
+    return idxData;
   }
 
-  async preSave(ctx: IndexContext, parseMode: ParseMode): Promise<void> {
+  async summerize(ctx: IndexContext, parseMode: ParseMode): Promise<IndexSummary | undefined> {
     // if (this.indexMode == IndexMode.Trust) return;
     // const balance: { [id: string]: bigint } = {};
     // const tokensIn: { [id: string]: Txo[] } = {};
 
     let summaryToken: Bsv21 | undefined;
     let summaryBalance = 0;
-    // let hasPending = false;
     for (const spend of ctx.spends) {
       const bsv21 = spend.data.bsv21;
       if (!bsv21) continue;
@@ -194,10 +200,10 @@ export class Bsv21Indexer extends Indexer {
     //   }
     // }
     if (summaryToken?.sym) {
-      ctx.summary[this.tag] = {
+      return {
         id: summaryToken.sym,
         amount: summaryBalance / Math.pow(10, summaryToken.dec || 0),
-        icon: summaryToken.icon
+        icon: summaryToken.icon,
       }
     }
   }

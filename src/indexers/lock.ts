@@ -1,12 +1,13 @@
-import type { IndexContext } from "../models/index-context";
+import type { IndexContext, IndexSummary } from "../models/index-context";
 import { Indexer } from "../models/indexer";
-import { IndexData } from "../models/index-data";
+import { type IndexData } from "../models/index-data";
 import { Script, Utils } from "@bsv/sdk";
 import { lockPrefix, lockSuffix } from "../templates/lock";
 import type { Event } from "../models/event";
 import type { TxoStore } from "../stores";
 import { Outpoint, ParseMode, type Ingest } from "../models";
 import { OneSatProvider } from "../providers";
+import type { Network } from "../spv-store";
 
 const PREFIX = Buffer.from(lockPrefix, "hex");
 const SUFFIX = Buffer.from(Utils.toArray(lockSuffix, "hex"));
@@ -18,6 +19,15 @@ export class Lock {
 export class LockIndexer extends Indexer {
   tag = "lock";
   name = "Locks";
+
+  constructor(
+    public owners = new Set<string>(),
+    public network: Network = "mainnet",
+    public syncHistory = false,
+  ) {
+    super(owners, network);
+  }
+  
   async parse(
     ctx: IndexContext,
     vout: number
@@ -42,33 +52,41 @@ export class LockIndexer extends Indexer {
     const events: Event[] = [];
     if (txo.owner && this.owners.has(txo.owner)) {
       events.push({ id: "until", value: until.toString().padStart(7, "0") });
-      events.push({ id: "address", value: txo.owner });
+      events.push({ id: "owner", value: txo.owner });
     }
-    return new IndexData(new Lock(until), events);
+    return {
+      data: new Lock(until),
+      events,
+    }
   }
 
-  async preSave(ctx: IndexContext): Promise<void> {
-    const locksOut = ctx.spends.reduce((acc, spends) => {
-      if (!spends.data[this.tag]) return acc;
-      return acc + (spends.owner && this.owners.has(spends.owner) ?
-        spends.satoshis :
-        0n);
-    }, 0n)
-    const locksIn = ctx.txos.reduce((acc, txo) => {
-      if (!txo.data[this.tag]) return acc;
-      return acc + (txo.owner && this.owners.has(txo.owner) ?
-        txo.satoshis :
-        0n);
-    }, 0n);
+  async summerize(ctx: IndexContext): Promise<IndexSummary | undefined> {
+    let locksOut = 0n;
+    for (const spend of ctx.spends) {
+      if (!spend.script.length) return
+      if (spend.data[this.tag]) {
+        locksOut += (spend.owner && this.owners.has(spend.owner) ?
+          spend.satoshis :
+          0n);
+      }
+    }
+    let locksIn = 0n;
+    for (const txo of ctx.txos) {
+      if (txo.data[this.tag]) {
+        locksIn += (txo.owner && this.owners.has(txo.owner) ?
+          txo.satoshis :
+          0n);
+      }
+    }
     const balance = Number(locksIn - locksOut);
     if (balance) {
-      ctx.summary[this.tag] = {
+      return {
         amount: balance,
       };
     }
   }
 
-  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }): Promise<number> {
+  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }, parseMode = ParseMode.PersistSummary): Promise<number> {
     const oneSat = new OneSatProvider(this.network, txoStore.services.account?.accountId || '');
     let maxScore = 0;
     for (const address of txoStore.owners) {
@@ -77,18 +95,19 @@ export class LockIndexer extends Indexer {
         id: 'owner',
         value: address,
         limit: 0,
+        unspent: !this.syncHistory,
       });
-      console.log("Syncing", utxos.length, "utxos for ", [...txoStore.owners]);
+      console.log("Syncing", utxos.length, "locks for ", [...txoStore.owners]);
       for (const u of utxos) {
         const outpoint = new Outpoint(u.outpoint);
         let ingest = ingestQueue[outpoint.txid];
         if (!ingest) {
           ingest = {
             txid: outpoint.txid,
-            height: u.height || 0,
+            height: u.height || Date.now(),
             source: "1sat",
             idx: u.idx || 0,
-            parseMode: ParseMode.Persist,
+            parseMode,
             outputs: [],
           };
           ingestQueue[outpoint.txid] = ingest;
@@ -96,7 +115,7 @@ export class LockIndexer extends Indexer {
         if (!u.spend) {
           ingest.outputs!.push(outpoint.vout);
         }
-        
+
         if (u.height < 50000000) {
           maxScore = Math.max(maxScore, u.height * 1000000000 + u.idx);
         }
