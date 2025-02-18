@@ -1,12 +1,12 @@
 import type { IndexContext } from "../models/index-context";
 import {
   Indexer,
-  IndexData,
+  type IndexData,
 } from "../models";
 import { OP, Utils } from "@bsv/sdk"
 
 export interface Cosign {
-	address: string;
+  address: string;
   cosigner: string;
 }
 
@@ -17,7 +17,6 @@ export class CosignIndexer extends Indexer {
   async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     const script = ctx.tx.outputs[vout].lockingScript;
-  
     const chunks = script.chunks;
     for (let i = 0; i <= chunks.length - 6; i++) {
       if (
@@ -34,7 +33,7 @@ export class CosignIndexer extends Indexer {
           address: Utils.toBase58Check(chunks[2 + i].data || [], this.network == 'mainnet' ? [0] : [111]),
         };
         txo.owner = cosign.address;
-        return new IndexData(cosign);
+        return { data: cosign };
       }
     }
   }

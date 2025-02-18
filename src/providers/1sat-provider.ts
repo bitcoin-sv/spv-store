@@ -1,9 +1,8 @@
 import {
   type BroadcastFailure,
   type BroadcastResponse,
-  Hash,
+  MerklePath,
   Transaction,
-  Utils,
 } from "@bsv/sdk";
 import {
   type AccountService,
@@ -11,6 +10,7 @@ import {
   type BroadcastService,
   BroadcastStatus,
   type BroadcastStatusResponse,
+  type Query,
   type TxnService,
   type TxSyncLog,
 } from "../services";
@@ -18,10 +18,17 @@ import type { BlockHeader } from "../models/block-header";
 import type { Network } from "../spv-store";
 import type { Outpoint } from "../models/outpoint";
 import type { Ordinal, RemoteBsv20 } from "../indexers/remote-types";
-import type { Txn } from "../stores";
 import type { File } from "../indexers";
+import { NotFoundError } from "../lib/errors";
 
 export const APIS = {
+  // mainnet: "http://morovol:8081",
+  mainnet: "https://ordinals.1sat.app",
+  // mainnet: "https://ordinals.gorillapool.io",
+  testnet: "https://testnet.ordinals.gorillapool.io",
+};
+
+export const LEGACY_APIS = {
   mainnet: "https://ordinals.gorillapool.io",
   testnet: "https://testnet.ordinals.gorillapool.io",
 };
@@ -91,28 +98,22 @@ export class OneSatProvider
     }
   }
 
-  async fetchTxn(txid: string): Promise<Txn> {
-    const resp = await fetch(`${APIS[this.network]}/v5/tx/${txid}`);
-    console.log("Fetching", txid);
-    if (resp.status !== 200)
-      throw new Error(`${resp.status} - Failed to fetch tx ${txid}`);
-    const data = await resp.arrayBuffer();
-    const reader = new Utils.Reader([...Buffer.from(data)]);
-    let len = reader.readVarIntNum();
-    const txn = {
-      rawtx: reader.read(len),
-    } as Txn;
-    len = reader.readVarIntNum();
-    if (len) txn.proof = reader.read(len);
-    return txn;
+  async fetchBeef(txid: string): Promise<Transaction> {
+    const resp = await fetch(`${APIS[this.network]}/v5/tx/${txid}/beef`);
+    if (resp.status == 404) throw NotFoundError;
+    if (resp.status !== 200){
+      throw new Error(`${resp.status} - Failed to fetch beef for tx ${txid}`);
+    }
+    const beef = [...Buffer.from(await resp.arrayBuffer())]
+    return Transaction.fromAtomicBEEF(beef);
   }
 
-  async fetchProof(txid: string): Promise<number[] | undefined> {
+  async fetchProof(txid: string): Promise<MerklePath | undefined> {
     const resp = await fetch(`${APIS[this.network]}/v5/tx/${txid}/proof`);
     console.log("Fetching", txid);
     if (resp.status !== 200) return;
     const proof = await resp.arrayBuffer();
-    return [...Buffer.from(proof)];
+    return MerklePath.fromBinary([...Buffer.from(proof)]);
   }
 
   async getBlocks(lastHeight: number, limit = 1000): Promise<BlockHeader[]> {
@@ -135,9 +136,9 @@ export class OneSatProvider
     return ((await resp.json()) as Ordinal[]) || [];
   }
 
-  async utxosByAddress(address: string, refresh = false): Promise<Ordinal[]> {
+  async txosByAddress(address: string, unspent = true): Promise<Ordinal[]> {
     const resp = await fetch(
-      `${APIS[this.network]}/v5/own/${address}/utxos?txo=true&limit=0&tags=*${refresh ? "&refresh=true" : ""}`,
+      `${APIS[this.network]}/v5/own/${address}/txos?txo=true&limit=0&tags=*&unspent=${unspent}`,
     );
     return ((await resp.json()) as Ordinal[]) || [];
   }
@@ -161,13 +162,13 @@ export class OneSatProvider
   }
 
   async getBsv20Details(tick: string): Promise<RemoteBsv20 | undefined> {
-    const resp = await fetch(`${APIS[this.network]}/api/bsv20/tick/${tick}`);
+    const resp = await fetch(`${LEGACY_APIS[this.network]}/api/bsv20/tick/${tick}`);
     return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
   }
   
   async getBsv2021Txo(outpoint: Outpoint): Promise<RemoteBsv20 | undefined> {
     const resp = await fetch(
-      `${APIS[this.network]}/api/bsv20/outpoint/${outpoint.toString()}`
+      `${LEGACY_APIS[this.network]}/api/bsv20/outpoint/${outpoint.toString()}`
     );
     return resp.ok ? (resp.json() as Promise<RemoteBsv20>) : undefined;
   }
@@ -246,5 +247,18 @@ export class OneSatProvider
       body: JSON.stringify(outpoints),
     });
     return resp.ok ? (await resp.json() as string[]) : [];
+  }
+
+  async search(q: Query): Promise<Ordinal[]> {
+    let url = `${APIS[this.network]}/v5/evt/${q.tag}/${q.id}/${q.value}?`
+    const params: { [key: string]: string } = {};
+    if (q.tags) params.tags = q.tags.join(",");
+    if (q.unspent) params.unspent = "true";
+    if (q.limit) params.limit = q.limit.toString();
+    if (q.from) params.from = q.from.toString();
+    if (q.spend) params.spend = "true";
+    url += new URLSearchParams(params);
+    const resp = await fetch(url);
+    return resp.ok ? (await resp.json() as Ordinal[]) : [];
   }
 }

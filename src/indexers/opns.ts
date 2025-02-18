@@ -1,6 +1,6 @@
 import type { IndexContext } from "../models/index-context";
 import { Indexer } from "../models/indexer";
-import { IndexData } from "../models/index-data";
+import { type IndexData } from "../models/index-data";
 import type { Inscription } from "./insc";
 
 export class OpNSIndexer extends Indexer {
@@ -11,7 +11,6 @@ export class OpNSIndexer extends Indexer {
     const insc = txo.data.insc?.data as Inscription;
     if (insc?.file?.type !== "application/op-ns") return;
 
-    const data = new IndexData(insc);
-    return data;
+    return {data: insc};
   }
 }

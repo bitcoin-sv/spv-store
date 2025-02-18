@@ -55,7 +55,7 @@ export class TxnStore {
     public services: Services,
     public stores: Stores,
     public events?: EventEmitter
-  ) {}
+  ) { }
 
   async destroy() {
     this.stopSync = true;
@@ -77,24 +77,26 @@ export class TxnStore {
 
   async loadTx(
     txid: string,
-    fromRemote = false
-  ): Promise<Transaction | undefined> {
+  ): Promise<Transaction> {
     let txn = await this.storage.get(txid);
-    let saveTx = false;
-    if (!txn && fromRemote) {
+    if (!txn) {
       this.events?.emit("fetchingTx", { txid });
-      txn = await this.services.txns?.fetchTxn(txid);
-      saveTx = !!txn;
-    }
-    if (!txn) return;
-    const tx = Transaction.fromBinary(txn.rawtx);
-    if (txn.proof) {
-      tx.merklePath = MerklePath.fromBinary(txn.proof);
-    }
-    if (saveTx) {
+      const tx = await this.services.txns!.fetchBeef(txid);
       await this.saveTx(tx);
+      return tx;
+    } else {
+      const tx = Transaction.fromBinary(txn.rawtx);
+      if (txn.proof) {
+        tx.merklePath = MerklePath.fromBinary(txn.proof);
+      } else {
+        for (const input of tx.inputs) {
+          if (input.sourceTXID) {
+            input.sourceTransaction = await this.loadTx(input.sourceTXID)
+          }
+        }
+      }
+      return tx;
     }
-    return tx;
   }
 
   async saveTx(tx: Transaction) {
@@ -105,9 +107,9 @@ export class TxnStore {
       status: TxnStatus.BROADCASTED,
     };
     if (tx.merklePath) {
-      // if (!(await tx.merklePath.verify(txn.txid, this.stores.blocks!))) {
-      //   throw new Error("Invalid merkle path");
-      // }
+      if (!(await tx.merklePath.verify(txn.txid, this.stores.blocks!))) {
+        throw new Error("Invalid merkle proof");
+      }
       txn.proof = tx.merklePath!.toBinary();
       txn.block.height = tx.merklePath!.blockHeight;
       txn.block.idx = BigInt(
@@ -123,7 +125,7 @@ export class TxnStore {
     this.syncRunning = Promise.all([
       this.processMempool(),
       this.processConfirmed(),
-    ]).then(() => {});
+    ]).then(() => { });
   }
 
   async processMempool(): Promise<void> {
@@ -136,12 +138,11 @@ export class TxnStore {
       if (txns.length) {
         for (const txn of txns) {
           // this.events?.emit("fetchingTx", { txid: txn.txid });
-          const proof = await this.services.txns?.fetchProof(txn.txid);
-          if (!proof) {
+          const merklePath = await this.services.txns?.fetchProof(txn.txid);
+          if (!merklePath) {
             txn.block.height = Date.now();
             continue;
           }
-          const merklePath = MerklePath.fromBinary(proof);
           if (await merklePath.verify(txn.txid, this.stores.blocks!)) {
             txn.block.height = merklePath.blockHeight;
             txn.block.idx = BigInt(
@@ -177,7 +178,7 @@ export class TxnStore {
       );
       if (txns.length) {
         for (const txn of txns) {
-          let merklePath = MerklePath.fromBinary(txn.proof!);
+          let merklePath: MerklePath | undefined = MerklePath.fromBinary(txn.proof!);
           let verified = false;
           try {
             verified = await merklePath.verify(txn.txid, this.stores.blocks!);
@@ -189,10 +190,8 @@ export class TxnStore {
             continue;
           }
           // this.events?.emit("fetchingTx", { txid: txn.txid });
-          const proof = await this.services.txns?.fetchProof(txn.txid);
-          if (proof) {
-            merklePath = MerklePath.fromBinary(proof);
-            
+          merklePath = await this.services.txns!.fetchProof(txn.txid);
+          if (merklePath) {
             try {
               verified = await merklePath.verify(txn.txid, this.stores.blocks!)
             } catch {
@@ -203,7 +202,7 @@ export class TxnStore {
               txn.block.idx = BigInt(
                 merklePath.path[0].find((p) => p.hash == txn.txid)?.offset || 0
               );
-              txn.proof = proof;
+              txn.proof = merklePath.toBinary();
               if (txn.block.height <= chaintip!.height - 5) {
                 txn.status = TxnStatus.IMMUTABLE;
               }

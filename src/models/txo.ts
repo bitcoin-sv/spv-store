@@ -1,5 +1,5 @@
 import { Block } from "./block";
-import { IndexData } from "./index-data";
+import { type IndexData } from "./index-data";
 import { Outpoint } from "./outpoint";
 
 /**

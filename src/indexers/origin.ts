@@ -1,16 +1,12 @@
-import type { IndexContext } from "../models/index-context";
+import type { IndexContext, IndexSummary } from "../models/index-context";
 import {
-  Block,
-  IndexData,
   Indexer,
-  IndexMode,
   Outpoint,
   parseAddress,
   ParseMode,
-  TxoLookup,
-  TxoSort,
-  type BlockHeader,
+  UnmetDependency,
   type Event,
+  type IndexData,
   type Ingest,
 } from "../models";
 import { OneSatProvider } from "../providers/1sat-provider";
@@ -35,17 +31,17 @@ export class OriginIndexer extends Indexer {
 
   constructor(
     public owners = new Set<string>(),
-    public indexMode: IndexMode,
     public network: Network = "mainnet",
+    public syncHistory = false,
   ) {
-    super(owners, indexMode, network);
+    super(owners, network);
     this.oneSat = new OneSatProvider(network);
   }
 
   async parse(ctx: IndexContext, vout: number, parseMode = ParseMode.Persist): Promise<IndexData | undefined> {
     const txo = ctx.txos[vout];
     if (txo.satoshis != 1n || ctx.block.height < TRIGGER || txo.data.insc?.data?.file?.type == "application/bsv-20") return;
-    if(!txo.owner) {
+    if (!txo.owner) {
       txo.owner = parseAddress(ctx.tx.outputs[vout].lockingScript, 0, this.network);;
     }
     let outSat = 0n;
@@ -60,11 +56,22 @@ export class OriginIndexer extends Indexer {
       sigma: txo.data.sigma?.data
     };
     const deps: Outpoint[] = [];
-    let spendOutpoint: Outpoint | undefined;
-    for (const spend of ctx.spends.values()) {
+    // let spendOutpoint: Outpoint | undefined;
+    for (let [vin, spend] of ctx.spends.entries()) {
       deps.push(spend.outpoint);
+      if (!spend.script.length) {
+        const txo = await ctx.store.storage.get(spend.outpoint);
+        if (txo && spend.script.length) {
+          spend = txo;
+        } else if ([ParseMode.Persist, ParseMode.PersistSummary].includes(parseMode) && satsIn == outSat) {
+          console.log("Resolving dependency", ctx.txid, parseMode, spend.outpoint.toString());
+          throw new UnmetDependency(spend.outpoint, ParseMode.Persist);
+        } else {
+          spend = ctx.spends[vin] = await ctx.store.resolveOutput(spend.outpoint, ParseMode.OutputsOnly)
+        }
+      }
+
       if (satsIn == outSat && spend.satoshis == 1n && spend.block.height >= TRIGGER) {
-        spendOutpoint = spend.outpoint;
         if (spend.data.origin?.data) {
           origin = {
             ...spend.data.origin.data,
@@ -96,10 +103,14 @@ export class OriginIndexer extends Indexer {
     if (file && file.size && file.size > 4096) {
       file.content = [];
     }
-    return new IndexData(origin, events, deps);
+    return {
+      data: origin,
+      events,
+      deps,
+    };
   }
 
-  async preSave(ctx: IndexContext): Promise<void> {
+  async summerize(ctx: IndexContext): Promise<IndexSummary | undefined> {
     let balance = 0;
     let hasTag = false;
     let icon: string | undefined;
@@ -130,7 +141,7 @@ export class OriginIndexer extends Indexer {
       }
     }
     if (hasTag) {
-      ctx.summary[this.tag] = {
+      return {
         id,
         amount: balance,
         icon,
@@ -138,72 +149,35 @@ export class OriginIndexer extends Indexer {
     }
   }
 
-  async resolve(txoStore: TxoStore, block: BlockHeader): Promise<void> {
-    if (this.indexMode === IndexMode.Verify) return;
-    const results = await txoStore.search(new TxoLookup(this.tag, 'outpoint', ':', undefined, true), TxoSort.ASC, 1000)
-
-    const ingestQueue: {[txid: string]:Ingest} = {};
-    const originOutpoints = new Set<string>();
-    for (const txo of results.txos) {
-      const originData = txo.data.origin;
-      originData.events = originData?.events.filter(e => e.id != "outpoint");
-      const origin = originData?.data as Origin;
-      if (!origin?.outpoint) {
-        const remote = await this.oneSat.getTxo(txo.outpoint);
-        if (remote?.data?.origin?.outpoint) {
-          origin.outpoint = remote?.data?.origin?.outpoint;
-          if (this.indexMode == IndexMode.Trust) {
-            const file = await this.oneSat.getInscriptionFile(origin.outpoint);
-            origin.insc = {file};
-            origin.map = remote.data.origin.map;
-            origin.nonce = (remote.data.origin.nonce || 0) + 1;
-            originData.events.push({ id: "outpoint", value: origin.outpoint });
-            await txoStore.storage.put(txo)
-          } else if (this.indexMode == IndexMode.TrustAndVerify) {
-            let ingest = ingestQueue[txo.outpoint.txid];
-            originOutpoints.add(origin.outpoint);
-            if (!ingest) {
-              ingest = {
-                txid: txo.outpoint.txid,
-                height: txo.block.height,
-                idx: Number(txo.block.idx),
-                parseMode: ParseMode.Persist,
-                outputs: [txo.outpoint.vout],
-                source: "origin",
-                // reprocess: true,
-              };
-              ingestQueue[txo.outpoint.txid] = ingest;
-            } else {
-              ingest.outputs!.push(txo.outpoint.vout);
-            }
-          }
-        }
-      }
-    }
-    if (this.indexMode == IndexMode.TrustAndVerify) {
-      const ancestors = await this.oneSat.getOriginAncestors([...originOutpoints]);
-      for (const ancestor of ancestors) {
-        const [txid, vout] = ancestor.outpoint.split("_");
-        let ingest = ingestQueue[txid];
+  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }, parseMode = ParseMode.Persist): Promise<number> {
+    const oneSat = new OneSatProvider(this.network, txoStore.services.account?.accountId || '');
+    let maxScore = 0;
+    for (const address of txoStore.owners) {
+      const utxos = await oneSat.txosByAddress(address, !this.syncHistory);
+      console.log("Syncing", utxos.length, "utxos for ", [...txoStore.owners]);
+      for (const u of utxos) {
+        if (u.satoshis != 1 || u.data.insc?.file.type.startsWith("application/bsv-20")) continue;
+        const outpoint = new Outpoint(u.outpoint);
+        let ingest = ingestQueue[outpoint.txid];
         if (!ingest) {
           ingest = {
-            txid: txid,
-            height: ancestor.height,
-            idx: Number(ancestor.idx),
-            parseMode: ParseMode.Dependency,
-            outputs: [parseInt(vout)],
-            source: 'ancestor',
-            // reprocess: true,
-          }
-          ingestQueue[txid] = ingest;
-        } else {
-          ingest.outputs!.push(parseInt(vout));
+            txid: outpoint.txid,
+            height: u.height || Date.now(),
+            source: "1sat",
+            idx: u.idx || 0,
+            parseMode,
+            outputs: [],
+          };
+          ingestQueue[outpoint.txid] = ingest;
+        }
+        if (!u.spend) {
+          ingest.outputs!.push(outpoint.vout);
+        }
+        if (u.height < 50000000) {
+          maxScore = Math.max(maxScore, u.height * 1e9 + u.idx);
         }
       }
-      const ingests = Object.values(ingestQueue);
-      if (ingests.length > 0) {
-        await txoStore.queue(ingests);
-      }
     }
+    return maxScore;
   }
 }

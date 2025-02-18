@@ -1,9 +1,19 @@
 import type { Network } from "../spv-store";
 import type { TxoStore } from "../stores";
 import type { BlockHeader } from "./block-header";
-import type { IndexContext } from "./index-context";
-import { IndexData } from "./index-data";
+import type { IndexContext, IndexSummary } from "./index-context";
+import { type IndexData } from "./index-data";
 import type { Ingest } from "./ingest";
+import type { Outpoint } from "./outpoint";
+
+// export const UnmetDependency = new Error('unmet-dependency');
+
+export class UnmetDependency{
+  constructor(
+    public outpoint: Outpoint, 
+    public parseMode = ParseMode.Dependency
+  ) {}
+}
 
 /**
  * Enum representing the different modes of indexing.
@@ -11,15 +21,18 @@ import type { Ingest } from "./ingest";
  * @enum {number}
  */
 export enum ParseMode {
-  /** Parse for preview. Do not load dependencies. */
+  /** Parse outputs only. */
+  OutputsOnly = -1,
+  /** Parse for preview. Do not save. */
   Preview = 0,
-  /** Parse as dependency. */
+  /** Parse as dependency. Supress events.*/
   Dependency = 1,
   /** Parse and queue all dependencies for ingestion. */
   Persist = 2,
   /** Process source transaction tree */
-  Deep = 3,
+  PersistSummary = 3,
 }
+
 
 /**
  * Enum representing the different modes of indexing.
@@ -44,7 +57,7 @@ export enum IndexMode {
 export abstract class Indexer {
   tag = ""; // unique identifier for this indexer
   name = ""; // human readable name for this indexer
- 
+
   /**
    * Creates an instance of the Indexer.
    * 
@@ -56,7 +69,6 @@ export abstract class Indexer {
    */
   constructor(
     public owners = new Set<string>(),
-    public indexMode: IndexMode,
     public network: Network = "mainnet",
   ) { }
 
@@ -69,7 +81,7 @@ export abstract class Indexer {
    * @param {boolean} [previewOnly=false] - A flag indicating whether to perform a preview-only parse.
    * @returns {Promise<IndexData | undefined>} A promise that resolves to the index data if relevant, or undefined if not.
    */
-  async parse(ctx: IndexContext, vout: number, parseMode  = ParseMode.Persist): Promise<IndexData | undefined> {
+  async parse(ctx: IndexContext, vout: number, parseMode = ParseMode.Persist): Promise<IndexData | undefined> {
     return;
   }
 
@@ -79,7 +91,7 @@ export abstract class Indexer {
    * @param {IndexContext} ctx - The context of the index operation.
    * @returns {Promise<void>} A promise that resolves when the pre-save evaluation is complete.
    */
-  async preSave(ctx: IndexContext, parseMode  = ParseMode.Persist): Promise<void> {
+  async summerize(ctx: IndexContext, parseMode = ParseMode.Persist): Promise<IndexSummary | undefined> {
     return;
   }
 
@@ -90,7 +102,7 @@ export abstract class Indexer {
    * @param {{[txid: string]: Ingest}} ingestQueue - A queue of transactions to be ingested, keyed by transaction ID.
    * @returns {Promise<number>} A promise that resolves when the synchronization is complete.
    */
-  async sync(txoStore: TxoStore, ingestQueue: {[txid: string]: Ingest}): Promise<number> {
+  async sync(txoStore: TxoStore, ingestQueue: { [txid: string]: Ingest }, parseMode?: ParseMode, ): Promise<number> {
     return 0;
   }
 

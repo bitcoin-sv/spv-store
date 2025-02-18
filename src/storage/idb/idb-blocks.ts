@@ -1,4 +1,4 @@
-import { openDB, type DBSchema, type IDBPDatabase } from "@tempfix/idb";
+import { openDB, type DBSchema, type IDBPDatabase } from "idb";
 import type { BlockStorage } from "../block-storage";
 import { writeBlockHeader, type BlockHeader } from "../../models/block-header";
 import type { Network } from "../../spv-store";

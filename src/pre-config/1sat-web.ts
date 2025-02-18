@@ -5,7 +5,7 @@ import {
   type Services,
   type Stores,
 } from "../spv-store";
-import type { Indexer } from "../models/indexer";
+import { ParseMode, type Indexer } from "../models/indexer";
 import { BlockStorageIDB, TxnStorageIDB, TxoStorageIDB } from "../storage/idb";
 import { BlockStore, TxnStore, TxoStore } from "../stores";
 import { EventEmitter } from "../lib/event-emitter";
@@ -16,16 +16,19 @@ export class OneSatWebSPV extends SPVStore {
     public stores: Stores,
     public events: EventEmitter,
     startSync = false,
+    syncTags?: Set<string>,
   ) {
-    super(services, stores, events, startSync);
+    super(services, stores, events, startSync, syncTags);
   }
 
   static async init(
     accountId: string,
     indexers: Indexer[],
     owners = new Set<string>(),
-    startSync = false,
     network: Network = "mainnet",
+    startSync = false,
+    syncTags?: Set<string>,
+    parseMode?: ParseMode,
   ) {
     const oneSatService = new OneSatProvider(network, accountId);
     const emitter = new EventEmitter();
@@ -53,6 +56,6 @@ export class OneSatWebSPV extends SPVStore {
       emitter,
     );
 
-    return new SPVStore(services, stores, emitter, startSync);
+    return new SPVStore(services, stores, emitter, startSync, syncTags, parseMode);
   }
 }

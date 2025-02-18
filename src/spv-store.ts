@@ -49,7 +49,9 @@ export class SPVStore {
     public stores: Stores,
     public events = new EventEmitter(),
     startSync = false,
-    public subscribe = false
+    public syncTags?: Set<string>,
+    public parseMode?: ParseMode,
+    public subscribe = false,
   ) {
     if (startSync) this.sync();
   }
@@ -72,10 +74,10 @@ export class SPVStore {
   async broadcast(
     tx: Transaction,
     source = "",
-    isBeefy = false
   ): Promise<BroadcastResponse | BroadcastFailure> {
     let resp: BroadcastResponse | BroadcastFailure;
     if (!tx.merklePath) {
+      await this.stores.txos!.populateTx(tx);
       resp = await this.stores.txns!.broadcast(tx);
     } else {
       resp = {
@@ -85,36 +87,36 @@ export class SPVStore {
       }
     }
     if (isBroadcastResponse(resp)) {
-      await this.stores.txos!.ingest(tx, source, isBeefy ? ParseMode.Deep : ParseMode.Persist, true)
+      await this.stores.txos!.ingest(tx, source, ParseMode.Persist);
     }
     return resp;
   }
 
-  async ingestTxs(txs: Transaction[]): Promise<void> {
-    const ingests: Ingest[] = []
-    for (const tx of txs) {
-      await this.stores.txns?.saveTx(tx);
-      const txid = tx.id("hex");
+  // async ingestTxs(txs: Transaction[]): Promise<void> {
+  //   const ingests: Ingest[] = []
+  //   for (const tx of txs) {
+  //     await this.stores.txns?.saveTx(tx);
+  //     const txid = tx.id("hex");
 
-      ingests.push({
-        txid,
-        height: tx.merklePath?.blockHeight || Date.now(),
-        idx: tx.merklePath?.path[0].find((p) => p.hash == txid)?.offset || 0,
-        source: "sync",
-        parseMode: ParseMode.Persist,
-      });
-    }
-  }
+  //     ingests.push({
+  //       txid,
+  //       height: tx.merklePath?.blockHeight || Date.now(),
+  //       idx: tx.merklePath?.path[0].find((p) => p.hash == txid)?.offset || 0,
+  //       source: "sync",
+  //       parseMode: ParseMode.Persist,
+  //     });
+  //   }
+  // }
 
-  async ingest(ingests: Ingest[]): Promise<void> {
-    await this.stores.txos?.queue(ingests);
-  }
+  // async ingest(ingests: Ingest[]): Promise<void> {
+  //   await this.stores.txos?.queue(ingests);
+  // }
 
   async refreshSpends(): Promise<void> {
     return this.stores.txos!.refreshSpends();
   }
 
-  async sync(resync = false): Promise<void> {
+  async sync(resync = false, parseMode = this.parseMode): Promise<void> {
     await this.stores.blocks!.sync(true);
     this.events.emit("blocksSynced");
     await this.services.account?.register([...this.stores.txos?.owners || []]);
@@ -124,9 +126,11 @@ export class SPVStore {
     if (!isSynced || resync) {
       const ingestQueue: { [txid: string]: Ingest } = {};
       let lastSync = 0;
+
       for (const indexer of this.stores.txos!.indexers) {
+        if (this.syncTags && !this.syncTags.has(indexer.tag)) continue;
         this.events.emit("importing", { tag: indexer.tag, name: indexer.name });
-        const score = await indexer.sync(this.stores.txos!, ingestQueue);
+        const score = await indexer.sync(this.stores.txos!, ingestQueue, parseMode);
         lastSync = Math.max(lastSync, score);
       }
       await this.stores.txos?.queue(Object.values(ingestQueue));
@@ -192,9 +196,8 @@ export class SPVStore {
 
   async getTx(
     txid: string,
-    fromRemote = false
   ): Promise<Transaction | undefined> {
-    return this.stores.txns!.loadTx(txid, fromRemote);
+    return this.stores.txns!.loadTx(txid);
   }
 
   async getRecentTxs(limit = 100): Promise<TxLog[]> {
@@ -202,7 +205,7 @@ export class SPVStore {
   }
 
   async parseTx(tx: Transaction): Promise<IndexContext> {
-    return this.stores.txos!.ingest(tx, "", ParseMode.Preview, true)
+    return this.stores.txos!.ingest(tx, "", ParseMode.Preview)
   }
 
   async getSyncedBlock(): Promise<BlockHeader | undefined> {

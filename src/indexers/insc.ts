@@ -2,7 +2,7 @@ import { Hash, OP, Script, Utils } from "@bsv/sdk";
 import type { IndexContext } from "../models/index-context";
 
 import {
-  IndexData,
+  type IndexData,
   Indexer,
   Outpoint,
   parseAddress,
@@ -71,7 +71,7 @@ export class InscriptionIndexer extends Indexer {
       if (field.data?.length || 0 > 1 && Buffer.from(field.data || []).toString() == MAP_PROTO) {
         const map = MapIndexer.parseMap(Script.fromBinary(value.data || []), 0);
         if (map) {
-          txo.data["map"] = new IndexData(map);
+          txo.data["map"] = {data: map};
         }
         // if bitcomData != nil {
         //   b := append(bitcomData.Data.([]*bitcom.Bitcom), &bitcom.Bitcom{
@@ -107,6 +107,7 @@ export class InscriptionIndexer extends Indexer {
           if (!value.data || value.data.length != 36) break;
           try {
             const parent = new Outpoint(value.data);
+            // TODO: Not sure this is correct
             if (
               !ctx.spends.find(
                 (s) => s.outpoint.toString() == parent.toString(),
@@ -129,6 +130,9 @@ export class InscriptionIndexer extends Indexer {
     if (txo.owner && this.owners.has(txo.owner)) {
       events.push({ id: "address", value: txo.owner });
     }
-    return new IndexData(insc, events);
+    return {
+      data: insc,
+      events,
+    }
   }
 }

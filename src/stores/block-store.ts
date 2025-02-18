@@ -96,4 +96,9 @@ export class BlockStore implements ChainTracker {
   async getChaintip(): Promise<BlockHeader | undefined> {
     return this.storage.getSynced();
   }
+
+  async currentHeight(): Promise<number> {
+    const chaintip = await this.getChaintip();
+    return chaintip?.height || 0;
+  }
 }

@@ -1,6 +1,6 @@
 import { Hash, HD, Utils } from "@bsv/sdk";
-import type { IndexContext } from "../models/index-context";
-import { IndexData } from "../models/index-data";
+import type { IndexContext, IndexSummary } from "../models/index-context";
+import { type IndexData } from "../models/index-data";
 import { Indexer, IndexMode } from "../models/indexer";
 import { OneSatProvider } from "../providers/1sat-provider";
 import type { Network } from "../spv-store";
@@ -47,7 +47,7 @@ export class Bsv20Indexer extends Indexer {
     if (indexMode !== IndexMode.Trust) {
       throw new Error("Bsv20 requires Trust mode");
     }
-    super(owners, indexMode, network);
+    super(owners, network);
     this.provider = new OneSatProvider(network);
   }
 
@@ -58,8 +58,17 @@ export class Bsv20Indexer extends Indexer {
     if (txo.data.insc?.data.file.type !== "application/bsv-20") return;
     let bsv20: Bsv20;
     try {
-      bsv20 = Bsv20.fromJSON(JSON.parse(Utils.toUTF8(txo.data.insc?.data.file.content)));
-      const data = new IndexData(bsv20);
+      let j: any
+      try {
+        j = JSON.parse(Utils.toUTF8(txo.data.insc?.data.file.content))
+      } catch (e) {
+        return
+      }
+      bsv20 = Bsv20.fromJSON(j);
+      const idxData: IndexData = {
+        data: bsv20,
+        events: [],
+      };
       const amt = BigInt(bsv20.amt);
       if (amt <= 0n || amt > 2 ** 64 - 1) return;
       switch (bsv20.op) {
@@ -78,15 +87,15 @@ export class Bsv20Indexer extends Indexer {
       }
       bsv20.fundAddress = deriveFundAddress(bsv20.tick)
       if (txo.owner && this.owners.has(txo.owner)) {
-        data.events.push({ id: "tick", value: bsv20.tick });
+        idxData.events!.push({ id: "tick", value: bsv20.tick });
       }
-      return data;
+      return idxData;
     } catch (e) {
       return;
     }
   }
 
-  async preSave(ctx: IndexContext) {
+  async summerize(ctx: IndexContext): Promise<IndexSummary | undefined> {
     // if(this.indexMode == IndexMode.Trust) return;
     const tokens = new Map<string, RemoteBsv20>();
     let token: Bsv20 | undefined
@@ -119,7 +128,7 @@ export class Bsv20Indexer extends Indexer {
       }
     }
     if(token) {
-      ctx.summary[this.tag] = {
+      return {
         id: token.tick,
         amount: balance / Math.pow(10, token.dec || 0),
       }

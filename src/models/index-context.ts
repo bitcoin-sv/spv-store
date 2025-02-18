@@ -1,6 +1,7 @@
 import type { Transaction } from "@bsv/sdk";
 import type { Txo } from "./txo";
 import { Block } from "./block";
+import type { TxoStore } from "../stores";
 
 export type IndexQueue = { [txid: string]: Block };
 
@@ -8,19 +9,16 @@ export type IndexQueue = { [txid: string]: Block };
  * Represents a summary of indices with associated metadata.
  * 
  * @typedef {Object} IndexSummary
- * @property {Object.<string, {id?: string, amount?: bigint, icon?: string}>} [tag] - A mapping of tags to their respective metadata.
- * @property {string} [tag.id] - An optional identifier for the tag.
- * @property {number} [tag.amount] - An optional amount associated with the tag.
- * @property {string} [tag.icon] - Outpoint of optional icon associated with the tag. Can be ordinal or B protocol
- * @property {any} [tag.data] - Optional data associated with the tag.
+ * @property {string} [id] - An optional identifier for the tag.
+ * @property {number} [amount] - An optional amount associated with the tag.
+ * @property {string} [icon] - Outpoint of optional icon associated with the tag. Can be ordinal or B protocol
+ * @property {any} [data] - Optional data associated with the tag.
  */
 export type IndexSummary = {
-  [tag: string]: {
-    id?: string;
-    amount?: number;
-    icon?: string;
-    data?: any;
-  }
+  id?: string;
+  amount?: number;
+  icon?: string;
+  data?: any;
 };
 
 /**
@@ -28,14 +26,14 @@ export type IndexSummary = {
  * 
  * @class TxLog
  * 
- * @property {IndexSummary} [summary] - The summary of the indexed transaction.
+ * @property {{[tag: string]: IndexSummary}} [summary] - The summary of the indexed transaction.
  * @property {string} [source] - The source of the indexed transaction.
  * @property {string} txid - The unique identifier of the transaction.
  * @property {number} [height] - The height of the block containing the transaction.
  * @property {number} [idx] - The index of the transaction in the block.
  */
 export class TxLog {
-  summary?: IndexSummary
+  summary?: {[tag: string]: IndexSummary}
   source?: string
   constructor(
     public txid: string,
@@ -56,7 +54,6 @@ export class TxLog {
  * @property {Block} block - The block containing the transaction.
  * @property {Txo[]} spends - The spent transaction outputs (inputs).
  * @property {Txo[]} txos - The transaction outputs.
- * @property {IndexQueue} queue - The dependency transactions to be ingested.
  * @property {IndexSummary} summary - The summary of the transaction after indexing.
  */
 export interface IndexContext {
@@ -65,6 +62,6 @@ export interface IndexContext {
   block: Block;
   spends: Txo[]; //spent transaction outputs (inputs)
   txos: Txo[]; //transaction outputs
-  queue: IndexQueue; // dependency transactions to be ingested
-  summary: IndexSummary // Summary of the transaction after indexing
+  summary: {[tag: string]: IndexSummary} // Summary of the transaction after indexing
+  store: TxoStore
 }

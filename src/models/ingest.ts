@@ -15,10 +15,7 @@ export interface Ingest {
   idx: number;
   source?: string;
   parseMode: ParseMode;
-  // isDep?: boolean;
   downloadOnly?: boolean;
-  // validateInputs?: boolean;
   outputs?: number[];
   status?: IngestStatus;
-  // reprocess?: boolean;
 }
