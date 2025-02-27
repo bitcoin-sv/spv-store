@@ -205,6 +205,7 @@ export class SPVStore {
   }
 
   async parseTx(tx: Transaction): Promise<IndexContext> {
+    await this.stores.txos!.populateTx(tx);
     return this.stores.txos!.ingest(tx, "", ParseMode.Preview)
   }
 

@@ -88,6 +88,10 @@ export class TxnStore {
       const tx = Transaction.fromBinary(txn.rawtx);
       if (txn.proof) {
         tx.merklePath = MerklePath.fromBinary(txn.proof);
+        if (!(await tx.merklePath.verify(txn.txid, this.stores.blocks!))) {
+          tx.merklePath = await this.services.txns?.fetchProof(txn.txid);
+          throw new Error("Invalid merkle proof");
+        }
       } else {
         for (const input of tx.inputs) {
           if (input.sourceTXID) {
