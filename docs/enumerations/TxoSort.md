@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / TxoSort
+[spv-store v0.1.73](../globals.md) / TxoSort
 
 # Enumeration: TxoSort
 
@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[models/search.ts:4](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/search.ts#L4)
+[models/search.ts:4](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/search.ts#L4)
 
 ***
 
@@ -24,4 +24,4 @@
 
 #### Defined in
 
-[models/search.ts:5](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/search.ts#L5)
+[models/search.ts:5](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/search.ts#L5)

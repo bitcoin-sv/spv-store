@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / File
+[spv-store v0.1.73](../globals.md) / File
 
 # Interface: File
 
@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[indexers/insc.ts:17](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/insc.ts#L17)
+[indexers/insc.ts:17](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/insc.ts#L17)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[indexers/insc.ts:14](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/insc.ts#L14)
+[indexers/insc.ts:14](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/insc.ts#L14)
 
 ***
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[indexers/insc.ts:15](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/insc.ts#L15)
+[indexers/insc.ts:15](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/insc.ts#L15)
 
 ***
 
@@ -44,4 +44,4 @@
 
 #### Defined in
 
-[indexers/insc.ts:16](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/insc.ts#L16)
+[indexers/insc.ts:16](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/insc.ts#L16)

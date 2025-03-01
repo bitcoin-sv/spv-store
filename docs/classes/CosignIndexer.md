@@ -2,9 +2,9 @@
 
 ***
 
-[spv-store v0.1.73](../globals.md) / LockIndexer
+[spv-store v0.1.73](../globals.md) / CosignIndexer
 
-# Class: LockIndexer
+# Class: CosignIndexer
 
 Abstract class representing an Indexer.
 
@@ -14,35 +14,41 @@ Abstract class representing an Indexer.
 
 ## Constructors
 
-### new LockIndexer()
+### new CosignIndexer()
 
-> **new LockIndexer**(`owners`, `network`, `syncHistory`): [`LockIndexer`](LockIndexer.md)
+> **new CosignIndexer**(`owners`, `network`?): [`CosignIndexer`](CosignIndexer.md)
+
+Creates an instance of the Indexer.
 
 #### Parameters
 
 • **owners**: `Set`\<`string`\> = `...`
 
-• **network**: [`Network`](../type-aliases/Network.md) = `"mainnet"`
+A set of owners that this indexer is interested in. 
+                An owner can be an address or any other data the indexer 
+                wants to use to identify which transactions to include in the index.
 
-• **syncHistory**: `boolean` = `false`
+• **network?**: [`Network`](../type-aliases/Network.md) = `"mainnet"`
+
+The network the indexer is operating on. Defaults to "mainnet".
 
 #### Returns
 
-[`LockIndexer`](LockIndexer.md)
+[`CosignIndexer`](CosignIndexer.md)
 
-#### Overrides
+#### Inherited from
 
 [`Indexer`](Indexer.md).[`constructor`](Indexer.md#constructors)
 
 #### Defined in
 
-[indexers/lock.ts:23](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/lock.ts#L23)
+[models/indexer.ts:70](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L70)
 
 ## Properties
 
 ### name
 
-> **name**: `string` = `"Locks"`
+> **name**: `string` = `"Cosign"`
 
 Human readable name for this indexer.
 
@@ -52,7 +58,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[indexers/lock.ts:21](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/lock.ts#L21)
+[indexers/cosign.ts:15](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/cosign.ts#L15)
 
 ***
 
@@ -68,7 +74,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[indexers/lock.ts:25](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/lock.ts#L25)
+[models/indexer.ts:72](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L72)
 
 ***
 
@@ -86,23 +92,13 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[indexers/lock.ts:24](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/lock.ts#L24)
-
-***
-
-### syncHistory
-
-> **syncHistory**: `boolean` = `false`
-
-#### Defined in
-
-[indexers/lock.ts:26](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/lock.ts#L26)
+[models/indexer.ts:71](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L71)
 
 ***
 
 ### tag
 
-> **tag**: `string` = `"lock"`
+> **tag**: `string` = `"cosign"`
 
 Unique identifier for this indexer.
 
@@ -112,7 +108,7 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[indexers/lock.ts:20](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/lock.ts#L20)
+[indexers/cosign.ts:14](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/cosign.ts#L14)
 
 ## Methods
 
@@ -145,7 +141,7 @@ A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[indexers/lock.ts:31](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/lock.ts#L31)
+[indexers/cosign.ts:17](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/cosign.ts#L17)
 
 ***
 
@@ -179,7 +175,7 @@ A promise that resolves when the indexer is resolved.
 
 ### summerize()
 
-> **summerize**(`ctx`): `Promise`\<`undefined` \| [`IndexSummary`](../type-aliases/IndexSummary.md)\>
+> **summerize**(`ctx`, `parseMode`): `Promise`\<`undefined` \| [`IndexSummary`](../type-aliases/IndexSummary.md)\>
 
 Pre-save hook that evaluates the index data for the entire transaction before it is persisted.
 
@@ -189,25 +185,27 @@ Pre-save hook that evaluates the index data for the entire transaction before it
 
 The context of the index operation.
 
+• **parseMode**: [`ParseMode`](../enumerations/ParseMode.md) = `ParseMode.Persist`
+
 #### Returns
 
 `Promise`\<`undefined` \| [`IndexSummary`](../type-aliases/IndexSummary.md)\>
 
 A promise that resolves when the pre-save evaluation is complete.
 
-#### Overrides
+#### Inherited from
 
 [`Indexer`](Indexer.md).[`summerize`](Indexer.md#summerize)
 
 #### Defined in
 
-[indexers/lock.ts:63](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/lock.ts#L63)
+[models/indexer.ts:94](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L94)
 
 ***
 
 ### sync()
 
-> **sync**(`txoStore`, `ingestQueue`, `parseMode`): `Promise`\<`number`\>
+> **sync**(`txoStore`, `ingestQueue`, `parseMode`?): `Promise`\<`number`\>
 
 Synchronize txo data for indexer from a remote source.
 
@@ -221,7 +219,7 @@ The store containing transaction outputs.
 
 A queue of transactions to be ingested, keyed by transaction ID.
 
-• **parseMode**: [`ParseMode`](../enumerations/ParseMode.md) = `ParseMode.PersistSummary`
+• **parseMode?**: [`ParseMode`](../enumerations/ParseMode.md)
 
 #### Returns
 
@@ -229,10 +227,10 @@ A queue of transactions to be ingested, keyed by transaction ID.
 
 A promise that resolves when the synchronization is complete.
 
-#### Overrides
+#### Inherited from
 
 [`Indexer`](Indexer.md).[`sync`](Indexer.md#sync)
 
 #### Defined in
 
-[indexers/lock.ts:89](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/lock.ts#L89)
+[models/indexer.ts:105](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L105)

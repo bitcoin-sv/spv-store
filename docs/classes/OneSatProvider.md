@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / OneSatProvider
+[spv-store v0.1.73](../globals.md) / OneSatProvider
 
 # Class: OneSatProvider
 
@@ -31,7 +31,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:35](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L35)
+[providers/1sat-provider.ts:41](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L41)
 
 ## Properties
 
@@ -45,7 +45,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:37](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L37)
+[providers/1sat-provider.ts:43](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L43)
 
 ***
 
@@ -55,7 +55,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:33](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L33)
+[providers/1sat-provider.ts:39](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L39)
 
 ***
 
@@ -65,7 +65,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:36](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L36)
+[providers/1sat-provider.ts:42](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L42)
 
 ## Methods
 
@@ -87,13 +87,13 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:52](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L52)
+[providers/1sat-provider.ts:58](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L58)
 
 ***
 
-### fetchProof()
+### fetchBeef()
 
-> **fetchProof**(`txid`): `Promise`\<`undefined` \| `number`[]\>
+> **fetchBeef**(`txid`): `Promise`\<`Transaction`\>
 
 #### Parameters
 
@@ -101,7 +101,29 @@
 
 #### Returns
 
-`Promise`\<`undefined` \| `number`[]\>
+`Promise`\<`Transaction`\>
+
+#### Implementation of
+
+[`TxnService`](../interfaces/TxnService.md).[`fetchBeef`](../interfaces/TxnService.md#fetchbeef)
+
+#### Defined in
+
+[providers/1sat-provider.ts:101](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L101)
+
+***
+
+### fetchProof()
+
+> **fetchProof**(`txid`): `Promise`\<`undefined` \| `MerklePath`\>
+
+#### Parameters
+
+• **txid**: `string`
+
+#### Returns
+
+`Promise`\<`undefined` \| `MerklePath`\>
 
 #### Implementation of
 
@@ -109,29 +131,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:111](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L111)
-
-***
-
-### fetchTxn()
-
-> **fetchTxn**(`txid`): `Promise`\<[`Txn`](../interfaces/Txn.md)\>
-
-#### Parameters
-
-• **txid**: `string`
-
-#### Returns
-
-`Promise`\<[`Txn`](../interfaces/Txn.md)\>
-
-#### Implementation of
-
-[`TxnService`](../interfaces/TxnService.md).[`fetchTxn`](../interfaces/TxnService.md#fetchtxn)
-
-#### Defined in
-
-[providers/1sat-provider.ts:95](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L95)
+[providers/1sat-provider.ts:111](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L111)
 
 ***
 
@@ -155,7 +155,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:119](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L119)
+[providers/1sat-provider.ts:119](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L119)
 
 ***
 
@@ -173,7 +173,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:162](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L162)
+[providers/1sat-provider.ts:172](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L172)
 
 ***
 
@@ -191,7 +191,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:157](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L157)
+[providers/1sat-provider.ts:167](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L167)
 
 ***
 
@@ -209,7 +209,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:126](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L126)
+[providers/1sat-provider.ts:129](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L129)
 
 ***
 
@@ -219,7 +219,7 @@
 
 #### Parameters
 
-• **outpoint**: [`Outpoint`](Outpoint.md)
+• **outpoint**: `string`
 
 #### Returns
 
@@ -227,7 +227,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:190](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L190)
+[providers/1sat-provider.ts:192](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L192)
 
 ***
 
@@ -245,7 +245,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:169](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L169)
+[providers/1sat-provider.ts:179](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L179)
 
 ***
 
@@ -263,7 +263,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:139](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L139)
+[providers/1sat-provider.ts:149](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L149)
 
 ***
 
@@ -281,7 +281,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:146](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L146)
+[providers/1sat-provider.ts:156](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L156)
 
 ***
 
@@ -303,7 +303,51 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:41](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L41)
+[providers/1sat-provider.ts:47](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L47)
+
+***
+
+### search()
+
+> **search**(`q`): `Promise`\<`Ordinal`[]\>
+
+#### Parameters
+
+• **q**: [`Query`](../interfaces/Query.md)
+
+#### Returns
+
+`Promise`\<`Ordinal`[]\>
+
+#### Implementation of
+
+[`AccountService`](../interfaces/AccountService.md).[`search`](../interfaces/AccountService.md#search)
+
+#### Defined in
+
+[providers/1sat-provider.ts:255](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L255)
+
+***
+
+### spends()
+
+> **spends**(`outpoints`): `Promise`\<`string`[]\>
+
+#### Parameters
+
+• **outpoints**: `string`[]
+
+#### Returns
+
+`Promise`\<`string`[]\>
+
+#### Implementation of
+
+[`AccountService`](../interfaces/AccountService.md).[`spends`](../interfaces/AccountService.md#spends)
+
+#### Defined in
+
+[providers/1sat-provider.ts:244](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L244)
 
 ***
 
@@ -325,7 +369,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:80](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L80)
+[providers/1sat-provider.ts:86](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L86)
 
 ***
 
@@ -347,7 +391,7 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:206](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L206)
+[providers/1sat-provider.ts:205](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L205)
 
 ***
 
@@ -365,17 +409,21 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:202](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L202)
+[providers/1sat-provider.ts:201](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L201)
 
 ***
 
 ### syncTxLogs()
 
-> **syncTxLogs**(`from`): `Promise`\<[`TxSyncLog`](../interfaces/TxSyncLog.md)[]\>
+> **syncTxLogs**(`from`, `limit`, `reverse`): `Promise`\<[`TxSyncLog`](../interfaces/TxSyncLog.md)[]\>
 
 #### Parameters
 
 • **from**: `number` = `0`
+
+• **limit**: `number` = `0`
+
+• **reverse**: `boolean` = `false`
 
 #### Returns
 
@@ -387,7 +435,27 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:231](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L231)
+[providers/1sat-provider.ts:230](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L230)
+
+***
+
+### txosByAddress()
+
+> **txosByAddress**(`address`, `unspent`): `Promise`\<`Ordinal`[]\>
+
+#### Parameters
+
+• **address**: `string`
+
+• **unspent**: `boolean` = `true`
+
+#### Returns
+
+`Promise`\<`Ordinal`[]\>
+
+#### Defined in
+
+[providers/1sat-provider.ts:142](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L142)
 
 ***
 
@@ -405,13 +473,17 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:224](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L224)
+[providers/1sat-provider.ts:223](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L223)
 
 ***
 
 ### utxos()
 
-> **utxos**(): `Promise`\<`Ordinal`[]\>
+> **utxos**(`refresh`): `Promise`\<`Ordinal`[]\>
+
+#### Parameters
+
+• **refresh**: `boolean` = `false`
 
 #### Returns
 
@@ -423,4 +495,4 @@
 
 #### Defined in
 
-[providers/1sat-provider.ts:132](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/providers/1sat-provider.ts#L132)
+[providers/1sat-provider.ts:135](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/providers/1sat-provider.ts#L135)

@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / BlockStore
+[spv-store v0.1.73](../globals.md) / BlockStore
 
 # Class: BlockStore
 
@@ -30,7 +30,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:12](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/block-store.ts#L12)
+[stores/block-store.ts:12](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/block-store.ts#L12)
 
 ## Properties
 
@@ -40,7 +40,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:15](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/block-store.ts#L15)
+[stores/block-store.ts:15](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/block-store.ts#L15)
 
 ***
 
@@ -50,7 +50,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:14](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/block-store.ts#L14)
+[stores/block-store.ts:14](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/block-store.ts#L14)
 
 ***
 
@@ -60,9 +60,27 @@
 
 #### Defined in
 
-[stores/block-store.ts:13](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/block-store.ts#L13)
+[stores/block-store.ts:13](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/block-store.ts#L13)
 
 ## Methods
+
+### currentHeight()
+
+> **currentHeight**(): `Promise`\<`number`\>
+
+#### Returns
+
+`Promise`\<`number`\>
+
+#### Implementation of
+
+`ChainTracker.currentHeight`
+
+#### Defined in
+
+[stores/block-store.ts:102](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/block-store.ts#L102)
+
+***
 
 ### destroy()
 
@@ -74,7 +92,7 @@
 
 #### Defined in
 
-[stores/block-store.ts:18](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/block-store.ts#L18)
+[stores/block-store.ts:18](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/block-store.ts#L18)
 
 ***
 
@@ -92,7 +110,7 @@ A promise that resolves to the current chaintip block header, or undefined if no
 
 #### Defined in
 
-[stores/block-store.ts:96](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/block-store.ts#L96)
+[stores/block-store.ts:98](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/block-store.ts#L98)
 
 ***
 
@@ -124,7 +142,7 @@ A promise that resolves to `true` if the root is valid for the given height, oth
 
 #### Defined in
 
-[stores/block-store.ts:86](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/block-store.ts#L86)
+[stores/block-store.ts:86](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/block-store.ts#L86)
 
 ***
 
@@ -148,4 +166,4 @@ A promise that resolves when the synchronization is complete.
 
 #### Defined in
 
-[stores/block-store.ts:30](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/block-store.ts#L30)
+[stores/block-store.ts:30](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/block-store.ts#L30)

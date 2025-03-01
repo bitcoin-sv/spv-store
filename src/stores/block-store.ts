@@ -38,10 +38,10 @@ export class BlockStore implements ChainTracker {
   }
 
   private async doSync(returnOnChaintip = true): Promise<void> {
-    let lastHeight = 1;
+    let lastHeight = 0;
     let syncedBlock = await this.storage.getSynced();
     if (syncedBlock) {
-      lastHeight = syncedBlock.height > 5 ? syncedBlock.height - 5 : 1;
+      lastHeight = syncedBlock.height > 5 ? syncedBlock.height - 5 : 0;
     }
     while (!this.stopSync) {
       try {
@@ -85,7 +85,9 @@ export class BlockStore implements ChainTracker {
    */
   async isValidRootForHeight(root: string, height: number): Promise<boolean> {
     const block = await this.storage.getByHeight(height);
-    return block?.merkleroot == root;
+    const valid = block?.merkleRoot == root;
+    console.log('valid:', valid, block?.merkleRoot, root);
+    return valid;
   }
 
   /**

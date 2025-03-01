@@ -220,7 +220,7 @@ export class TxoStorageIDB implements TxoStorage {
       "status",
       IDBKeyRange.bound(
         [IngestStatus.QUEUED],
-        [IngestStatus.DOWNLOADED, Number.MAX_SAFE_INTEGER]
+        [IngestStatus.QUEUED, Number.MAX_SAFE_INTEGER]
       )
     );
     return queueLength;

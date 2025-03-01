@@ -1,16 +1,16 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / TxnService
+[spv-store v0.1.73](../globals.md) / TxnService
 
 # Interface: TxnService
 
 ## Methods
 
-### fetchProof()
+### fetchBeef()
 
-> **fetchProof**(`txid`): `Promise`\<`undefined` \| `number`[]\>
+> **fetchBeef**(`txid`): `Promise`\<`Transaction`\>
 
 #### Parameters
 
@@ -18,17 +18,17 @@
 
 #### Returns
 
-`Promise`\<`undefined` \| `number`[]\>
+`Promise`\<`Transaction`\>
 
 #### Defined in
 
-[services/txn-service.ts:6](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/txn-service.ts#L6)
+[services/txn-service.ts:5](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/txn-service.ts#L5)
 
 ***
 
-### fetchTxn()
+### fetchProof()
 
-> **fetchTxn**(`txid`): `Promise`\<[`Txn`](Txn.md)\>
+> **fetchProof**(`txid`): `Promise`\<`undefined` \| `MerklePath`\>
 
 #### Parameters
 
@@ -36,8 +36,8 @@
 
 #### Returns
 
-`Promise`\<[`Txn`](Txn.md)\>
+`Promise`\<`undefined` \| `MerklePath`\>
 
 #### Defined in
 
-[services/txn-service.ts:4](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/txn-service.ts#L4)
+[services/txn-service.ts:6](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/txn-service.ts#L6)

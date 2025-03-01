@@ -88,8 +88,15 @@ export class TxnStore {
       const tx = Transaction.fromBinary(txn.rawtx);
       if (txn.proof) {
         tx.merklePath = MerklePath.fromBinary(txn.proof);
-        if (!(await tx.merklePath.verify(txn.txid, this.stores.blocks!))) {
-          tx.merklePath = await this.services.txns?.fetchProof(txn.txid);
+        if ((await tx.merklePath.verify(txn.txid, this.stores.blocks!))) {
+          return tx
+        }
+        tx.merklePath = await this.services.txns?.fetchProof(txn.txid);
+      }
+      if (tx.merklePath) {
+        if ((await tx.merklePath.verify(txn.txid, this.stores.blocks!))) {
+          return tx
+        } else {
           throw new Error("Invalid merkle proof");
         }
       } else {
@@ -111,7 +118,9 @@ export class TxnStore {
       status: TxnStatus.BROADCASTED,
     };
     if (tx.merklePath) {
-      if (!(await tx.merklePath.verify(txn.txid, this.stores.blocks!))) {
+      const verified = await tx.merklePath.verify(txn.txid, this.stores.blocks!);
+      console.log("Verified", verified);
+      if (!verified) {
         throw new Error("Invalid merkle proof");
       }
       txn.proof = tx.merklePath!.toBinary();

@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / IndexSummary
+[spv-store v0.1.73](../globals.md) / IndexSummary
 
 # Type Alias: IndexSummary
 
@@ -10,10 +10,24 @@
 
 Represents a summary of indices with associated metadata.
 
-## Index Signature
+## Type declaration
 
- \[`tag`: `string`\]: `object`
+### amount?
+
+> `optional` **amount**: `number`
+
+### data?
+
+> `optional` **data**: `any`
+
+### icon?
+
+> `optional` **icon**: `string`
+
+### id?
+
+> `optional` **id**: `string`
 
 ## Defined in
 
-[models/index-context.ts:17](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/index-context.ts#L17)
+[models/index-context.ts:17](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/index-context.ts#L17)

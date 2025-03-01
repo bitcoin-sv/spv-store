@@ -60,9 +60,21 @@ export class TxoStore {
 
 
   async populateTx(tx: Transaction): Promise<void> {
-    for (const input of tx.inputs) {
-      if (!input.sourceTransaction?.merklePath) {
-        input.sourceTransaction = await this.loadTx(input.sourceTXID!);;
+    const txid = tx.id("hex");
+    if(!tx.merklePath || (await tx.merklePath.verify(txid, this.stores.blocks!))) {
+      tx.merklePath = await this.services.txns!.fetchProof(tx.id("hex"));
+    }
+    if (tx.merklePath) {
+      if ((await tx.merklePath.verify(txid, this.stores.blocks!))) {
+        return;
+      } else {
+        throw new Error("Invalid merkle proof");
+      }
+    } else {
+      for (const input of tx.inputs) {
+        if (input.sourceTXID) {
+          input.sourceTransaction = await this.loadTx(input.sourceTXID)
+        }
       }
     }
   }
@@ -221,7 +233,7 @@ export class TxoStore {
       parseMode,
       source: 'dependency',
       outputs: [outpoint.vout],
-      status: IngestStatus.DOWNLOADED,
+      status: IngestStatus.QUEUED,
     }])
   }
 
@@ -248,63 +260,63 @@ export class TxoStore {
 
     await this.updateQueueStats();
     this.syncRunning = Promise.all([
-      this.processDownloads(),
+      // this.processDownloads(),
       this.processIngests(),
       this.processConfirms(),
       this.processImmutable(),
     ]).then(() => { });
   }
 
-  async processDownloads(): Promise<void> {
-    try {
-      const ingests = await this.storage.getIngests(IngestStatus.QUEUED, 25);
-      if (ingests.length) {
-        const dels: string[] = []
-        const updates: Ingest[] = []
-        for (const ingest of ingests) {
-          try {
-            await this.stores.txns!.loadTx(ingest.txid);
-            if (ingest.downloadOnly) {
-              dels.push(ingest.txid)
-            } else {
-              ingest.status = IngestStatus.DOWNLOADED;
-              updates.push(ingest)
-            }
-          } catch (e: unknown) {
-            if (e == NotFoundError) {
-              console.error("NOT FOUND!!!!", ingest.txid)
-              ingest.status = IngestStatus.FAILED;
-              dels.push(ingest.txid)
-              // updates.push(ingest)
-            } else {
-              console.error("Failed to download tx", ingest.txid, e);
-            }
-          }
-        }
-        if (dels.length) {
-          await this.storage.delIngests(dels)
-        }
-        if (updates.length) {
-          await this.storage.putIngests(updates);
-        }
-        await this.updateQueueStats();
-      } else {
-        await new Promise((r) => setTimeout(r, 1000));
-      }
-    } catch (e) {
-      console.error("Failed to ingest txs", e);
-      await new Promise((r) => setTimeout(r, 15000));
-    }
-    if (this.stopSync) {
-      return;
-    }
-    return this.processDownloads();
-  }
+  // async processDownloads(): Promise<void> {
+  //   try {
+  //     const ingests = await this.storage.getIngests(IngestStatus.QUEUED, 25);
+  //     if (ingests.length) {
+  //       const dels: string[] = []
+  //       const updates: Ingest[] = []
+  //       for (const ingest of ingests) {
+  //         try {
+  //           await this.stores.txns!.loadTx(ingest.txid);
+  //           if (ingest.downloadOnly) {
+  //             dels.push(ingest.txid)
+  //           } else {
+  //             ingest.status = IngestStatus.DOWNLOADED;
+  //             updates.push(ingest)
+  //           }
+  //         } catch (e: unknown) {
+  //           if (e == NotFoundError) {
+  //             console.error("NOT FOUND!!!!", ingest.txid)
+  //             ingest.status = IngestStatus.FAILED;
+  //             dels.push(ingest.txid)
+  //             // updates.push(ingest)
+  //           } else {
+  //             console.error("Failed to download tx", ingest.txid, e);
+  //           }
+  //         }
+  //       }
+  //       if (dels.length) {
+  //         await this.storage.delIngests(dels)
+  //       }
+  //       if (updates.length) {
+  //         await this.storage.putIngests(updates);
+  //       }
+  //       await this.updateQueueStats();
+  //     } else {
+  //       await new Promise((r) => setTimeout(r, 1000));
+  //     }
+  //   } catch (e) {
+  //     console.error("Failed to ingest txs", e);
+  //     await new Promise((r) => setTimeout(r, 15000));
+  //   }
+  //   if (this.stopSync) {
+  //     return;
+  //   }
+  //   return this.processDownloads();
+  // }
 
   async processIngests(): Promise<void> {
     try {
       const ingests = await this.storage.getIngests(
-        IngestStatus.DOWNLOADED,
+        IngestStatus.QUEUED,
         25,
       );
       if (ingests.length) {

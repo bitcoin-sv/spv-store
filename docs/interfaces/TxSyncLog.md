@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / TxSyncLog
+[spv-store v0.1.73](../globals.md) / TxSyncLog
 
 # Interface: TxSyncLog
 
@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[services/account-service.ts:5](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L5)
+[services/account-service.ts:5](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L5)
 
 ***
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[services/account-service.ts:6](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L6)
+[services/account-service.ts:6](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L6)
 
 ***
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[services/account-service.ts:7](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L7)
+[services/account-service.ts:7](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L7)
 
 ***
 
@@ -44,7 +44,7 @@
 
 #### Defined in
 
-[services/account-service.ts:8](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L8)
+[services/account-service.ts:8](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L8)
 
 ***
 
@@ -54,4 +54,4 @@
 
 #### Defined in
 
-[services/account-service.ts:4](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L4)
+[services/account-service.ts:4](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L4)

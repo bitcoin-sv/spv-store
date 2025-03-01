@@ -6,7 +6,7 @@ export interface BlockHeader {
   prevHash: string;
   time: number;
   version: number;
-  merkleroot: string;
+  merkleRoot: string;
   bits: string;
   nonce: number;
 }
@@ -24,7 +24,7 @@ export function writeBlockHeader(writer: Utils.Writer, header: BlockHeader) {
   writer.write(Utils.toArray(header.hash, "hex"));
   writer.writeUInt32LE(header.version);
   writer.write(Utils.toArray(header.prevHash, "hex").reverse())
-  writer.write(Utils.toArray(header.merkleroot, "hex").reverse());
+  writer.write(Utils.toArray(header.merkleRoot, "hex").reverse());
   writer.writeUInt32LE(header.time);
   writer.write(Utils.toArray(header.bits, "hex"));
   writer.writeUInt32LE(header.nonce);
@@ -36,7 +36,7 @@ export function blockHeaderFromReader(reader: Utils.Reader): BlockHeader {
     hash: Utils.toHex(reader.read(32)),
     version: reader.readUInt32LE(),
     prevHash: Utils.toHex(reader.read(32).reverse()),
-    merkleroot: Utils.toHex(reader.read(32).reverse()),
+    merkleRoot: Utils.toHex(reader.read(32).reverse()),
     time: reader.readUInt32LE(),
     bits: Utils.toHex(reader.read(4)),
     nonce: reader.readUInt32LE(),

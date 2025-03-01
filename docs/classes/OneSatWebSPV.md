@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / OneSatWebSPV
+[spv-store v0.1.73](../globals.md) / OneSatWebSPV
 
 # Class: OneSatWebSPV
 
@@ -22,7 +22,21 @@
 
 #### Defined in
 
-[pre-config/1sat-web.ts:17](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/pre-config/1sat-web.ts#L17)
+[pre-config/1sat-web.ts:17](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/pre-config/1sat-web.ts#L17)
+
+***
+
+### parseMode?
+
+> `optional` **parseMode**: [`ParseMode`](../enumerations/ParseMode.md)
+
+#### Inherited from
+
+[`SPVStore`](SPVStore.md).[`parseMode`](SPVStore.md#parsemode)
+
+#### Defined in
+
+[spv-store.ts:53](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L53)
 
 ***
 
@@ -36,7 +50,7 @@
 
 #### Defined in
 
-[pre-config/1sat-web.ts:15](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/pre-config/1sat-web.ts#L15)
+[pre-config/1sat-web.ts:15](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/pre-config/1sat-web.ts#L15)
 
 ***
 
@@ -50,7 +64,7 @@
 
 #### Defined in
 
-[pre-config/1sat-web.ts:16](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/pre-config/1sat-web.ts#L16)
+[pre-config/1sat-web.ts:16](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/pre-config/1sat-web.ts#L16)
 
 ***
 
@@ -64,21 +78,33 @@
 
 #### Defined in
 
-[spv-store.ts:52](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L52)
+[spv-store.ts:54](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L54)
+
+***
+
+### syncTags?
+
+> `optional` **syncTags**: `Set`\<`string`\>
+
+#### Inherited from
+
+[`SPVStore`](SPVStore.md).[`syncTags`](SPVStore.md#synctags)
+
+#### Defined in
+
+[spv-store.ts:52](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L52)
 
 ## Methods
 
 ### broadcast()
 
-> **broadcast**(`tx`, `source`, `isBeefy`): `Promise`\<`BroadcastResponse` \| `BroadcastFailure`\>
+> **broadcast**(`tx`, `source`): `Promise`\<`BroadcastResponse` \| `BroadcastFailure`\>
 
 #### Parameters
 
 • **tx**: `Transaction`
 
 • **source**: `string` = `""`
-
-• **isBeefy**: `boolean` = `false`
 
 #### Returns
 
@@ -90,7 +116,7 @@
 
 #### Defined in
 
-[spv-store.ts:72](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L72)
+[spv-store.ts:74](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L74)
 
 ***
 
@@ -108,7 +134,7 @@
 
 #### Defined in
 
-[spv-store.ts:57](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L57)
+[spv-store.ts:59](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L59)
 
 ***
 
@@ -126,7 +152,7 @@
 
 #### Defined in
 
-[spv-store.ts:239](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L239)
+[spv-store.ts:270](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L270)
 
 ***
 
@@ -148,7 +174,7 @@
 
 #### Defined in
 
-[spv-store.ts:193](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L193)
+[spv-store.ts:224](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L224)
 
 ***
 
@@ -170,7 +196,7 @@
 
 #### Defined in
 
-[spv-store.ts:185](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L185)
+[spv-store.ts:216](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L216)
 
 ***
 
@@ -188,7 +214,7 @@
 
 #### Defined in
 
-[spv-store.ts:209](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L209)
+[spv-store.ts:240](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L240)
 
 ***
 
@@ -206,7 +232,7 @@
 
 #### Defined in
 
-[spv-store.ts:189](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L189)
+[spv-store.ts:220](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L220)
 
 ***
 
@@ -228,7 +254,7 @@
 
 #### Defined in
 
-[spv-store.ts:173](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L173)
+[spv-store.ts:203](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L203)
 
 ***
 
@@ -246,19 +272,17 @@
 
 #### Defined in
 
-[spv-store.ts:181](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L181)
+[spv-store.ts:212](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L212)
 
 ***
 
 ### getTx()
 
-> **getTx**(`txid`, `fromRemote`): `Promise`\<`undefined` \| `Transaction`\>
+> **getTx**(`txid`): `Promise`\<`undefined` \| `Transaction`\>
 
 #### Parameters
 
 • **txid**: `string`
-
-• **fromRemote**: `boolean` = `false`
 
 #### Returns
 
@@ -270,7 +294,7 @@
 
 #### Defined in
 
-[spv-store.ts:166](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L166)
+[spv-store.ts:197](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L197)
 
 ***
 
@@ -292,7 +316,7 @@
 
 #### Defined in
 
-[spv-store.ts:158](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L158)
+[spv-store.ts:189](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L189)
 
 ***
 
@@ -314,7 +338,7 @@
 
 #### Defined in
 
-[spv-store.ts:162](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L162)
+[spv-store.ts:193](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L193)
 
 ***
 
@@ -336,7 +360,25 @@
 
 #### Defined in
 
-[spv-store.ts:177](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L177)
+[spv-store.ts:207](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L207)
+
+***
+
+### refreshSpends()
+
+> **refreshSpends**(): `Promise`\<`void`\>
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Inherited from
+
+[`SPVStore`](SPVStore.md).[`refreshSpends`](SPVStore.md#refreshspends)
+
+#### Defined in
+
+[spv-store.ts:115](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L115)
 
 ***
 
@@ -358,7 +400,7 @@
 
 #### Defined in
 
-[spv-store.ts:243](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L243)
+[spv-store.ts:274](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L274)
 
 ***
 
@@ -382,7 +424,7 @@
 
 #### Defined in
 
-[spv-store.ts:222](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L222)
+[spv-store.ts:253](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L253)
 
 ***
 
@@ -404,7 +446,7 @@
 
 #### Defined in
 
-[spv-store.ts:213](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L213)
+[spv-store.ts:244](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L244)
 
 ***
 
@@ -432,13 +474,19 @@
 
 #### Defined in
 
-[spv-store.ts:149](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L149)
+[spv-store.ts:180](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L180)
 
 ***
 
 ### sync()
 
-> **sync**(): `Promise`\<`void`\>
+> **sync**(`resync`, `parseMode`): `Promise`\<`void`\>
+
+#### Parameters
+
+• **resync**: `boolean` = `false`
+
+• **parseMode**: `undefined` \| [`ParseMode`](../enumerations/ParseMode.md) = `...`
 
 #### Returns
 
@@ -450,13 +498,13 @@
 
 #### Defined in
 
-[spv-store.ts:94](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/spv-store.ts#L94)
+[spv-store.ts:119](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/spv-store.ts#L119)
 
 ***
 
 ### init()
 
-> `static` **init**(`accountId`, `indexers`, `owners`, `startSync`, `network`): `Promise`\<[`SPVStore`](SPVStore.md)\>
+> `static` **init**(`accountId`, `indexers`, `owners`, `network`, `startSync`, `syncTags`?, `parseMode`?): `Promise`\<[`SPVStore`](SPVStore.md)\>
 
 #### Parameters
 
@@ -466,9 +514,13 @@
 
 • **owners**: `Set`\<`string`\> = `...`
 
+• **network**: [`Network`](../type-aliases/Network.md) = `"mainnet"`
+
 • **startSync**: `boolean` = `false`
 
-• **network**: [`Network`](../type-aliases/Network.md) = `"mainnet"`
+• **syncTags?**: `Set`\<`string`\>
+
+• **parseMode?**: [`ParseMode`](../enumerations/ParseMode.md)
 
 #### Returns
 
@@ -476,4 +528,4 @@
 
 #### Defined in
 
-[pre-config/1sat-web.ts:23](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/pre-config/1sat-web.ts#L23)
+[pre-config/1sat-web.ts:24](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/pre-config/1sat-web.ts#L24)

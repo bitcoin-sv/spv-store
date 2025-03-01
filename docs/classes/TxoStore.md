@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / TxoStore
+[spv-store v0.1.73](../globals.md) / TxoStore
 
 # Class: TxoStore
 
@@ -32,7 +32,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:17](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L17)
+[stores/txo-store.ts:18](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L18)
 
 ## Properties
 
@@ -42,7 +42,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:23](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L23)
+[stores/txo-store.ts:24](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L24)
 
 ***
 
@@ -52,7 +52,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:21](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L21)
+[stores/txo-store.ts:22](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L22)
 
 ***
 
@@ -62,7 +62,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:22](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L22)
+[stores/txo-store.ts:23](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L23)
 
 ***
 
@@ -72,7 +72,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:19](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L19)
+[stores/txo-store.ts:20](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L20)
 
 ***
 
@@ -82,7 +82,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:18](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L18)
+[stores/txo-store.ts:19](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L19)
 
 ***
 
@@ -92,7 +92,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:20](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L20)
+[stores/txo-store.ts:21](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L21)
 
 ## Methods
 
@@ -110,7 +110,7 @@
 
 #### Defined in
 
-[stores/txo-store.ts:413](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L413)
+[stores/txo-store.ts:492](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L492)
 
 ***
 
@@ -129,13 +129,13 @@ A promise that resolves when the instance is destroyed.
 
 #### Defined in
 
-[stores/txo-store.ts:33](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L33)
+[stores/txo-store.ts:33](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L33)
 
 ***
 
 ### ingest()
 
-> **ingest**(`tx`, `source`, `parseMode`, `resolveParents`, `outputs`?): `Promise`\<[`IndexContext`](../interfaces/IndexContext.md)\>
+> **ingest**(`tx`, `source`, `parseMode`, `outputs`?): `Promise`\<[`IndexContext`](../interfaces/IndexContext.md)\>
 
 Ingests a new transaction into the store, building an index context for it.
 
@@ -153,11 +153,7 @@ An optional string indicating the source of the transaction.
 
 The mode to parse the transaction, default is `ParseMode.Persist`.
 
-• **resolveParents**: `boolean` = `false`
-
-Whether to resolve parent transactions, default is `false`.
-
-• **outputs?**: `number`[]
+• **outputs?**: `Set`\<`number`\>
 
 Optional array of output indices to process.
 
@@ -173,7 +169,43 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:68](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L68)
+[stores/txo-store.ts:93](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L93)
+
+***
+
+### loadTx()
+
+> **loadTx**(`txid`): `Promise`\<`Transaction`\>
+
+#### Parameters
+
+• **txid**: `string`
+
+#### Returns
+
+`Promise`\<`Transaction`\>
+
+#### Defined in
+
+[stores/txo-store.ts:57](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L57)
+
+***
+
+### populateTx()
+
+> **populateTx**(`tx`): `Promise`\<`void`\>
+
+#### Parameters
+
+• **tx**: `Transaction`
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Defined in
+
+[stores/txo-store.ts:62](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L62)
 
 ***
 
@@ -187,7 +219,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:298](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L298)
+[stores/txo-store.ts:363](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L363)
 
 ***
 
@@ -201,7 +233,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:223](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L223)
+[stores/txo-store.ts:270](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L270)
 
 ***
 
@@ -215,7 +247,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:336](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L336)
+[stores/txo-store.ts:401](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L401)
 
 ***
 
@@ -229,7 +261,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:262](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L262)
+[stores/txo-store.ts:316](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L316)
 
 ***
 
@@ -243,7 +275,7 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:211](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L211)
+[stores/txo-store.ts:258](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L258)
 
 ***
 
@@ -261,7 +293,41 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:206](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L206)
+[stores/txo-store.ts:253](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L253)
+
+***
+
+### queueDependency()
+
+> **queueDependency**(`outpoint`, `parseMode`): `Promise`\<`void`\>
+
+#### Parameters
+
+• **outpoint**: [`Outpoint`](Outpoint.md)
+
+• **parseMode**: [`ParseMode`](../enumerations/ParseMode.md) = `ParseMode.Dependency`
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Defined in
+
+[stores/txo-store.ts:222](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L222)
+
+***
+
+### refreshSpends()
+
+> **refreshSpends**(): `Promise`\<`void`\>
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Defined in
+
+[stores/txo-store.ts:520](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L520)
 
 ***
 
@@ -275,7 +341,27 @@ Will throw an error if an input is missing its source transaction.
 
 #### Defined in
 
-[stores/txo-store.ts:433](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L433)
+[stores/txo-store.ts:512](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L512)
+
+***
+
+### resolveOutput()
+
+> **resolveOutput**(`outpoint`, `parseMode`): `Promise`\<[`Txo`](Txo.md)\>
+
+#### Parameters
+
+• **outpoint**: [`Outpoint`](Outpoint.md)
+
+• **parseMode**: [`ParseMode`](../enumerations/ParseMode.md) = `ParseMode.Dependency`
+
+#### Returns
+
+`Promise`\<[`Txo`](Txo.md)\>
+
+#### Defined in
+
+[stores/txo-store.ts:240](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L240)
 
 ***
 
@@ -311,13 +397,17 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:48](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L48)
+[stores/txo-store.ts:48](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L48)
 
 ***
 
 ### syncTxLogs()
 
-> **syncTxLogs**(): `Promise`\<`void`\>
+> **syncTxLogs**(`parseMode`): `Promise`\<`void`\>
+
+#### Parameters
+
+• **parseMode**: [`ParseMode`](../enumerations/ParseMode.md) = `ParseMode.Persist`
 
 #### Returns
 
@@ -325,7 +415,7 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:376](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L376)
+[stores/txo-store.ts:442](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L442)
 
 ***
 
@@ -339,4 +429,4 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[stores/txo-store.ts:201](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/stores/txo-store.ts#L201)
+[stores/txo-store.ts:248](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/stores/txo-store.ts#L248)

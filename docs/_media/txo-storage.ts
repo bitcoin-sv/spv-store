@@ -156,4 +156,11 @@ export interface TxoStorage {
    * @returns A promise that resolves to an array of backup logs.
    */
   getBackupLogs(): Promise<Ingest[]>;
+
+  /**
+   * Get all user utxos
+   * @returns A promise that resolves to an array of utxos
+   * 
+   */
+  getUtxos(): Promise<Txo[]>;
 }

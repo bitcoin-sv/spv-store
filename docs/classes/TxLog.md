@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / TxLog
+[spv-store v0.1.73](../globals.md) / TxLog
 
 # Class: TxLog
 
@@ -30,7 +30,7 @@ Represents a log of indexed transactions.
 
 #### Defined in
 
-[models/index-context.ts:40](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/index-context.ts#L40)
+[models/index-context.ts:38](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/index-context.ts#L38)
 
 ## Properties
 
@@ -42,7 +42,7 @@ The height of the block containing the transaction.
 
 #### Defined in
 
-[models/index-context.ts:42](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/index-context.ts#L42)
+[models/index-context.ts:40](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/index-context.ts#L40)
 
 ***
 
@@ -54,7 +54,7 @@ The index of the transaction in the block.
 
 #### Defined in
 
-[models/index-context.ts:43](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/index-context.ts#L43)
+[models/index-context.ts:41](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/index-context.ts#L41)
 
 ***
 
@@ -66,19 +66,23 @@ The source of the indexed transaction.
 
 #### Defined in
 
-[models/index-context.ts:39](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/index-context.ts#L39)
+[models/index-context.ts:37](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/index-context.ts#L37)
 
 ***
 
 ### summary?
 
-> `optional` **summary**: [`IndexSummary`](../type-aliases/IndexSummary.md)
+> `optional` **summary**: `object`
 
 The summary of the indexed transaction.
 
+#### Index Signature
+
+ \[`tag`: `string`\]: [`IndexSummary`](../type-aliases/IndexSummary.md)
+
 #### Defined in
 
-[models/index-context.ts:38](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/index-context.ts#L38)
+[models/index-context.ts:36](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/index-context.ts#L36)
 
 ***
 
@@ -90,4 +94,4 @@ The unique identifier of the transaction.
 
 #### Defined in
 
-[models/index-context.ts:41](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/index-context.ts#L41)
+[models/index-context.ts:39](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/index-context.ts#L39)

@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / TxnStorage
+[spv-store v0.1.73](../globals.md) / TxnStorage
 
 # Interface: TxnStorage
 
@@ -24,7 +24,7 @@ A promise that resolves when the storage is destroyed.
 
 #### Defined in
 
-[storage/txn-storage.ts:11](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txn-storage.ts#L11)
+[storage/txn-storage.ts:11](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txn-storage.ts#L11)
 
 ***
 
@@ -48,7 +48,7 @@ A promise that resolves to an array of booleans indicating the existence of each
 
 #### Defined in
 
-[storage/txn-storage.ts:53](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txn-storage.ts#L53)
+[storage/txn-storage.ts:53](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txn-storage.ts#L53)
 
 ***
 
@@ -72,7 +72,7 @@ A promise that resolves to the transaction if found, or undefined if not found.
 
 #### Defined in
 
-[storage/txn-storage.ts:18](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txn-storage.ts#L18)
+[storage/txn-storage.ts:18](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txn-storage.ts#L18)
 
 ***
 
@@ -104,7 +104,7 @@ A promise that resolves to an array of transactions matching the criteria.
 
 #### Defined in
 
-[storage/txn-storage.ts:34](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txn-storage.ts#L34)
+[storage/txn-storage.ts:34](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txn-storage.ts#L34)
 
 ***
 
@@ -128,7 +128,7 @@ A promise that resolves to an array of transactions, with undefined for any tran
 
 #### Defined in
 
-[storage/txn-storage.ts:25](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txn-storage.ts#L25)
+[storage/txn-storage.ts:25](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txn-storage.ts#L25)
 
 ***
 
@@ -152,7 +152,7 @@ A promise that resolves when the transaction is stored.
 
 #### Defined in
 
-[storage/txn-storage.ts:41](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txn-storage.ts#L41)
+[storage/txn-storage.ts:41](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txn-storage.ts#L41)
 
 ***
 
@@ -176,4 +176,4 @@ A promise that resolves when all transactions are stored.
 
 #### Defined in
 
-[storage/txn-storage.ts:46](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txn-storage.ts#L46)
+[storage/txn-storage.ts:46](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txn-storage.ts#L46)

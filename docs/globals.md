@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](README.md) • **Docs**
+[**spv-store v0.1.73**](README.md) • **Docs**
 
 ***
 
-# spv-store v0.1.44
+# spv-store v0.1.73
 
 ## Enumerations
 
@@ -25,8 +25,8 @@
 - [Bsv20Indexer](classes/Bsv20Indexer.md)
 - [Bsv21](classes/Bsv21.md)
 - [Bsv21Indexer](classes/Bsv21Indexer.md)
+- [CosignIndexer](classes/CosignIndexer.md)
 - [FundIndexer](classes/FundIndexer.md)
-- [IndexData](classes/IndexData.md)
 - [Indexer](classes/Indexer.md)
 - [InscriptionIndexer](classes/InscriptionIndexer.md)
 - [Listing](classes/Listing.md)
@@ -50,6 +50,7 @@
 - [TxoLookup](classes/TxoLookup.md)
 - [TxoStorageIDB](classes/TxoStorageIDB.md)
 - [TxoStore](classes/TxoStore.md)
+- [UnmetDependency](classes/UnmetDependency.md)
 
 ## Interfaces
 
@@ -60,12 +61,15 @@
 - [BlockStorage](interfaces/BlockStorage.md)
 - [BroadcastService](interfaces/BroadcastService.md)
 - [BroadcastStatusResponse](interfaces/BroadcastStatusResponse.md)
+- [Cosign](interfaces/Cosign.md)
 - [Event](interfaces/Event.md)
 - [File](interfaces/File.md)
 - [IndexContext](interfaces/IndexContext.md)
+- [IndexData](interfaces/IndexData.md)
 - [Ingest](interfaces/Ingest.md)
 - [Inscription](interfaces/Inscription.md)
 - [Origin](interfaces/Origin.md)
+- [Query](interfaces/Query.md)
 - [Services](interfaces/Services.md)
 - [Stores](interfaces/Stores.md)
 - [Txn](interfaces/Txn.md)
@@ -85,8 +89,10 @@
 
 ## Variables
 
+- [APIS](variables/APIS.md)
 - [BLOCK\_HEADER\_SIZE](variables/BLOCK_HEADER_SIZE.md)
 - [FEE\_XPUB](variables/FEE_XPUB.md)
+- [LEGACY\_APIS](variables/LEGACY_APIS.md)
 - [lockPrefix](variables/lockPrefix.md)
 - [lockSuffix](variables/lockSuffix.md)
 - [MAP\_PROTO](variables/MAP_PROTO.md)

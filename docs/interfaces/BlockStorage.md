@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / BlockStorage
+[spv-store v0.1.73](../globals.md) / BlockStorage
 
 # Interface: BlockStorage
 
@@ -24,7 +24,7 @@ A promise that resolves when the storage is destroyed.
 
 #### Defined in
 
-[storage/block-storage.ts:11](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/block-storage.ts#L11)
+[storage/block-storage.ts:11](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/block-storage.ts#L11)
 
 ***
 
@@ -42,7 +42,7 @@ A promise that resolves with an array of all block headers.
 
 #### Defined in
 
-[storage/block-storage.ts:45](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/block-storage.ts#L45)
+[storage/block-storage.ts:45](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/block-storage.ts#L45)
 
 ***
 
@@ -60,7 +60,7 @@ A promise that resolves with a 2D array representing the backup.
 
 #### Defined in
 
-[storage/block-storage.ts:51](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/block-storage.ts#L51)
+[storage/block-storage.ts:51](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/block-storage.ts#L51)
 
 ***
 
@@ -84,7 +84,7 @@ A promise that resolves with the block header if found, or undefined if not foun
 
 #### Defined in
 
-[storage/block-storage.ts:32](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/block-storage.ts#L32)
+[storage/block-storage.ts:32](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/block-storage.ts#L32)
 
 ***
 
@@ -108,7 +108,7 @@ A promise that resolves with the block header if found, or undefined if not foun
 
 #### Defined in
 
-[storage/block-storage.ts:39](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/block-storage.ts#L39)
+[storage/block-storage.ts:39](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/block-storage.ts#L39)
 
 ***
 
@@ -126,7 +126,7 @@ A promise that resolves with the most recently synced block header, or undefined
 
 #### Defined in
 
-[storage/block-storage.ts:57](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/block-storage.ts#L57)
+[storage/block-storage.ts:57](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/block-storage.ts#L57)
 
 ***
 
@@ -150,7 +150,7 @@ A promise that resolves when the block header is stored.
 
 #### Defined in
 
-[storage/block-storage.ts:18](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/block-storage.ts#L18)
+[storage/block-storage.ts:18](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/block-storage.ts#L18)
 
 ***
 
@@ -174,4 +174,4 @@ A promise that resolves when all block headers are stored.
 
 #### Defined in
 
-[storage/block-storage.ts:25](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/block-storage.ts#L25)
+[storage/block-storage.ts:25](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/block-storage.ts#L25)

@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / Bsv20
+[spv-store v0.1.73](../globals.md) / Bsv20
 
 # Class: Bsv20
 
@@ -24,7 +24,7 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:22](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/bsv20.ts#L22)
+[indexers/bsv20.ts:22](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/bsv20.ts#L22)
 
 ***
 
@@ -34,7 +34,7 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:23](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/bsv20.ts#L23)
+[indexers/bsv20.ts:23](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/bsv20.ts#L23)
 
 ***
 
@@ -44,7 +44,7 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:25](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/bsv20.ts#L25)
+[indexers/bsv20.ts:25](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/bsv20.ts#L25)
 
 ***
 
@@ -54,7 +54,7 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:21](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/bsv20.ts#L21)
+[indexers/bsv20.ts:21](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/bsv20.ts#L21)
 
 ***
 
@@ -64,7 +64,7 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:24](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/bsv20.ts#L24)
+[indexers/bsv20.ts:24](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/bsv20.ts#L24)
 
 ***
 
@@ -74,7 +74,7 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:19](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/bsv20.ts#L19)
+[indexers/bsv20.ts:19](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/bsv20.ts#L19)
 
 ***
 
@@ -84,7 +84,7 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:20](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/bsv20.ts#L20)
+[indexers/bsv20.ts:20](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/bsv20.ts#L20)
 
 ## Methods
 
@@ -102,4 +102,4 @@
 
 #### Defined in
 
-[indexers/bsv20.ts:27](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/bsv20.ts#L27)
+[indexers/bsv20.ts:27](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/bsv20.ts#L27)

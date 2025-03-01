@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / BlockSchema
+[spv-store v0.1.73](../globals.md) / BlockSchema
 
 # Interface: BlockSchema
 
@@ -34,4 +34,4 @@
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:10](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-blocks.ts#L10)
+[storage/idb/idb-blocks.ts:10](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/idb/idb-blocks.ts#L10)

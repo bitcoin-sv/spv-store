@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / Indexer
+[spv-store v0.1.73](../globals.md) / Indexer
 
 # Class: `abstract` Indexer
 
@@ -21,12 +21,13 @@ Abstract class representing an Indexer.
 - [`MapIndexer`](MapIndexer.md)
 - [`SigmaIndexer`](SigmaIndexer.md)
 - [`OrdLockIndexer`](OrdLockIndexer.md)
+- [`CosignIndexer`](CosignIndexer.md)
 
 ## Constructors
 
 ### new Indexer()
 
-> **new Indexer**(`owners`, `indexMode`, `network`?): [`Indexer`](Indexer.md)
+> **new Indexer**(`owners`, `network`?): [`Indexer`](Indexer.md)
 
 Creates an instance of the Indexer.
 
@@ -38,10 +39,6 @@ A set of owners that this indexer is interested in.
                 An owner can be an address or any other data the indexer 
                 wants to use to identify which transactions to include in the index.
 
-• **indexMode**: [`IndexMode`](../enumerations/IndexMode.md)
-
-The mode of the indexer.
-
 • **network?**: [`Network`](../type-aliases/Network.md) = `"mainnet"`
 
 The network the indexer is operating on. Defaults to "mainnet".
@@ -52,21 +49,9 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:57](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L57)
+[models/indexer.ts:70](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L70)
 
 ## Properties
-
-### indexMode
-
-> **indexMode**: [`IndexMode`](../enumerations/IndexMode.md)
-
-The mode of the indexer.
-
-#### Defined in
-
-[models/indexer.ts:59](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L59)
-
-***
 
 ### name
 
@@ -76,7 +61,7 @@ Human readable name for this indexer.
 
 #### Defined in
 
-[models/indexer.ts:46](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L46)
+[models/indexer.ts:59](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L59)
 
 ***
 
@@ -88,7 +73,7 @@ The network the indexer is operating on. Defaults to "mainnet".
 
 #### Defined in
 
-[models/indexer.ts:60](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L60)
+[models/indexer.ts:72](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L72)
 
 ***
 
@@ -102,7 +87,7 @@ A set of owners that this indexer is interested in.
 
 #### Defined in
 
-[models/indexer.ts:58](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L58)
+[models/indexer.ts:71](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L71)
 
 ***
 
@@ -114,13 +99,13 @@ Unique identifier for this indexer.
 
 #### Defined in
 
-[models/indexer.ts:45](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L45)
+[models/indexer.ts:58](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L58)
 
 ## Methods
 
 ### parse()
 
-> **parse**(`ctx`, `vout`, `parseMode`): `Promise`\<`undefined` \| [`IndexData`](IndexData.md)\>
+> **parse**(`ctx`, `vout`, `parseMode`): `Promise`\<`undefined` \| [`IndexData`](../interfaces/IndexData.md)\>
 
 Parses an output and returns the index data if it is relevant to this indexer.
 If the output is not relevant, it returns undefined.
@@ -139,37 +124,13 @@ The output number to be parsed.
 
 #### Returns
 
-`Promise`\<`undefined` \| [`IndexData`](IndexData.md)\>
+`Promise`\<`undefined` \| [`IndexData`](../interfaces/IndexData.md)\>
 
 A promise that resolves to the index data if relevant, or undefined if not.
 
 #### Defined in
 
-[models/indexer.ts:72](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L72)
-
-***
-
-### preSave()
-
-> **preSave**(`ctx`): `Promise`\<`void`\>
-
-Pre-save hook that evaluates the index data for the entire transaction before it is persisted.
-
-#### Parameters
-
-• **ctx**: [`IndexContext`](../interfaces/IndexContext.md)
-
-The context of the index operation.
-
-#### Returns
-
-`Promise`\<`void`\>
-
-A promise that resolves when the pre-save evaluation is complete.
-
-#### Defined in
-
-[models/indexer.ts:82](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L82)
+[models/indexer.ts:84](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L84)
 
 ***
 
@@ -193,13 +154,39 @@ A promise that resolves when the indexer is resolved.
 
 #### Defined in
 
-[models/indexer.ts:102](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L102)
+[models/indexer.ts:114](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L114)
+
+***
+
+### summerize()
+
+> **summerize**(`ctx`, `parseMode`): `Promise`\<`undefined` \| [`IndexSummary`](../type-aliases/IndexSummary.md)\>
+
+Pre-save hook that evaluates the index data for the entire transaction before it is persisted.
+
+#### Parameters
+
+• **ctx**: [`IndexContext`](../interfaces/IndexContext.md)
+
+The context of the index operation.
+
+• **parseMode**: [`ParseMode`](../enumerations/ParseMode.md) = `ParseMode.Persist`
+
+#### Returns
+
+`Promise`\<`undefined` \| [`IndexSummary`](../type-aliases/IndexSummary.md)\>
+
+A promise that resolves when the pre-save evaluation is complete.
+
+#### Defined in
+
+[models/indexer.ts:94](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L94)
 
 ***
 
 ### sync()
 
-> **sync**(`txoStore`, `ingestQueue`): `Promise`\<`number`\>
+> **sync**(`txoStore`, `ingestQueue`, `parseMode`?): `Promise`\<`number`\>
 
 Synchronize txo data for indexer from a remote source.
 
@@ -213,6 +200,8 @@ The store containing transaction outputs.
 
 A queue of transactions to be ingested, keyed by transaction ID.
 
+• **parseMode?**: [`ParseMode`](../enumerations/ParseMode.md)
+
 #### Returns
 
 `Promise`\<`number`\>
@@ -221,4 +210,4 @@ A promise that resolves when the synchronization is complete.
 
 #### Defined in
 
-[models/indexer.ts:93](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/models/indexer.ts#L93)
+[models/indexer.ts:105](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/models/indexer.ts#L105)

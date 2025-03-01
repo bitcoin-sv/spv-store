@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / AccountService
+[spv-store v0.1.73](../globals.md) / AccountService
 
 # Interface: AccountService
 
@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[services/account-service.ts:12](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L12)
+[services/account-service.ts:22](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L22)
 
 ## Methods
 
@@ -32,7 +32,43 @@
 
 #### Defined in
 
-[services/account-service.ts:13](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L13)
+[services/account-service.ts:23](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L23)
+
+***
+
+### search()
+
+> **search**(`query`): `Promise`\<`Ordinal`[]\>
+
+#### Parameters
+
+• **query**: [`Query`](Query.md)
+
+#### Returns
+
+`Promise`\<`Ordinal`[]\>
+
+#### Defined in
+
+[services/account-service.ts:30](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L30)
+
+***
+
+### spends()
+
+> **spends**(`outpoints`): `Promise`\<`string`[]\>
+
+#### Parameters
+
+• **outpoints**: `string`[]
+
+#### Returns
+
+`Promise`\<`string`[]\>
+
+#### Defined in
+
+[services/account-service.ts:29](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L29)
 
 ***
 
@@ -50,7 +86,7 @@
 
 #### Defined in
 
-[services/account-service.ts:16](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L16)
+[services/account-service.ts:26](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L26)
 
 ***
 
@@ -64,7 +100,7 @@
 
 #### Defined in
 
-[services/account-service.ts:15](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L15)
+[services/account-service.ts:25](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L25)
 
 ***
 
@@ -82,7 +118,7 @@
 
 #### Defined in
 
-[services/account-service.ts:14](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L14)
+[services/account-service.ts:24](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L24)
 
 ***
 
@@ -96,7 +132,7 @@
 
 #### Defined in
 
-[services/account-service.ts:17](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L17)
+[services/account-service.ts:27](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L27)
 
 ***
 
@@ -110,4 +146,4 @@
 
 #### Defined in
 
-[services/account-service.ts:18](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/services/account-service.ts#L18)
+[services/account-service.ts:28](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/services/account-service.ts#L28)

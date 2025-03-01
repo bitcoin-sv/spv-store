@@ -120,7 +120,10 @@ export class OneSatProvider
     const resp = await fetch(
       `${APIS[this.network]}/v5/blocks/list/${lastHeight}?limit=${limit}`
     );
-    return resp.json() as Promise<BlockHeader[]>;
+
+    return (await resp.json() as any[]).map(bh => {
+      return bh as BlockHeader;
+    });
   }
 
   async getChaintip(): Promise<BlockHeader> {

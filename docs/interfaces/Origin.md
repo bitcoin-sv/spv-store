@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / Origin
+[spv-store v0.1.73](../globals.md) / Origin
 
 # Interface: Origin
 
@@ -14,7 +14,7 @@
 
 #### Defined in
 
-[indexers/origin.ts:25](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/origin.ts#L25)
+[indexers/origin.ts:22](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/origin.ts#L22)
 
 ***
 
@@ -28,7 +28,7 @@
 
 #### Defined in
 
-[indexers/origin.ts:26](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/origin.ts#L26)
+[indexers/origin.ts:23](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/origin.ts#L23)
 
 ***
 
@@ -38,7 +38,7 @@
 
 #### Defined in
 
-[indexers/origin.ts:24](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/origin.ts#L24)
+[indexers/origin.ts:21](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/origin.ts#L21)
 
 ***
 
@@ -48,7 +48,7 @@
 
 #### Defined in
 
-[indexers/origin.ts:23](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/origin.ts#L23)
+[indexers/origin.ts:20](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/origin.ts#L20)
 
 ***
 
@@ -58,4 +58,4 @@
 
 #### Defined in
 
-[indexers/origin.ts:27](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/indexers/origin.ts#L27)
+[indexers/origin.ts:24](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/indexers/origin.ts#L24)

@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / BlockStorageIDB
+[spv-store v0.1.73](../globals.md) / BlockStorageIDB
 
 # Class: BlockStorageIDB
 
@@ -20,7 +20,7 @@ Interface representing a block storage system.
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:20](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-blocks.ts#L20)
+[storage/idb/idb-blocks.ts:20](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/idb/idb-blocks.ts#L20)
 
 ## Methods
 
@@ -42,7 +42,7 @@ A promise that resolves when the storage is destroyed.
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:39](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-blocks.ts#L39)
+[storage/idb/idb-blocks.ts:39](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/idb/idb-blocks.ts#L39)
 
 ***
 
@@ -64,7 +64,7 @@ A promise that resolves with an array of all block headers.
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:73](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-blocks.ts#L73)
+[storage/idb/idb-blocks.ts:73](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/idb/idb-blocks.ts#L73)
 
 ***
 
@@ -86,7 +86,7 @@ A promise that resolves with a 2D array representing the backup.
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:77](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-blocks.ts#L77)
+[storage/idb/idb-blocks.ts:77](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/idb/idb-blocks.ts#L77)
 
 ***
 
@@ -114,7 +114,7 @@ A promise that resolves with the block header if found, or undefined if not foun
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:56](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-blocks.ts#L56)
+[storage/idb/idb-blocks.ts:56](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/idb/idb-blocks.ts#L56)
 
 ***
 
@@ -142,7 +142,7 @@ A promise that resolves with the block header if found, or undefined if not foun
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:60](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-blocks.ts#L60)
+[storage/idb/idb-blocks.ts:60](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/idb/idb-blocks.ts#L60)
 
 ***
 
@@ -164,7 +164,7 @@ A promise that resolves with the most recently synced block header, or undefined
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:64](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-blocks.ts#L64)
+[storage/idb/idb-blocks.ts:64](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/idb/idb-blocks.ts#L64)
 
 ***
 
@@ -192,7 +192,7 @@ A promise that resolves when the block header is stored.
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:43](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-blocks.ts#L43)
+[storage/idb/idb-blocks.ts:43](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/idb/idb-blocks.ts#L43)
 
 ***
 
@@ -220,7 +220,7 @@ A promise that resolves when all block headers are stored.
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:47](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-blocks.ts#L47)
+[storage/idb/idb-blocks.ts:47](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/idb/idb-blocks.ts#L47)
 
 ***
 
@@ -238,4 +238,4 @@ A promise that resolves when all block headers are stored.
 
 #### Defined in
 
-[storage/idb/idb-blocks.ts:22](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/idb/idb-blocks.ts#L22)
+[storage/idb/idb-blocks.ts:22](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/idb/idb-blocks.ts#L22)

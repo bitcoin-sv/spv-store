@@ -1,8 +1,8 @@
-[**spv-store v0.1.44**](../README.md) • **Docs**
+[**spv-store v0.1.73**](../README.md) • **Docs**
 
 ***
 
-[spv-store v0.1.44](../globals.md) / TxoStorage
+[spv-store v0.1.73](../globals.md) / TxoStorage
 
 # Interface: TxoStorage
 
@@ -30,7 +30,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:117](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L117)
+[storage/txo-storage.ts:117](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L117)
 
 ***
 
@@ -54,7 +54,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:124](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L124)
+[storage/txo-storage.ts:124](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L124)
 
 ***
 
@@ -72,7 +72,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:15](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L15)
+[storage/txo-storage.ts:15](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L15)
 
 ***
 
@@ -96,7 +96,7 @@ A promise that resolves to the transaction output or undefined if not found.
 
 #### Defined in
 
-[storage/txo-storage.ts:22](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L22)
+[storage/txo-storage.ts:22](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L22)
 
 ***
 
@@ -114,7 +114,7 @@ A promise that resolves to an array of backup logs.
 
 #### Defined in
 
-[storage/txo-storage.ts:158](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L158)
+[storage/txo-storage.ts:158](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L158)
 
 ***
 
@@ -138,7 +138,7 @@ A promise that resolves to an array of transaction outputs.
 
 #### Defined in
 
-[storage/txo-storage.ts:36](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L36)
+[storage/txo-storage.ts:36](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L36)
 
 ***
 
@@ -174,7 +174,7 @@ A promise that resolves to an array of ingests.
 
 #### Defined in
 
-[storage/txo-storage.ts:91](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L91)
+[storage/txo-storage.ts:91](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L91)
 
 ***
 
@@ -198,7 +198,7 @@ A promise that resolves to an array of transaction outputs or undefined if not f
 
 #### Defined in
 
-[storage/txo-storage.ts:29](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L29)
+[storage/txo-storage.ts:29](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L29)
 
 ***
 
@@ -216,7 +216,7 @@ A promise that resolves to the length of the queue.
 
 #### Defined in
 
-[storage/txo-storage.ts:81](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L81)
+[storage/txo-storage.ts:81](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L81)
 
 ***
 
@@ -240,7 +240,7 @@ A promise that resolves to an array of recent transaction logs.
 
 #### Defined in
 
-[storage/txo-storage.ts:145](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L145)
+[storage/txo-storage.ts:145](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L145)
 
 ***
 
@@ -264,7 +264,7 @@ A promise that resolves to the state value or undefined if not found.
 
 #### Defined in
 
-[storage/txo-storage.ts:67](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L67)
+[storage/txo-storage.ts:67](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L67)
 
 ***
 
@@ -288,7 +288,7 @@ A promise that resolves to the transaction log or undefined if not found.
 
 #### Defined in
 
-[storage/txo-storage.ts:131](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L131)
+[storage/txo-storage.ts:131](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L131)
 
 ***
 
@@ -312,7 +312,25 @@ A promise that resolves to an array of transaction logs or undefined if not foun
 
 #### Defined in
 
-[storage/txo-storage.ts:138](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L138)
+[storage/txo-storage.ts:138](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L138)
+
+***
+
+### getUtxos()
+
+> **getUtxos**(): `Promise`\<[`Txo`](../classes/Txo.md)[]\>
+
+Get all user utxos
+
+#### Returns
+
+`Promise`\<[`Txo`](../classes/Txo.md)[]\>
+
+A promise that resolves to an array of utxos
+
+#### Defined in
+
+[storage/txo-storage.ts:165](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L165)
 
 ***
 
@@ -336,7 +354,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:43](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L43)
+[storage/txo-storage.ts:43](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L43)
 
 ***
 
@@ -360,7 +378,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:103](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L103)
+[storage/txo-storage.ts:103](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L103)
 
 ***
 
@@ -384,7 +402,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:110](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L110)
+[storage/txo-storage.ts:110](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L110)
 
 ***
 
@@ -408,7 +426,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:50](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L50)
+[storage/txo-storage.ts:50](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L50)
 
 ***
 
@@ -432,7 +450,7 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:152](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L152)
+[storage/txo-storage.ts:152](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L152)
 
 ***
 
@@ -468,7 +486,7 @@ A promise that resolves to the search results.
 
 #### Defined in
 
-[storage/txo-storage.ts:60](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L60)
+[storage/txo-storage.ts:60](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L60)
 
 ***
 
@@ -496,4 +514,4 @@ A promise that resolves when the operation is complete.
 
 #### Defined in
 
-[storage/txo-storage.ts:75](https://github.com/bitcoin-sv/spv-store/blob/e3a78734f6050d5b58a2dfc50b2ef9975d4564de/src/storage/txo-storage.ts#L75)
+[storage/txo-storage.ts:75](https://github.com/bitcoin-sv/spv-store/blob/9735342843cd2ea4b04983988f1fa98b59c98947/src/storage/txo-storage.ts#L75)
