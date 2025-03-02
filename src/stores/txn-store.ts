@@ -119,7 +119,7 @@ export class TxnStore {
     };
     if (tx.merklePath) {
       const verified = await tx.merklePath.verify(txn.txid, this.stores.blocks!);
-      console.log("Verified", verified);
+      // console.log("Verified", verified);
       if (!verified) {
         throw new Error("Invalid merkle proof");
       }

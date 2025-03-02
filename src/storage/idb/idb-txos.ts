@@ -251,7 +251,7 @@ export class TxoStorageIDB implements TxoStorage {
       t = this.db.transaction("ingestQueue", "readwrite");
     }
     const prev = await t.store.get(ingest.txid).catch(() => undefined);
-    if (prev) {
+    if (prev && prev.outputs && ingest.outputs) {
       const outputs = new Set(prev.outputs || []);
       // let updated = prev.height < ingest.height || Number(prev.status) < Number(ingest.status);
       for (const output of ingest.outputs || []) {

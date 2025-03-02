@@ -160,14 +160,6 @@ export class TxoStore {
           txo.data[i.tag] = data;
         }
       }
-
-      // if (outputs && !outputs.has(vout)) continue;
-      // for (const i of this.indexers) {
-      //   const data = i.parse && (await i.parse(ctx, vout, parseMode));
-      //   if (data) {
-      //     txo.data[i.tag] = data;
-      //   }
-      // }
     }
 
     for (let [vin, spend] of ctx.spends.entries()) {
@@ -203,17 +195,6 @@ export class TxoStore {
         source,
       });
     }
-
-    // const toQueue = Object.entries(ctx.queue);
-    // if (toQueue.length) {
-    //   await this.queue(toQueue.map(([txid, block]) => ({
-    //     txid: txid,
-    //     height: block.height,
-    //     idx: Number(block.idx),
-    //     source: "ancestor",
-    //     parseMode: ParseMode.Dependency,
-    //   })));
-    // }
 
     this.stores.txns!.saveTx(tx);
     return ctx;
@@ -260,58 +241,11 @@ export class TxoStore {
 
     await this.updateQueueStats();
     this.syncRunning = Promise.all([
-      // this.processDownloads(),
       this.processIngests(),
       this.processConfirms(),
       this.processImmutable(),
     ]).then(() => { });
   }
-
-  // async processDownloads(): Promise<void> {
-  //   try {
-  //     const ingests = await this.storage.getIngests(IngestStatus.QUEUED, 25);
-  //     if (ingests.length) {
-  //       const dels: string[] = []
-  //       const updates: Ingest[] = []
-  //       for (const ingest of ingests) {
-  //         try {
-  //           await this.stores.txns!.loadTx(ingest.txid);
-  //           if (ingest.downloadOnly) {
-  //             dels.push(ingest.txid)
-  //           } else {
-  //             ingest.status = IngestStatus.DOWNLOADED;
-  //             updates.push(ingest)
-  //           }
-  //         } catch (e: unknown) {
-  //           if (e == NotFoundError) {
-  //             console.error("NOT FOUND!!!!", ingest.txid)
-  //             ingest.status = IngestStatus.FAILED;
-  //             dels.push(ingest.txid)
-  //             // updates.push(ingest)
-  //           } else {
-  //             console.error("Failed to download tx", ingest.txid, e);
-  //           }
-  //         }
-  //       }
-  //       if (dels.length) {
-  //         await this.storage.delIngests(dels)
-  //       }
-  //       if (updates.length) {
-  //         await this.storage.putIngests(updates);
-  //       }
-  //       await this.updateQueueStats();
-  //     } else {
-  //       await new Promise((r) => setTimeout(r, 1000));
-  //     }
-  //   } catch (e) {
-  //     console.error("Failed to ingest txs", e);
-  //     await new Promise((r) => setTimeout(r, 15000));
-  //   }
-  //   if (this.stopSync) {
-  //     return;
-  //   }
-  //   return this.processDownloads();
-  // }
 
   async processIngests(): Promise<void> {
     try {

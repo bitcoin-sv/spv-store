@@ -86,7 +86,7 @@ export class BlockStore implements ChainTracker {
   async isValidRootForHeight(root: string, height: number): Promise<boolean> {
     const block = await this.storage.getByHeight(height);
     const valid = block?.merkleRoot == root;
-    console.log('valid:', valid, block?.merkleRoot, root);
+    // console.log('valid:', valid, block?.merkleRoot, root);
     return valid;
   }
 

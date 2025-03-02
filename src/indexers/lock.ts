@@ -9,8 +9,8 @@ import { Outpoint, ParseMode, type Ingest } from "../models";
 import { OneSatProvider } from "../providers";
 import type { Network } from "../spv-store";
 
-const PREFIX = Buffer.from(lockPrefix, "hex");
-const SUFFIX = Buffer.from(Utils.toArray(lockSuffix, "hex"));
+const PREFIX = Uint8Array.from(Buffer.from(lockPrefix, "hex"));
+const SUFFIX = Uint8Array.from(Buffer.from(Utils.toArray(lockSuffix, "hex")));
 
 export class Lock {
   constructor(public until = 0) { }
