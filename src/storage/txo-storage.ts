@@ -80,6 +80,8 @@ export interface TxoStorage {
    */
   getQueueLength(): Promise<number>;
 
+  getIngest(txid: string): Promise<Ingest | undefined>;
+  
   /**
    * Retrieves ingests based on their status.
    * @param status - The status of the ingests.

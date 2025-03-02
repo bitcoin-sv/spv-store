@@ -61,7 +61,7 @@ export class TxoStore {
 
   async populateTx(tx: Transaction): Promise<void> {
     const txid = tx.id("hex");
-    if(!tx.merklePath || (await tx.merklePath.verify(txid, this.stores.blocks!))) {
+    if (!tx.merklePath || (await tx.merklePath.verify(txid, this.stores.blocks!))) {
       tx.merklePath = await this.services.txns!.fetchProof(tx.id("hex"));
     }
     if (tx.merklePath) {
@@ -113,7 +113,11 @@ export class TxoStore {
       let spend = await this.storage.get(outpoint);
       if (!spend) {
         if (input.sourceTransaction) {
-          const context = await this.ingest(input.sourceTransaction, "beef", parseMode, new Set([input.sourceOutputIndex]));
+          const context = await this.ingest(
+            input.sourceTransaction, "beef",
+            parseMode == ParseMode.PersistSummary ? ParseMode.Persist : parseMode,
+            new Set([input.sourceOutputIndex])
+          );
           spend = context.txos[input.sourceOutputIndex];
         } else {
           spend = new Txo(
@@ -398,24 +402,15 @@ export class TxoStore {
     console.log("Queueing new logs:", puts);
     const ingestsByTxid = new Map<string, Ingest>();
     for (const put of puts) {
-      const ingest = ingestsByTxid.get(put.txid)
-      if (ingest) {
-        ingest.outputs = Array.from(new Set([
-          ...(ingest.outputs || []),
-          ...put.outs,
-        ]));
-      } else {
-        ingestsByTxid.set(put.txid, {
-          txid: put.txid,
-          height: put.height,
-          idx: 0,
-          outputs: put.outs,
-          source: "sync",
-          parseMode: ParseMode.Persist,
-        });
-      }
+      ingestsByTxid.set(put.txid, {
+        txid: put.txid,
+        height: put.height,
+        idx: 0,
+        source: "sync",
+        parseMode: ParseMode.PersistSummary,
+      });
     }
-    const ingests = Object.values(ingestsByTxid);
+    const ingests = [...ingestsByTxid.values()];
     await this.queue(ingests);
     if (ingests.length) {
       this.events?.emit("newTxs", ingests.length)

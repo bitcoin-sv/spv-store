@@ -92,25 +92,34 @@ export class SPVStore {
     return resp;
   }
 
-  // async ingestTxs(txs: Transaction[]): Promise<void> {
-  //   const ingests: Ingest[] = []
-  //   for (const tx of txs) {
-  //     await this.stores.txns?.saveTx(tx);
-  //     const txid = tx.id("hex");
+  async ingestTxs(txs: Transaction[]): Promise<void> {
+    const ingests: Ingest[] = []
+    for (const tx of txs) {
+      await this.stores.txns?.saveTx(tx);
+      const txid = tx.id("hex");
 
-  //     ingests.push({
-  //       txid,
-  //       height: tx.merklePath?.blockHeight || Date.now(),
-  //       idx: tx.merklePath?.path[0].find((p) => p.hash == txid)?.offset || 0,
-  //       source: "sync",
-  //       parseMode: ParseMode.Persist,
-  //     });
-  //   }
-  // }
+      ingests.push({
+        txid,
+        height: tx.merklePath?.blockHeight || Date.now(),
+        idx: tx.merklePath?.path[0].find((p) => p.hash == txid)?.offset || 0,
+        source: "sync",
+        parseMode: ParseMode.Persist,
+      });
+    }
+  }
 
-  // async ingest(ingests: Ingest[]): Promise<void> {
-  //   await this.stores.txos?.queue(ingests);
-  // }
+  async ingestIfNew(ingests: Ingest[]): Promise<void> {
+    for (const ingest of ingests) {
+      let existing = await this.stores.txos!.storage.getIngest(ingest.txid);
+      if(!existing) {
+        await this.stores.txos!.queue([ingest]);
+      }
+    }
+  }
+
+  async ingest(ingests: Ingest[]): Promise<void> {
+    await this.stores.txos?.queue(ingests);
+  }
 
   async refreshSpends(): Promise<void> {
     return this.stores.txos!.refreshSpends();

@@ -226,6 +226,10 @@ export class TxoStorageIDB implements TxoStorage {
     return queueLength;
   }
 
+  async getIngest(txid: string): Promise<Ingest | undefined> {
+    return this.db.get("ingestQueue", txid);
+  }
+  
   async getIngests(
     status: IngestStatus,
     limit: number,
