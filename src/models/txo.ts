@@ -79,4 +79,8 @@ export class Txo {
     public status: TxoStatus,
     public block = new Block(),
   ) { }
+
+  isPopulated(): boolean {
+    return this.script.length > 0;
+  }
 }

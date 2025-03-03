@@ -152,6 +152,7 @@ export class TxoStore {
       ctx.txos.push(txo);
       let outputParseMode = parseMode;
       if (outputs && !outputs.has(vout)) {
+        // TODO: Should this include Preview?
         if (parseMode == ParseMode.PersistSummary) {
           outputParseMode = ParseMode.Dependency
         } else {
@@ -182,7 +183,7 @@ export class TxoStore {
       }
     }
 
-    if (parseMode == ParseMode.Preview) return ctx
+    if ([ParseMode.OutputsOnly, ParseMode.Preview].includes(parseMode)) return ctx
     await this.storage.putMany(ctx.spends);
     ctx.txos.forEach((txo) => txo.block = ctx.block);
 

@@ -59,9 +59,9 @@ export class OriginIndexer extends Indexer {
     // let spendOutpoint: Outpoint | undefined;
     for (let [vin, spend] of ctx.spends.entries()) {
       deps.push(spend.outpoint);
-      if (!spend.script.length) {
+      if (!spend.isPopulated()) {
         const txo = await ctx.store.storage.get(spend.outpoint);
-        if (txo && spend.script.length) {
+        if (txo && txo.isPopulated()) {
           spend = txo;
         } else if ([ParseMode.Persist, ParseMode.PersistSummary].includes(parseMode) && satsIn == outSat) {
           console.log("Resolving dependency", ctx.txid, parseMode, spend.outpoint.toString());
