@@ -391,27 +391,27 @@ export class TxoStore {
     const oldLogs = await this.storage.getTxLogs(
       txSyncs.map((log) => log.txid),
     );
-    const puts: TxSyncLog[] = [];
-    for (const [i, txLog] of txSyncs.entries()) {
-      if (!oldLogs[i]) {
-        puts.push(txLog);
+    const logs = new Set<string>();
+    for (const log of oldLogs) {
+      if(log) logs.add(log.txid);
+    }
+    
+    const ingests: Ingest[] = [];
+    for (const txLog of txSyncs) {
+      if (!logs.has(txLog.txid)) {
+        ingests.push({
+          txid: txLog.txid,
+          height: txLog.height,
+          idx: txLog.idx || 0,
+          source: "sync",
+          parseMode: ParseMode.PersistSummary,
+        })
         if (txLog.score) {
           lastSync = Math.max(lastSync, txLog.score);
         }
       }
     }
-    console.log("Queueing new logs:", puts);
-    const ingestsByTxid = new Map<string, Ingest>();
-    for (const put of puts) {
-      ingestsByTxid.set(put.txid, {
-        txid: put.txid,
-        height: put.height,
-        idx: 0,
-        source: "sync",
-        parseMode: ParseMode.PersistSummary,
-      });
-    }
-    const ingests = [...ingestsByTxid.values()];
+    console.log("Queueing new logs:", ingests);
     await this.queue(ingests);
     if (ingests.length) {
       this.events?.emit("newTxs", ingests.length)
