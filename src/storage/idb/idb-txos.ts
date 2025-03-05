@@ -52,6 +52,14 @@ function hydrateTxo(obj: Txo) {
     obj.status || TxoStatus.Unindexed,
     obj.block,
   )
+  txo.owner = obj.owner;
+  txo.spend = obj.spend;
+  txo.events = obj.events;
+  txo.logs = obj.logs;
+  txo.tags = obj.tags;
+  txo.deps = obj.deps;
+  txo.hasEvents = obj.hasEvents;
+
   for (const [tag, data] of Object.entries(obj.data)) {
     data.deps = (data.deps || []).map((dep) => new Outpoint(dep));
     txo.data[tag] = data;
