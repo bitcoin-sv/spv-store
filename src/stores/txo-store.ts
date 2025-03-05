@@ -142,13 +142,14 @@ export class TxoStore {
           new Outpoint(ctx.txid, vout),
           0n,
           [],
-          parseMode == ParseMode.Dependency || (outputs && !outputs.has(vout)) ?
-            TxoStatus.Dependency :
-            TxoStatus.Validated,
+          TxoStatus.Dependency,
         );
       }
       txo.satoshis = BigInt(output.satoshis!);
       txo.script = output.lockingScript.toBinary();
+      txo.status = parseMode == ParseMode.Dependency || (outputs && !outputs.has(vout)) ?
+        TxoStatus.Dependency :
+        TxoStatus.Validated;
       ctx.txos.push(txo);
       let outputParseMode = parseMode;
       if (outputs && !outputs.has(vout)) {
