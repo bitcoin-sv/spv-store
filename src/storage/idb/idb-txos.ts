@@ -6,6 +6,7 @@ import { Outpoint } from "../../models/outpoint";
 import { TxoSort, type TxoLookup, type TxoResults } from "../../models/search";
 import type { Network } from "../../spv-store";
 import { ParseMode, TxLog } from "../../models";
+import type { TxnStore, TxoStore } from "../../stores";
 
 const TXO_DB_VERSION = 1;
 
@@ -97,10 +98,15 @@ function buildTxoIndex(txo: Txo) {
 }
 
 export class TxoStorageIDB implements TxoStorage {
-  private constructor(public db: IDBPDatabase<TxoSchema>) { }
+  private constructor(
+    public db: IDBPDatabase<TxoSchema>,
+    private txnStore: TxnStore
+  ) { }
+  
   static async init(
     accountId: string,
-    network: Network
+    network: Network,
+    txnStore: TxnStore,
   ): Promise<TxoStorageIDB> {
     const db = await openDB<TxoSchema>(
       `txos-${accountId}-${network}`,
@@ -125,7 +131,7 @@ export class TxoStorageIDB implements TxoStorage {
         },
       }
     );
-    return new TxoStorageIDB(db);
+    return new TxoStorageIDB(db, txnStore);
   }
 
   async destroy() {
@@ -375,13 +381,28 @@ export class TxoStorageIDB implements TxoStorage {
 
   async loadDeps(op: Outpoint, deps: Map<string, DepLog>) {
     const log = deps.get(op.txid);
-    if (log && !log.outputs!.has(op.vout)) {
-      log.outputs!.add(op.vout);
+    if (log) {
+      if (!log.outputs!.has(op.vout)) {
+        log.outputs!.add(op.vout);
+      }
       return;
     }
     const txo = await this.get(op);
-    if (!txo) throw new Error(`Missing dep: ${op.txid}:${op.vout}`);
-    if (!log) {
+    if (!txo) {
+      const tx = await this.txnStore.loadTx(op.txid);
+      if (!tx) {
+        throw new Error(`Missing dep: ${op.txid}:${op.vout}`);
+      } else {
+        deps.set(op.txid, {
+          txid: op.txid,
+          height: tx.merklePath?.blockHeight || 0,
+          idx: tx.merklePath?.path[0].find((p) => p.hash == op.txid)!.offset || 0,
+          isDep: true,
+          outputs: new Set<number>([op.vout]),
+        });
+        return
+      }
+    } else if (!log) {
       deps.set(op.txid, {
         txid: op.txid,
         height: txo.block.height,

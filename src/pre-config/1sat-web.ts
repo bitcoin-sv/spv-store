@@ -38,15 +38,15 @@ export class OneSatWebSPV extends SPVStore {
       txns: oneSatService,
       broadcast: oneSatService,
     };
-    const [blockStorage, txnStorage, txoStorage] = await Promise.all([
+    const [blockStorage, txnStorage] = await Promise.all([
       BlockStorageIDB.init(network),
       TxnStorageIDB.init(network),
-      TxoStorageIDB.init(accountId, network),
     ]);
 
     const stores: Stores = {};
     stores.blocks = new BlockStore(blockStorage, services, emitter);
     stores.txns = new TxnStore(txnStorage, services, stores, emitter);
+    const txoStorage = await TxoStorageIDB.init(accountId, network, stores.txns);
     stores.txos = new TxoStore(
       txoStorage,
       services,
