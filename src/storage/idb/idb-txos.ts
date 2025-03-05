@@ -45,11 +45,18 @@ export interface TxoSchema extends DBSchema {
 }
 
 function hydrateTxo(obj: Txo) {
-  obj.outpoint = new Outpoint(obj.outpoint.txid, obj.outpoint.vout);
-  for (const data of Object.values(obj.data)) {
+  const txo = new Txo(
+    new Outpoint(obj.outpoint.txid, obj.outpoint.vout),
+    obj.satoshis || 0n,
+    obj.script || [],
+    obj.status || TxoStatus.Unindexed,
+    obj.block,
+  )
+  for (const [tag, data] of Object.entries(obj.data)) {
     data.deps = (data.deps || []).map((dep) => new Outpoint(dep));
+    txo.data[tag] = data;
   }
-  return obj;
+  return txo;
 }
 
 function buildTxoIndex(txo: Txo) {
