@@ -267,7 +267,7 @@ export class TxoStore {
               console.error("Failed to get tx", ingest.txid);
               continue;
             }
-            await this.ingest(tx, ingest.source, ingest.parseMode, new Set(ingest.outputs));
+            await this.ingest(tx, ingest.source, ingest.parseMode, ingest.outputs && new Set(ingest.outputs));
             ingest.status = IngestStatus.INGESTED;
             await this.storage.putIngest(ingest);
             await this.updateQueueStats();
@@ -317,7 +317,7 @@ export class TxoStore {
           if (!tx.merklePath) {
             ingest.height = Date.now();
           } else {
-            const ctx = await this.ingest(tx, ingest.source, ingest.parseMode, new Set(ingest.outputs));
+            const ctx = await this.ingest(tx, ingest.source, ingest.parseMode, ingest.outputs && new Set(ingest.outputs));
             ingest.status = IngestStatus.CONFIRMED;
             ingest.height = ctx.block.height;
             ingest.idx = Number(ctx.block.idx);
