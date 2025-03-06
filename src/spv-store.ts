@@ -133,7 +133,7 @@ export class SPVStore {
     console.log("Syncing wallet", isSynced);
     if (!isSynced || resync) {
       const ingestQueue: { [txid: string]: Ingest } = {};
-      let lastSync = 0;
+      let lastSync = 1;
 
       for (const indexer of this.stores.txos!.indexers) {
         if (this.syncTags && !this.syncTags.has(indexer.tag)) continue;
