@@ -381,6 +381,7 @@ export class TxoStore {
     if (!this.services.account) return
     let syncedState = await this.storage.getState("lastSync");
     if (!syncedState) {
+      await new Promise((r) => setTimeout(r, 1000));
       this.events?.emit("importing", { tag: "wallet", name: "Wallet" });
       console.log("No initial sync. Skipping sync for", this.services.account.accountId);
       return;
