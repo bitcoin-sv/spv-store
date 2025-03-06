@@ -24,6 +24,10 @@ export interface TxnStorage {
    */
   getMany(txids: string[]): Promise<(Txn | undefined)[]>;
 
+  // getAllTxids(): Promise<string[]>;
+
+  backup(): Promise<string[]>;
+
   /**
    * Retrieves transactions by their status up to a specified block number, with an optional limit on the number of transactions.
    * @param status - The status of the transactions to retrieve.

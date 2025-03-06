@@ -2,6 +2,7 @@ import { openDB, type DBSchema, type IDBPDatabase } from "idb";
 import { TxnStatus, type Txn } from "../../stores/txn-store";
 import type { TxnStorage } from "../txn-storage";
 import type { Network } from "../../spv-store";
+import { Transaction, Utils } from "@bsv/sdk";
 
 const TXN_DB_VERSION = 1;
 
@@ -46,6 +47,26 @@ export class TxnStorageIDB implements TxnStorage {
     );
     await t.done;
     return txns;
+  }
+
+  // async getAllTxids(): Promise<string[]> {
+  //   return this.db.getAllKeys("txns");
+  // }
+
+  async backup(): Promise<number[]> {
+    const tx = this.db.transaction("txns");
+    const writer = new Utils.Writer();
+    for await (const cursor of tx.store) {
+      const tx = Transaction.fromBinary(cursor.value.rawtx);
+    }
+
+    // let cursor = await this.db.transaction("txns").store.openCursor();
+    // // const query = IDBKeyRange.bound([status, 0], [status, toBlock]);
+    // const txns: Txn[] = [];
+    // for await (const item of cursor.iterate()) {
+    //   txns.push(cursor.value);
+    //   if (txns.length >= limit) break;
+    // }
   }
 
   async put(txn: Txn): Promise<void> {

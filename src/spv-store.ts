@@ -15,7 +15,6 @@ import {
 } from "./services";
 import type { BlockStore, Txn, TxnStore, TxoStore } from "./stores";
 import {
-  blockHeaderFromReader,
   Outpoint,
   ParseMode,
   TxLog,
@@ -77,7 +76,7 @@ export class SPVStore {
   ): Promise<BroadcastResponse | BroadcastFailure> {
     let resp: BroadcastResponse | BroadcastFailure;
     if (!tx.merklePath) {
-      await this.stores.txos!.populateTx(tx);
+      await this.stores.txns!.populateTx(tx);
       resp = await this.stores.txns!.broadcast(tx);
     } else {
       resp = {
@@ -230,73 +229,90 @@ export class SPVStore {
     return this.services.blocks!.getChaintip();
   }
 
-  async getBackupTx(txid: string): Promise<number[] | undefined> {
-    const txn = await this.stores.txns!.storage.get(txid);
-    if (!txn) return;
-    const writer = new Utils.Writer();
-    writer.writeInt8(Number(txn.status));
-    writer.writeUInt32LE(txn.block.height);
-    writer.writeUInt64LE(Number(txn.block.idx));
-    writer.writeVarIntNum(txn.rawtx.length);
-    writer.write(txn.rawtx);
-    writer.writeVarIntNum(txn.proof?.length || 0);
-    if (txn.proof) {
-      writer.write(txn.proof);
-    }
-    return writer.toArray();
+  // async getBackupTx(txid: string): Promise<number[] | undefined> {
+  //   const txn = await this.stores.txns!.storage.get(txid);
+  //   if (!txn) return;
+  //   const writer = new Utils.Writer();
+  //   writer.writeInt8(Number(txn.status));
+  //   writer.writeUInt32LE(txn.block.height);
+  //   writer.writeUInt64LE(Number(txn.block.idx));
+  //   writer.writeVarIntNum(txn.rawtx.length);
+  //   writer.write(txn.rawtx);
+  //   writer.writeVarIntNum(txn.proof?.length || 0);
+  //   if (txn.proof) {
+  //     writer.write(txn.proof);
+  //   }
+  //   return writer.toArray();
+  // }
+
+  // async getBlocksBackup(): Promise<number[][]> {
+  //   return await this.stores.blocks!.storage.getBackup();
+  // }
+
+  // async restoreBlocks(data: number[]): Promise<void> {
+  //   const reader = new Utils.Reader(data);
+  //   let headers: BlockHeader[] = [];
+  //   while (reader.pos < data.length) {
+  //     headers.push(blockHeaderFromReader(reader));
+  //   }
+  //   await this.stores.blocks!.storage.putMany(headers);
+  // }
+
+  // async restoreBackupTx(txid: string, data: number[]): Promise<void> {
+  //   const reader = new Utils.Reader(data);
+  //   const status = reader.readInt8();
+  //   const height = reader.readUInt32LE();
+  //   const idx = reader.readUInt64LEBn();
+  //   let len = reader.readVarIntNum();
+  //   const txn: Txn = {
+  //     txid,
+  //     status: status as any,
+  //     block: { height, idx: BigInt(idx.toNumber()) },
+  //     rawtx: reader.read(len),
+  //   };
+  //   len = reader.readVarIntNum();
+  //   if (len) txn.proof = reader.read(len);
+  //   await this.stores.txns!.storage.put(txn);
+  // }
+
+  // async getBackupLogs(): Promise<Ingest[]> {
+  //   return this.stores.txos!.storage.getBackupLogs();
+  // }
+
+  // async restoreBackupLogs(logs: Ingest[]): Promise<void> {
+  //   await this.stores.txos!.queue(logs);
+  //   let lastHeight = 0;
+  //   for (const log of logs) {
+  //     if (log.height > lastHeight && log.height < 50000000) {
+  //       lastHeight = log.height;
+  //     }
+  //   }
+  //   for (const owner of this.stores.txos!.owners) {
+  //     await this.stores.txos!.storage.setState(
+  //       `sync-${owner}`,
+  //       lastHeight.toString()
+  //     );
+  //   }
+  //   await this.stores.txos!.storage.setState(
+  //     "lastSync",
+  //     lastHeight.toString()
+  //   );
+  // }
+
+  async backupTxos(): Promise<Txo[]> {
+    return this.stores.txos!.storage.getAll();
   }
 
-  async getBlocksBackup(): Promise<number[][]> {
-    return await this.stores.blocks!.storage.getBackup();
+  async backupTxns(): Promise<Txn[]> {
+    const txns = this.stores.txns!.storage.getAll();
+
   }
 
-  async restoreBlocks(data: number[]): Promise<void> {
-    const reader = new Utils.Reader(data);
-    let headers: BlockHeader[] = [];
-    while (reader.pos < data.length) {
-      headers.push(blockHeaderFromReader(reader));
-    }
-    await this.stores.blocks!.storage.putMany(headers);
+  async restoreTxos(txos: Txo[]): Promise<void> {
+    await this.stores.txos!.storage.putMany(txos);
   }
 
-  async restoreBackupTx(txid: string, data: number[]): Promise<void> {
-    const reader = new Utils.Reader(data);
-    const status = reader.readInt8();
-    const height = reader.readUInt32LE();
-    const idx = reader.readUInt64LEBn();
-    let len = reader.readVarIntNum();
-    const txn: Txn = {
-      txid,
-      status: status as any,
-      block: { height, idx: BigInt(idx.toNumber()) },
-      rawtx: reader.read(len),
-    };
-    len = reader.readVarIntNum();
-    if (len) txn.proof = reader.read(len);
-    await this.stores.txns!.storage.put(txn);
-  }
-
-  async getBackupLogs(): Promise<Ingest[]> {
-    return this.stores.txos!.storage.getBackupLogs();
-  }
-
-  async restoreBackupLogs(logs: Ingest[]): Promise<void> {
-    await this.stores.txos!.queue(logs);
-    let lastHeight = 0;
-    for (const log of logs) {
-      if (log.height > lastHeight && log.height < 50000000) {
-        lastHeight = log.height;
-      }
-    }
-    for (const owner of this.stores.txos!.owners) {
-      await this.stores.txos!.storage.setState(
-        `sync-${owner}`,
-        lastHeight.toString()
-      );
-    }
-    await this.stores.txos!.storage.setState(
-      "lastSync",
-      lastHeight.toString()
-    );
+  async restoreTxns(txns: Txn[]): Promise<void> {
+    await this.stores.txns!.storage.putMany(txns);
   }
 }

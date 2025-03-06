@@ -57,26 +57,6 @@ export class TxoStore {
   }
 
 
-  async populateTx(tx: Transaction): Promise<void> {
-    const txid = tx.id("hex");
-    if (!tx.merklePath || (await tx.merklePath.verify(txid, this.stores.blocks!))) {
-      tx.merklePath = await this.services.txns!.fetchProof(tx.id("hex"));
-    }
-    if (tx.merklePath) {
-      if ((await tx.merklePath.verify(txid, this.stores.blocks!))) {
-        return;
-      } else {
-        throw new Error("Invalid merkle proof");
-      }
-    } else {
-      for (const input of tx.inputs) {
-        if (input.sourceTXID) {
-          input.sourceTransaction = await this.loadTx(input.sourceTXID)
-        }
-      }
-    }
-  }
-
   /**
    * Ingests a new transaction into the store, building an index context for it.
    * 
@@ -404,6 +384,7 @@ export class TxoStore {
           idx: txLog.idx || 0,
           source: "sync",
           parseMode: ParseMode.PersistSummary,
+          // outputs: txLog.outs,
         })
         if (txLog.score) {
           lastSync = Math.max(lastSync, txLog.score);

@@ -21,6 +21,8 @@ export interface TxoStorage {
    */
   get(outpoint: Outpoint): Promise<Txo | undefined>;
 
+  getAll(): Promise<Txo[]>;
+
   /**
    * Retrieves multiple transaction outputs by their outpoints.
    * @param outpoints - An array of outpoints.

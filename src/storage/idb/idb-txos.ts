@@ -152,6 +152,10 @@ export class TxoStorageIDB implements TxoStorage {
     return txos.map((txo) => txo && hydrateTxo(txo));
   }
 
+  async getAll(): Promise<Txo[]> {
+    return this.db.getAll("txos");
+  }
+
   async getBySpend(txid: string): Promise<Txo[]> {
     const txos = await this.db.getAllFromIndex(
       "txos",
