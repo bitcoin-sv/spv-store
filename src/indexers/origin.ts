@@ -60,14 +60,17 @@ export class OriginIndexer extends Indexer {
     for (let [vin, spend] of ctx.spends.entries()) {
       deps.push(spend.outpoint);
       if (!spend.isPopulated()) {
-        const txo = await ctx.store.storage.get(spend.outpoint);
-        if (txo && txo.isPopulated()) {
-          spend = txo;
-        } else if ([ParseMode.Persist, ParseMode.PersistSummary].includes(parseMode) && satsIn == outSat) {
+        const spendTxo = await ctx.store.storage.get(spend.outpoint);
+        if (spendTxo && spendTxo.isPopulated()) {
+          spend = spendTxo;
+        } else if ([ParseMode.Persist, ParseMode.PersistSummary].includes(parseMode) && satsIn == outSat && txo.owner && this.owners.has(txo.owner)) {
           console.log("Resolving dependency", ctx.txid, parseMode, spend.outpoint.toString());
           throw new UnmetDependency(spend.outpoint, ParseMode.Persist);
         } else {
-          spend = ctx.spends[vin] = await ctx.store.resolveOutput(spend.outpoint, ParseMode.OutputsOnly)
+          const tx = await ctx.store.loadTx(spend.outpoint.txid, parseMode > ParseMode.Preview);
+          spend = ctx.spends[vin]
+          spend.satoshis = BigInt(tx.outputs[spend.outpoint.vout].satoshis || 0);
+          spend.script = tx.outputs[spend.outpoint.vout].lockingScript.toBinary();
         }
       }
 

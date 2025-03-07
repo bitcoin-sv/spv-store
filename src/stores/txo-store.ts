@@ -98,10 +98,6 @@ export class TxoStore {
           );
           spend = context.txos[input.sourceOutputIndex];
         } else {
-          const tx = await this.loadTx(input.sourceTXID, parseMode > ParseMode.Preview);
-          if (!tx) {
-            throw new Error('missing-tx-' + input.sourceTXID);
-          }
           spend = new Txo(
             new Outpoint(input.sourceTXID, input.sourceOutputIndex),
             0n,
@@ -389,7 +385,7 @@ export class TxoStore {
           idx: txLog.idx || 0,
           source: "sync",
           parseMode: ParseMode.PersistSummary,
-          // outputs: txLog.outs,
+          outputs: txLog.outs,
         })
         if (txLog.score) {
           lastSync = Math.max(lastSync, txLog.score);
@@ -457,9 +453,24 @@ export class TxoStore {
     };
   }
 
-  async restore(txos: any[]): Promise<void> {
-    await this.stores.txos!.storage.putMany(
-      txos.map((o) => Txo.deserialize(o, this.indexers))
-    );
+  async restore(data: any[]): Promise<void> {
+    const txos = data.map((o) => Txo.deserialize(o, this.indexers))
+    await this.stores.txos!.storage.putMany(txos);
+    // for (const txo of txos) {
+    //   for (const i of this.indexers) {
+    //     const summery = await i.summerize(ctx, parseMode);
+    //     if (summery) {
+    //       ctx.summary[i.tag] = summery;
+    //     }
+    //     this.storage.putTxLog({
+    //       txid: ctx.txid,
+    //       height: ctx.block.height,
+    //       idx: Number(ctx.block.idx),
+    //       summary: ctx.summary,
+    //       source,
+    //     });
+    //   }
+    // }
+    
   }
 }
