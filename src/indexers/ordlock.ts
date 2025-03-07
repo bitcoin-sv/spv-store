@@ -82,4 +82,16 @@ export class OrdLockIndexer extends Indexer {
       }
     }
   }
+
+  serialize(obj: Listing): string {
+    return JSON.stringify({
+      payout: obj.payout,
+      price: obj.price.toString(10),
+    });
+  }
+
+  deserialize(str: string): Listing {
+    const obj = JSON.parse(str);
+    return new Listing(obj.payout, BigInt(obj.price));
+  }
 }

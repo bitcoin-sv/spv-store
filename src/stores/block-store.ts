@@ -9,11 +9,21 @@ const PAGE_SIZE = 10000;
 export class BlockStore implements ChainTracker {
   private syncRunning: Promise<void> | undefined;
   private stopSync = false;
+  private cancelSync: Promise<void>;
   constructor(
     public storage: BlockStorage,
     public services: Services,
     public emitter?: EventEmitter
-  ) {}
+  ) {
+    this.cancelSync = new Promise<void>((resolve) => {
+      const interval = setInterval(() => {
+        if (this.stopSync) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
 
   async destroy() {
     this.stopSync = true;
@@ -29,7 +39,6 @@ export class BlockStore implements ChainTracker {
    */
   async sync(returnOnChaintip = true): Promise<void> {
     if (this.syncRunning) return;
-    // const doSync = async (returnOnChaintip: boolean) =>
     this.syncRunning = this.doSync(returnOnChaintip);
     if (returnOnChaintip) {
       await this.syncRunning;
@@ -68,12 +77,18 @@ export class BlockStore implements ChainTracker {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
-    // this.syncInProgress = false;
     if (returnOnChaintip || this.stopSync) {
       return;
     }
-    await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
-    return this.doSync(returnOnChaintip);
+
+    await Promise.race([
+      new Promise((resolve) => setTimeout(resolve, 60 * 1000)),
+      this.cancelSync,
+    ]);
+
+    if (!this.stopSync) {
+      return this.doSync(returnOnChaintip);
+    }
   }
 
   /**

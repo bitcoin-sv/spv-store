@@ -4,6 +4,11 @@ import type { Outpoint } from "../models/outpoint";
 import type { TxoLookup, TxoResults, TxoSort } from "../models/search";
 import type { Txo } from "../models/txo";
 
+export interface TxoBackup {
+  txos: any[];
+  nextPage?: any;
+}
+
 /**
  * Interface representing a storage system for transaction outputs (Txo).
  */
@@ -20,6 +25,8 @@ export interface TxoStorage {
    * @returns A promise that resolves to the transaction output or undefined if not found.
    */
   get(outpoint: Outpoint): Promise<Txo | undefined>;
+
+  backup(limit: number, from?: any): Promise<TxoResults>;
 
   /**
    * Retrieves multiple transaction outputs by their outpoints.

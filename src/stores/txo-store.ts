@@ -4,7 +4,7 @@ import { type IndexContext } from "../models/index-context";
 import { Txo, TxoStatus } from "../models/txo";
 import { type Ingest, IngestStatus } from "../models/ingest";
 import { Block } from "../models/block";
-import type { TxoStorage } from "../storage/txo-storage";
+import type { TxoBackup, TxoStorage } from "../storage/txo-storage";
 import { Outpoint } from "../models/outpoint";
 import type { Services, Stores } from "../spv-store";
 import type { EventEmitter } from "../lib/event-emitter";
@@ -52,30 +52,10 @@ export class TxoStore {
     return this.storage.search(lookup, sort, limit, from);
   }
 
-  async loadTx(txid: string): Promise<Transaction> {
-    return this.stores.txns!.loadTx(txid);
+  async loadTx(txid: string, persist = true): Promise<Transaction> {
+    return this.stores.txns!.loadTx(txid, persist);
   }
 
-
-  async populateTx(tx: Transaction): Promise<void> {
-    const txid = tx.id("hex");
-    if (!tx.merklePath || (await tx.merklePath.verify(txid, this.stores.blocks!))) {
-      tx.merklePath = await this.services.txns!.fetchProof(tx.id("hex"));
-    }
-    if (tx.merklePath) {
-      if ((await tx.merklePath.verify(txid, this.stores.blocks!))) {
-        return;
-      } else {
-        throw new Error("Invalid merkle proof");
-      }
-    } else {
-      for (const input of tx.inputs) {
-        if (input.sourceTXID) {
-          input.sourceTransaction = await this.loadTx(input.sourceTXID)
-        }
-      }
-    }
-  }
 
   /**
    * Ingests a new transaction into the store, building an index context for it.
@@ -118,6 +98,10 @@ export class TxoStore {
           );
           spend = context.txos[input.sourceOutputIndex];
         } else {
+          const tx = await this.loadTx(input.sourceTXID, parseMode > ParseMode.Preview);
+          if (!tx) {
+            throw new Error('missing-tx-' + input.sourceTXID);
+          }
           spend = new Txo(
             new Outpoint(input.sourceTXID, input.sourceOutputIndex),
             0n,
@@ -205,7 +189,7 @@ export class TxoStore {
   }
 
   async queueDependency(outpoint: Outpoint, parseMode = ParseMode.Dependency) {
-    const tx = await this.loadTx(outpoint.txid);
+    const tx = await this.loadTx(outpoint.txid, parseMode > ParseMode.Preview);
     const block = new Block();
     if (tx?.merklePath) {
       block.height = tx.merklePath.blockHeight;
@@ -223,7 +207,7 @@ export class TxoStore {
   }
 
   async resolveOutput(outpoint: Outpoint, parseMode: ParseMode = ParseMode.Dependency): Promise<Txo> {
-    const tx = await this.stores.txns!.loadTx(outpoint.txid);
+    const tx = await this.stores.txns!.loadTx(outpoint.txid, parseMode > ParseMode.Preview);
     if (!tx) throw new Error(`missing-tx-${outpoint.txid}`);
     this.events?.emit("resolvingParent", { txid: outpoint.txid });
     const context = await this.ingest(tx, "input", parseMode, new Set([outpoint.vout]));
@@ -261,7 +245,7 @@ export class TxoStore {
         console.log("Ingesting", ingests.length, "txs");
         for await (const ingest of ingests) {
           try {
-            const tx = await this.stores.txns!.loadTx(ingest.txid);
+            const tx = await this.stores.txns!.loadTx(ingest.txid, true);
             if (!tx) {
               console.error("Failed to get tx", ingest.txid);
               continue;
@@ -308,7 +292,7 @@ export class TxoStore {
       );
       if (ingests.length) {
         for await (const ingest of ingests) {
-          const tx = await this.stores.txns!.loadTx(ingest.txid);
+          const tx = await this.stores.txns!.loadTx(ingest.txid, true);
           if (!tx) {
             console.error("Failed to get tx", ingest.txid);
             continue;
@@ -352,7 +336,7 @@ export class TxoStore {
       );
       if (ingests.length) {
         for await (const ingest of ingests) {
-          const tx = await this.stores.txns!.loadTx(ingest.txid);
+          const tx = await this.stores.txns!.loadTx(ingest.txid, true);
           if (!tx || !tx.merklePath) {
             // TODO: We have a problem and need to clean it up
             console.error("Failed to get tx", ingest.txid);
@@ -405,6 +389,7 @@ export class TxoStore {
           idx: txLog.idx || 0,
           source: "sync",
           parseMode: ParseMode.PersistSummary,
+          // outputs: txLog.outs,
         })
         if (txLog.score) {
           lastSync = Math.max(lastSync, txLog.score);
@@ -462,5 +447,19 @@ export class TxoStore {
         }
       }
     }
+  }
+
+  async backup(limit = 1000, from?: any): Promise<TxoBackup> {
+    const results = await this.stores.txos!.storage.backup(limit, from);
+    return {
+      txos: results.txos.map((t) => t.serialize(this.indexers)),
+      nextPage: results.nextPage,
+    };
+  }
+
+  async restore(txos: any[]): Promise<void> {
+    await this.stores.txos!.storage.putMany(
+      txos.map((o) => Txo.deserialize(o, this.indexers))
+    );
   }
 }

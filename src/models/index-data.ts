@@ -9,5 +9,4 @@ export interface IndexData {
   data?: any;
   events?: Event[];
   deps?: Outpoint[];
-  queue?: Outpoint[];
 }

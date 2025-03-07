@@ -75,14 +75,37 @@ export class TxnStore {
     return resp;
   }
 
+  async populateTx(tx: Transaction, persist = true): Promise<void> {
+    const txid = tx.id("hex");
+    if (!tx.merklePath || (await tx.merklePath.verify(txid, this.stores.blocks!))) {
+      tx.merklePath = await this.services.txns!.fetchProof(tx.id("hex"));
+    }
+    if (tx.merklePath) {
+      if ((await tx.merklePath.verify(txid, this.stores.blocks!))) {
+        return;
+      } else {
+        throw new Error("Invalid merkle proof");
+      }
+    } else {
+      for (const input of tx.inputs) {
+        if (input.sourceTXID) {
+          input.sourceTransaction = await this.loadTx(input.sourceTXID, persist)
+        }
+      }
+    }
+  }
+
   async loadTx(
     txid: string,
+    persist = true
   ): Promise<Transaction> {
     let txn = await this.storage.get(txid);
     if (!txn) {
       this.events?.emit("fetchingTx", { txid });
       const tx = await this.services.txns!.fetchBeef(txid);
-      await this.saveTx(tx);
+      if(persist) {
+        await this.saveTx(tx);
+      }
       return tx;
     } else {
       const tx = Transaction.fromBinary(txn.rawtx);
@@ -91,6 +114,8 @@ export class TxnStore {
         if ((await tx.merklePath.verify(txn.txid, this.stores.blocks!))) {
           return tx
         }
+        tx.merklePath = await this.services.txns?.fetchProof(txn.txid);
+      } else {
         tx.merklePath = await this.services.txns?.fetchProof(txn.txid);
       }
       if (tx.merklePath) {
@@ -102,7 +127,7 @@ export class TxnStore {
       } else {
         for (const input of tx.inputs) {
           if (input.sourceTXID) {
-            input.sourceTransaction = await this.loadTx(input.sourceTXID)
+            input.sourceTransaction = await this.loadTx(input.sourceTXID, persist)
           }
         }
       }

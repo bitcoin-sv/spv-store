@@ -27,9 +27,7 @@ export class Bsv21 {
   }
 
   static fromJSON(obj: any): Bsv21 {
-    // if (typeof obj.id != "string" && !Array.isArray(obj.id)) return;
     const bsv21 = new Bsv21({
-      // id: new Outpoint(obj.id as string),x
       ...obj,
       amt: BigInt(obj.amt),
       dec: parseInt(obj.dec || '0'),
@@ -206,5 +204,16 @@ export class Bsv21Indexer extends Indexer {
         icon: summaryToken.icon,
       }
     }
+  }
+
+  serialize(bsv21: Bsv21): string {
+    return JSON.stringify({
+      ...bsv21,
+      amt: bsv21.amt.toString(),
+    })
+  }
+
+  deserialize(str: string): Bsv21 {
+    return new Bsv21(JSON.parse(str));
   }
 }
