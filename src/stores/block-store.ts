@@ -70,9 +70,6 @@ export class BlockStore implements ChainTracker {
         if (blocks.length < PAGE_SIZE) break;
         lastHeight = syncedBlock.height + 1;
       } catch (e) {
-        if (returnOnChaintip) {
-          throw e;
-        }
         console.error(e);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }

@@ -373,9 +373,9 @@ export class TxoStore {
     );
     const logs = new Set<string>();
     for (const log of oldLogs) {
-      if(log) logs.add(log.txid);
+      if (log) logs.add(log.txid);
     }
-    
+
     const ingests: Ingest[] = [];
     for (const txLog of txSyncs) {
       if (!logs.has(txLog.txid)) {
@@ -420,6 +420,47 @@ export class TxoStore {
     return ctx
   }
 
+  async loadIndexContext(txid: string): Promise<IndexContext> {
+    const tx = await this.loadTx(txid);
+    const ctx = await this.buildIndexContext(tx);
+    for (const input of tx.inputs) {
+      const sourceTxid = input.sourceTXID || input.sourceTransaction?.id("hex") as string;
+      const spend = await this.storage.get(new Outpoint(sourceTxid, input.sourceOutputIndex));
+      if (spend) {
+        ctx.spends.push(spend);
+      } else {
+        ctx.spends.push(new Txo(
+          new Outpoint(sourceTxid, input.sourceOutputIndex),
+          0n,
+          [],
+          TxoStatus.Dependency,
+        ));
+      }
+    }
+    const txos = await this.storage.getMany(
+      tx.outputs.map((_, i) => new Outpoint(ctx.txid, i)),
+    );
+
+    for (let [vout, txo] of txos.entries()) {
+      if (!txo) {
+        txo = new Txo(
+          new Outpoint(ctx.txid, vout),
+          0n,
+          [],
+          TxoStatus.Dependency,
+        );
+      }
+      for (const i of this.indexers) {
+        const summery = await i.summerize(ctx, ParseMode.Preview);
+        if (summery) {
+          ctx.summary[i.tag] = summery;
+        }
+      }
+      ctx.txos.push(txo);
+    }
+    return ctx;
+  }
+
   async resolveBlock() {
     const chaintip = await this.services.blocks.getChaintip();
     if (!chaintip) return;
@@ -456,21 +497,26 @@ export class TxoStore {
   async restore(data: any[]): Promise<void> {
     const txos = data.map((o) => Txo.deserialize(o, this.indexers))
     await this.stores.txos!.storage.putMany(txos);
-    // for (const txo of txos) {
-    //   for (const i of this.indexers) {
-    //     const summery = await i.summerize(ctx, parseMode);
-    //     if (summery) {
-    //       ctx.summary[i.tag] = summery;
+    // for(const {outpoint} of txos) {
+    //   const txLog = await this.storage.getTxLog(outpoint.txid);
+    //   if(!txLog) {
+    //     const ctx = await this.loadIndexContext(outpoint.txid);
+    //     for (const i of this.indexers) {
+    //       const summery = await i.summerize(ctx, ParseMode.Preview);
+    //       if (summery) {
+    //         ctx.summary[i.tag] = summery;
+    //       }
     //     }
-    //     this.storage.putTxLog({
-    //       txid: ctx.txid,
-    //       height: ctx.block.height,
-    //       idx: Number(ctx.block.idx),
-    //       summary: ctx.summary,
-    //       source,
-    //     });
+    //     if (Object.keys(ctx.summary).length) {
+    //       await this.storage.putTxLog({
+    //         txid: ctx.txid,
+    //         height: ctx.block.height,
+    //         idx: Number(ctx.block.idx),
+    //         summary: ctx.summary,
+    //         source: "restore",
+    //       });
+    //     }
     //   }
     // }
-    
   }
 }
