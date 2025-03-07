@@ -114,4 +114,12 @@ export abstract class Indexer {
   async resolve(txoStore: TxoStore, block: BlockHeader): Promise<void> {
     return;
   }
+
+  serialize(obj: any): string {
+    return JSON.stringify(obj);
+  }
+
+  deserialize(str: any): any {
+    return JSON.parse(str);
+  }
 }

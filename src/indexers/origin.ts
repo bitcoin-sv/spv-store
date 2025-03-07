@@ -10,7 +10,7 @@ import {
   type Ingest,
 } from "../models";
 import { OneSatProvider } from "../providers/1sat-provider";
-import type { Inscription } from "./insc";
+import { InscriptionIndexer, type Inscription } from "./insc";
 import type { Sigma } from "./remote-types";
 import type { Network } from "../spv-store";
 import type { TxoStore } from "../stores";
@@ -179,5 +179,21 @@ export class OriginIndexer extends Indexer {
       }
     }
     return maxScore;
+  }
+
+  serialize(origin: Origin): string {
+    return JSON.stringify({
+      outpoint: origin.outpoint,
+      nonce: origin.nonce,
+      insc: origin.insc && InscriptionIndexer.serialize(origin.insc),
+      map: origin.map,
+      sigma: origin.sigma,
+    });
+  }
+
+  deserialize(data: string): Origin {
+    const origin = JSON.parse(data);
+    origin.insc = origin.insc && InscriptionIndexer.deserialize(origin.insc);
+    return origin;
   }
 }

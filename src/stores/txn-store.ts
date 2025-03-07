@@ -75,7 +75,7 @@ export class TxnStore {
     return resp;
   }
 
-  async populateTx(tx: Transaction): Promise<void> {
+  async populateTx(tx: Transaction, persist = true): Promise<void> {
     const txid = tx.id("hex");
     if (!tx.merklePath || (await tx.merklePath.verify(txid, this.stores.blocks!))) {
       tx.merklePath = await this.services.txns!.fetchProof(tx.id("hex"));
@@ -89,7 +89,7 @@ export class TxnStore {
     } else {
       for (const input of tx.inputs) {
         if (input.sourceTXID) {
-          input.sourceTransaction = await this.loadTx(input.sourceTXID)
+          input.sourceTransaction = await this.loadTx(input.sourceTXID, persist)
         }
       }
     }
@@ -97,12 +97,15 @@ export class TxnStore {
 
   async loadTx(
     txid: string,
+    persist = true
   ): Promise<Transaction> {
     let txn = await this.storage.get(txid);
     if (!txn) {
       this.events?.emit("fetchingTx", { txid });
       const tx = await this.services.txns!.fetchBeef(txid);
-      await this.saveTx(tx);
+      if(persist) {
+        await this.saveTx(tx);
+      }
       return tx;
     } else {
       const tx = Transaction.fromBinary(txn.rawtx);
@@ -124,7 +127,7 @@ export class TxnStore {
       } else {
         for (const input of tx.inputs) {
           if (input.sourceTXID) {
-            input.sourceTransaction = await this.loadTx(input.sourceTXID)
+            input.sourceTransaction = await this.loadTx(input.sourceTXID, persist)
           }
         }
       }

@@ -134,6 +134,18 @@ export class Bsv20Indexer extends Indexer {
       }
     }
   }
+
+  serialize(bsv20: Bsv20): string {
+    return JSON.stringify({
+      ...bsv20,
+      amt: bsv20.amt.toString(),
+    });
+  }
+
+  deserialize(str: string): Bsv20 {
+    const obj = JSON.parse(str);
+    return Bsv20.fromJSON(obj);
+  }
 }
 
 export function deriveFundAddress(idOrTick: string | number[]): string {

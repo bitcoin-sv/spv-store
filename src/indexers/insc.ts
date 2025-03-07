@@ -135,4 +135,33 @@ export class InscriptionIndexer extends Indexer {
       events,
     }
   }
+
+  static serialize(insc: Inscription): string {
+    return JSON.stringify({
+      file: insc.file &&{
+        hash: insc.file.hash,
+        size: insc.file.size,
+        type: insc.file.type,
+        content: Utils.toBase64(insc.file.content),
+      },
+      fields: insc.fields,
+      parent: insc.parent,
+    })
+  }
+
+  serialize(obj: any): string {
+    return InscriptionIndexer.serialize(obj);
+  }
+
+  static deserialize(str: string): Inscription {
+    const insc = JSON.parse(str);
+    if (insc.file) {
+      insc.file.content = Utils.toArray(insc.file.content, 'base64');
+    }
+    return insc as Inscription;
+  }
+
+  deserialize(str: string): any {
+    return InscriptionIndexer.deserialize(str);
+  }
 }

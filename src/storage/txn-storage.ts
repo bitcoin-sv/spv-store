@@ -1,5 +1,10 @@
 import type { Txn, TxnStatus } from "../stores";
 
+export interface TxnBackup {
+  data: number[];
+  nextPage?: any;
+}
+
 /**
  * Interface representing a transaction storage system.
  */
@@ -26,7 +31,9 @@ export interface TxnStorage {
 
   // getAllTxids(): Promise<string[]>;
 
-  backup(): Promise<string[]>;
+  backup(limit?: number, from?: any): Promise<TxnBackup>;
+
+  restore(data: number[]): Promise<void>;
 
   /**
    * Retrieves transactions by their status up to a specified block number, with an optional limit on the number of transactions.

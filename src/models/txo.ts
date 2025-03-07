@@ -1,5 +1,7 @@
+import { Utils } from "@bsv/sdk";
 import { Block } from "./block";
 import { type IndexData } from "./index-data";
+import type { Indexer } from "./indexer";
 import { Outpoint } from "./outpoint";
 
 /**
@@ -82,5 +84,63 @@ export class Txo {
 
   isPopulated(): boolean {
     return this.script.length > 0;
+  }
+
+  serialize(indexers: Indexer[]): any {
+    const obj = { 
+      ...this,
+      script: Utils.toBase64(this.script),
+      satoshis: Number(this.satoshis),
+      block: {
+        height: this.block.height,
+        idx: Number(this.block.idx),
+      },
+      data: {} as {[tag: string]: any},
+    };
+    const data: {[tag: string]: any} = {};
+    for(const i of indexers) {
+      const tagData = this.data[i.tag]
+      if(tagData) {
+        data[i.tag] = {
+          data: i.serialize(this.data[i.tag].data),
+          events: tagData.events,
+          deps: tagData.deps,
+        }
+      }
+    }
+    obj.data = data;
+    return obj;
+  }
+
+  static deserialize(obj: any, indexers: Indexer[]): Txo {
+    const txo = new Txo(
+      new Outpoint(obj.outpoint),
+      BigInt(obj.satoshis),
+      Utils.toArray(obj.script, 'base64'),
+      obj.status,
+      {
+        height: obj.block.height,
+        idx: BigInt(obj.block.idx),
+      },
+    );
+    txo.spend = obj.spend;
+    txo.owner = obj.owner;
+    txo.events = obj.events;
+    txo.logs = obj.logs;
+    txo.tags = obj.tags;
+    txo.deps = obj.deps;
+    txo.hasEvents = obj.hasEvents;
+
+    for(const i of indexers) {
+      const data = obj.data[i.tag]
+      if(data) {
+        txo.data[i.tag] = {
+          data: i.deserialize(data.data),
+          events: data.events,
+          deps: data.deps,
+        }
+      }
+    }
+    return txo;
   }
 }

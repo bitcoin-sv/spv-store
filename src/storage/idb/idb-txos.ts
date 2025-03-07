@@ -152,8 +152,21 @@ export class TxoStorageIDB implements TxoStorage {
     return txos.map((txo) => txo && hydrateTxo(txo));
   }
 
-  async getAll(): Promise<Txo[]> {
-    return this.db.getAll("txos");
+  async backup(limit = 1000, from = []): Promise<TxoResults> {
+    const idx = this.db.transaction("txos").store;
+    const query = IDBKeyRange.lowerBound(from, true)
+    let count = 0
+    let nextPage: any;
+    const txos: Txo[] = [];
+    for await (const cursor of idx.iterate(query)) {
+      if(++count > limit) {
+        nextPage = cursor.key;
+        break;
+      }
+      txos.push(hydrateTxo(cursor.value));
+    }
+
+    return {txos,nextPage};
   }
 
   async getBySpend(txid: string): Promise<Txo[]> {
@@ -393,7 +406,7 @@ export class TxoStorageIDB implements TxoStorage {
     }
     const txo = await this.get(op);
     if (!txo) {
-      const tx = await this.txnStore.loadTx(op.txid);
+      const tx = await this.txnStore.loadTx(op.txid, true);
       if (!tx) {
         throw new Error(`Missing dep: ${op.txid}:${op.vout}`);
       } else {
