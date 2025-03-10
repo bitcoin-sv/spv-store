@@ -1,4 +1,4 @@
-import type { TxLog } from "../models";
+import type { TxLog, TxLogResults } from "../models";
 import type { Ingest, IngestStatus } from "../models/ingest";
 import type { Outpoint } from "../models/outpoint";
 import type { TxoLookup, TxoResults, TxoSort } from "../models/search";
@@ -25,8 +25,6 @@ export interface TxoStorage {
    * @returns A promise that resolves to the transaction output or undefined if not found.
    */
   get(outpoint: Outpoint): Promise<Txo | undefined>;
-
-  backup(limit: number, from?: any): Promise<TxoResults>;
 
   /**
    * Retrieves multiple transaction outputs by their outpoints.
@@ -159,12 +157,13 @@ export interface TxoStorage {
    * @returns A promise that resolves when the operation is complete.
    */
   putTxLog(txLog: TxLog): Promise<void>;
+  putTxLogs(logs: TxLog[]): Promise<void>;
 
   /**
    * Retrieves backup logs.
    * @returns A promise that resolves to an array of backup logs.
    */
-  getBackupLogs(): Promise<Ingest[]>;
+  getBackupLogs(): Promise<TxLog[]>;
 
   /**
    * Get all user utxos
@@ -172,4 +171,7 @@ export interface TxoStorage {
    * 
    */
   getUtxos(): Promise<Txo[]>;
+
+  backup(limit: number, from?: any): Promise<TxoResults>;
+  backupTxLogs(limit: number, from?: any): Promise<TxLogResults>;
 }

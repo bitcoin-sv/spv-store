@@ -1,3 +1,4 @@
+import type { TxLog } from "./index-context";
 import type { Txo } from "./txo";
 
 export enum TxoSort {
@@ -40,5 +41,10 @@ export class TxoLookup {
 
 export interface TxoResults {
   txos: Txo[];
+  nextPage?: string;
+}
+
+export interface TxLogResults {
+  logs: TxLog[];
   nextPage?: string;
 }

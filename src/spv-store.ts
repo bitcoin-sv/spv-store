@@ -5,7 +5,7 @@ import {
   type BroadcastFailure,
   type BroadcastResponse,
 } from "@bsv/sdk";
-import type { TxoLookup, TxoResults } from "./models/search";
+import type { TxLogResults, TxoLookup, TxoResults } from "./models/search";
 import {
   type AccountService,
   type BlockHeaderService,
@@ -232,11 +232,16 @@ export class SPVStore {
 
   async backupTxos(limit = 1000, from?: any): Promise<TxoBackup> {
     return this.stores.txos!.backup(limit, from);
-    
   }
-  
   async restoreTxos(txos: any[]): Promise<void> {
     await this.stores.txos!.restore(txos);
+  }
+
+  async backupTxLogs(limit = 1000, from?: any): Promise<TxLogResults> {
+    return this.stores.txos!.storage.backupTxLogs(limit, from);
+  }
+  async restoreTxLogs(logs: TxLog[]): Promise<void> {
+    await this.stores.txos!.storage.putTxLogs(logs);
   }
 
   async backupTxns(limit = 1000, from?: any): Promise<TxnBackup> {

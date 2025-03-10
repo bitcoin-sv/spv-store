@@ -5,7 +5,7 @@ import type { TxoStorage } from "../txo-storage";
 import { Outpoint } from "../../models/outpoint";
 import { TxoSort, type TxoLookup, type TxoResults } from "../../models/search";
 import type { Network } from "../../spv-store";
-import { ParseMode, TxLog } from "../../models";
+import { ParseMode, TxLog, type TxLogResults } from "../../models";
 import type { TxnStore, TxoStore } from "../../stores";
 
 const TXO_DB_VERSION = 1;
@@ -348,6 +348,17 @@ export class TxoStorageIDB implements TxoStorage {
     await this.db.put("txLog", txLog);
   }
 
+  async putTxLogs(logs: TxLog[]): Promise<void> {
+    if (!logs.length) return;
+    const t = this.db.transaction("txLog", "readwrite");
+    await Promise.all(
+      logs.map((log) => {
+        return t.store.put(log);
+      })
+    );
+    await t.done;
+  }
+
   async getRecentTxLogs(limit = 100): Promise<TxLog[]> {
     const t = this.db.transaction("txLog");
     const idx = t.store.index("height");
@@ -445,6 +456,22 @@ export class TxoStorageIDB implements TxoStorage {
       utxos.push(cursor.value);
     }
     return utxos.map(hydrateTxo);
+  }
+
+  async backupTxLogs(limit: number, from = ""): Promise<TxLogResults> {
+    const idx = this.db.transaction("txLog").store;
+    const query = IDBKeyRange.lowerBound(from, true)
+    let count = 0;
+    let nextPage: any;
+    const logs: TxLog[] = [];
+    for await (const cursor of idx.iterate(query)) {
+      if (++count > limit) {
+        nextPage = cursor.key;
+        break;
+      }
+      logs.push(cursor.value);
+    }
+    return { logs, nextPage };
   }
 }
 
