@@ -63,7 +63,7 @@ export class OriginIndexer extends Indexer {
         const spendTxo = await ctx.store.storage.get(spend.outpoint);
         if (spendTxo && spendTxo.isPopulated()) {
           spend = spendTxo;
-        } else if ([ParseMode.Persist, ParseMode.PersistSummary].includes(parseMode) && satsIn == outSat && txo.owner && this.owners.has(txo.owner)) {
+        } else if ([ParseMode.Persist, ParseMode.PersistSummary].includes(parseMode) && satsIn == outSat) {// && txo.owner && this.owners.has(txo.owner)) {
           console.log("Resolving dependency", ctx.txid, parseMode, spend.outpoint.toString());
           throw new UnmetDependency(spend.outpoint, ParseMode.Persist);
         } else {

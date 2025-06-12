@@ -11,28 +11,24 @@ export class MapIndexer extends Indexer {
   name = "MAP";
 
   async parse(ctx: IndexContext, vout: number): Promise<IndexData | undefined> {
-    const script = ctx.tx.outputs[vout].lockingScript;
+    let script = ctx.tx.outputs[vout].lockingScript;
 
-    let retPos = 0
-    let mapPos = 0;
-    for (let i = retPos + 1; i < script.chunks.length; i++) {
-      const chunk = script.chunks[i];
-      if (!retPos || chunk.op === OP.OP_RETURN) {
-        retPos = i;
-      } else if (!retPos || chunk.data?.length !== 1 || chunk.data[0] !== 0x7c) {
-        continue;
-      }
-
-      if (Utils.toUTF8(script.chunks[++i]?.data || []) !== MAP_PROTO) {
-        continue;
-      }
-      mapPos = ++i;
-      break;
+    const retPos = script.chunks.findIndex(chunk => chunk.op === OP.OP_RETURN);
+    if (retPos < 0 || !script.chunks[retPos]?.data?.length) {
+      return;
     }
-    if (!mapPos) return;
-    const map = MapIndexer.parseMap(script, mapPos);
-    if (!map) return;
-    return { data: map };
+    let chunks = Script.fromBinary(script.chunks[retPos].data).chunks;
+    while(chunks.length) {
+      if (Utils.toUTF8(chunks[0]?.data || []) == MAP_PROTO) {
+        const map = MapIndexer.parseMap(new Script(chunks), 1);
+        return map ? { data: map } : undefined;
+      }
+      
+      const pipePos = chunks.findIndex((chunk) => chunk.data?.length == 1 && chunk.data[0] != 0x7c);
+      if (pipePos > -1) {
+        chunks = chunks.slice(pipePos + 1);
+      } else break;
+    }
   }
 
   static parseMap(script: Script, mapPos: number): { [key: string]: any } | undefined {

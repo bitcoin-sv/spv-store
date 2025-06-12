@@ -140,7 +140,11 @@ export class TxoStorageIDB implements TxoStorage {
 
   async get(outpoint: Outpoint): Promise<Txo | undefined> {
     const txo = await this.db.get("txos", [outpoint.txid, outpoint.vout]);
-    return txo && hydrateTxo(txo);
+    if(txo) {
+      const obj = await hydrateTxo(txo);
+      return obj;
+    }
+    return undefined;
   }
 
   async getMany(outpoints: Outpoint[]): Promise<(Txo | undefined)[]> {
@@ -297,9 +301,7 @@ export class TxoStorageIDB implements TxoStorage {
       const outputs = new Set(prev.outputs || []);
       // let updated = prev.height < ingest.height || Number(prev.status) < Number(ingest.status);
       for (const output of ingest.outputs || []) {
-        if (!outputs.has(output)) {
-          outputs.add(output);
-        }
+        outputs.add(output);
       }
       ingest.outputs = Array.from(outputs);
     }

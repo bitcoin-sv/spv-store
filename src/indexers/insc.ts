@@ -45,6 +45,7 @@ export class InscriptionIndexer extends Indexer {
         script.chunks[i - 2].op == OP.OP_FALSE
       ) {
         fromPos = i + 1;
+        break;
       }
     }
     if (fromPos === undefined) return;
@@ -68,24 +69,13 @@ export class InscriptionIndexer extends Indexer {
       const value = script.chunks[i + 1];
       if (value.op > OP.OP_PUSHDATA4) return;
 
-      if (field.data?.length || 0 > 1 && Buffer.from(field.data || []).toString() == MAP_PROTO) {
+      if (field.data?.length && Utils.toUTF8(field.data) == MAP_PROTO) {
         const map = MapIndexer.parseMap(Script.fromBinary(value.data || []), 0);
         if (map) {
-          txo.data["map"] = {data: map};
+          txo.data["map"] = { data: map };
         }
-        // if bitcomData != nil {
-        //   b := append(bitcomData.Data.([]*bitcom.Bitcom), &bitcom.Bitcom{
-        //     Protocol: string(op.Data),
-        //     Script:   op2.Data,
-        //     Pos:      pos,
-        //   })
-        //   bitcomData.Data = b
-        // }
-        // if (!insc.fields) insc.fields = {};
-        // insc.fields[Buffer.from(field.data!).toString()] = value.data;
         continue;
       }
-      // TODO: handle MAP
 
       let fieldNo = 0;
       if (field.op > OP.OP_PUSHDATA4 && field.op <= OP.OP_16) {
@@ -108,12 +98,7 @@ export class InscriptionIndexer extends Indexer {
           try {
             const parent = new Outpoint(value.data);
             // TODO: Not sure this is correct
-            if (
-              !ctx.spends.find(
-                (s) => s.outpoint.toString() == parent.toString(),
-              )
-            )
-              continue;
+            if (!ctx.spends.find((s) => s.outpoint.toString() == parent.toString())) break;
             insc.parent = parent.toString();
           } catch {
             console.log("Error parsing parent outpoint");
@@ -138,7 +123,7 @@ export class InscriptionIndexer extends Indexer {
 
   static serialize(insc: Inscription): string {
     return JSON.stringify({
-      file: insc.file &&{
+      file: insc.file && {
         hash: insc.file.hash,
         size: insc.file.size,
         type: insc.file.type,
